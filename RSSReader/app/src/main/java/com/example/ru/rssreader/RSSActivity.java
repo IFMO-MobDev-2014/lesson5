@@ -91,6 +91,7 @@ public class RSSActivity extends Activity {
             try {
                 URL url = new URL(rss);
                 URLConnection connection = url.openConnection();
+                connection.setConnectTimeout(10000);
                 DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
                 DocumentBuilder builder = factory.newDocumentBuilder();
                 InputStream input = connection.getInputStream();
@@ -113,11 +114,11 @@ public class RSSActivity extends Activity {
             }
         }
 
-        private void parse(NodeList main) {
+        private void parse(NodeList root) {
             rssRecords = new ArrayList<Record>();
             try {
-                for (int i = 0; i < main.getLength(); i++) {
-                    Element currentElement = (Element) main.item(i);
+                for (int i = 0; i < root.getLength(); i++) {
+                    Element currentElement = (Element) root.item(i);
                     Element titleElement = (Element) currentElement.getElementsByTagName("title").item(0);
                     Element descriptionElement = (Element) currentElement.getElementsByTagName(descriptionFormat).item(0);
                     Element dateElement = (Element) currentElement.getElementsByTagName(dateFormat).item(0);

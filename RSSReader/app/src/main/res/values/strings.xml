@@ -6,5 +6,4 @@
     <string name="echo_msk_rss">http://echo.msk.ru/interview/rss-fulltext.xml</string>
     <string name="bash_rss">http://bash.im/rss/</string>
     <string name="error_msg">Sorry, there is some error</string>
-    <string name="good_rss_msg">OK</string>
 </resources>
