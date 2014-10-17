@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">RSS Reader</string>
+    <string name="stackoverflow_rss">http://stackoverflow.com/feeds/tag/android</string>
+    <string name="bbc_rss">http://feeds.bbci.co.uk/news/rss.xml</string>
+    <string name="echo_msk_rss">http://echo.msk.ru/interview/rss-fulltext.xml</string>
+    <string name="bash_rss">http://bash.im/rss/</string>
+    <string name="no_rss_msg">It\'s not a RSS. Please check your URL</string>
+    <string name="good_rss_msg">OK</string>
+    <string name="bad_rss_msg">Bad URL</string>
+    <string name="inputstream_error_msg">InputStream problem</string>
+    <string name="parser_error_msg">Parser Exception</string>
+</resources>
