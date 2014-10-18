@@ -12,12 +12,12 @@
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:text="@string/empty"
-        android:id="@+id/textView" />
+        android:id="@android:id/empty" />
 
     <ListView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@android:id/empty" />
+        android:id="@android:id/list" />
 
 
 </LinearLayout>
