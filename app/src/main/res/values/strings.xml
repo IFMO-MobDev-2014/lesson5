@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">reader</string>
+    <string name="title_activity_reader">ReaderActivity</string>
+    <string name="article_title_example">Lorem Ipsum</string>
+    <string name="article_author_example">Albert Einstein</string>
+    <string name="stack_overflow">Stack Overflow</string>
+    <string name="title_activity_web_view">WebViewActivity</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+
+</resources>
