@@ -1,5 +1,6 @@
 package ru.ifmo.md.lesson5.rssreader;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
@@ -12,6 +13,9 @@ public class RssDatabaseHelper extends SQLiteOpenHelper {
     private static final int VERSION = 1;
 
     private static final String TABLE_RSS = "rss";
+    private static final String COLUMN_RSS_NAME = "NAME";
+    private static final String COLUMN_RSS_URL = "URL";
+    private static final String COLUMN_RSS_FAVOURITE = "FAVOURITE";
 
 
     public RssDatabaseHelper(Context context, String name, SQLiteDatabase.CursorFactory factory, int version) {
@@ -33,6 +37,14 @@ public class RssDatabaseHelper extends SQLiteOpenHelper {
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
 
+    }
+
+    public long insertRss(Rss rss) {
+        ContentValues cv = new ContentValues();
+        cv.put(COLUMN_RSS_NAME, rss.getName());
+        cv.put(COLUMN_RSS_URL, rss.getUrl());
+        cv.put(COLUMN_RSS_FAVOURITE, rss.getFavourite());
+        return getWritableDatabase().insert(TABLE_RSS, null, cv);
     }
 
 }
