@@ -9,19 +9,21 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content">
         <EditText
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:id="@+id/editText"
             android:layout_weight="1"
             android:singleLine="true"
             android:textSize="20sp"
-            />
+            android:hint="@string/edit_text_1_hint"
+            android:inputType="textUri" />
 
         <ImageButton
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/imageButton"
-            android:src="@drawable/abc_ic_cab_done_holo_light" />
+            android:src="@drawable/abc_ic_cab_done_holo_light"
+            android:contentDescription="@string/image_button_description" />
     </LinearLayout>
     <ListView
         android:layout_width="match_parent"
@@ -29,6 +31,5 @@
         android:id="@+id/listView"
         android:layout_gravity="center"
         android:choiceMode="singleChoice"
-        style="@style/TextAppearance.AppCompat.Light.Base.SearchResult"
         android:drawSelectorOnTop="true" />
 </LinearLayout>

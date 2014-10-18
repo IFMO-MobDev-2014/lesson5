@@ -24,6 +24,7 @@ public class MainActivity extends Activity {
         rssNames.add(getString(R.string.echo_msk_rss));
         rssNames.add(getString(R.string.bash_rss));
         rssNames.add(getString(R.string.stackoverflow_rss));
+        rssNames.add(getString(R.string.habr_rss));
     }
 
     @Override
