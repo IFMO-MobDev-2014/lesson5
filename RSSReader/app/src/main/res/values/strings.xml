@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">RSS Reader</string>
+    <string name="stackoverflow_rss">http://stackoverflow.com/feeds/tag/android</string>
+    <string name="bbc_rss">http://feeds.bbci.co.uk/news/rss.xml</string>
+    <string name="echo_msk_rss">http://echo.msk.ru/interview/rss-fulltext.xml</string>
+    <string name="bash_rss">http://bash.im/rss/</string>
+    <string name="error_msg">There are some problems. Please, try again.</string>
+    <string name="image_button_description">Add</string>
+    <string name="edit_text_1_hint">Enter your RSS-source URL</string>
+    <string name="habr_rss">http://habrahabr.ru/rss/</string>
+    <string name="rss_description_arg">description</string>
+    <string name="rss_date_arg">pubDate</string>
+    <string name="atom_description_arg">summary</string>
+    <string name="atom_date_arg">published</string>
+</resources>
