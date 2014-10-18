@@ -29,7 +29,6 @@ public class RssArticle {
     private FeedItem feedItem;
     private Bitmap thumbnail;
 
-
     public void setThumbnailUrl(String thumbnailUrl) {
         new LoadThumbnailTask(this).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, thumbnailUrl);
     }

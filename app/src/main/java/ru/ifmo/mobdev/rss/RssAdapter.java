@@ -1,11 +1,14 @@
 package ru.ifmo.mobdev.rss;
 
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Objects;
 
 import ru.ifmo.mobdev.rss.utils.RssArticle;
 
@@ -14,14 +17,11 @@ import ru.ifmo.mobdev.rss.utils.RssArticle;
 */
 public class RssAdapter extends BaseAdapter {
     private ArrayList<RssArticle> rssItems = new ArrayList<RssArticle>();
+    private HashMap<String, ArrayList<RssArticle>> feeds = new HashMap<String, ArrayList<RssArticle>>();
     private LoaderActivity ctx;
 
     public RssAdapter(LoaderActivity ctx) {
         this.ctx = ctx;
-    }
-
-    public void addItems(ArrayList<RssArticle> items){
-        rssItems.addAll(items);
     }
 
     @Override
@@ -52,5 +52,19 @@ public class RssAdapter extends BaseAdapter {
             }
         });
         return view;
+    }
+
+    public ArrayList<RssArticle> get(String key) {
+        return feeds.get(key);
+    }
+
+    public void remove(String first) {
+        rssItems.removeAll(feeds.get(first));
+    }
+
+    public void put(Pair<String, ArrayList<RssArticle>> p) {
+        feeds.put(p.first, p.second);
+        rssItems.addAll(0, p.second);
+        notifyDataSetChanged();
     }
 }

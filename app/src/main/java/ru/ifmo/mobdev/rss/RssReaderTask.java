@@ -1,6 +1,7 @@
 package ru.ifmo.mobdev.rss;
 
 import android.os.AsyncTask;
+import android.util.Pair;
 
 import java.util.ArrayList;
 import ru.ifmo.mobdev.rss.utils.RSSHandler;
@@ -9,7 +10,7 @@ import ru.ifmo.mobdev.rss.utils.RssArticle;
 /**
  * @author sugakandrey
  */
-public class RssReaderTask extends AsyncTask<String, Void, ArrayList<RssArticle>>{
+public class RssReaderTask extends AsyncTask<String, Void, Pair<String, ArrayList<RssArticle>>>{
     private final LoaderActivity ctx;
 
     public RssReaderTask(LoaderActivity ctx) {
@@ -17,13 +18,13 @@ public class RssReaderTask extends AsyncTask<String, Void, ArrayList<RssArticle>
     }
 
     @Override
-    protected ArrayList<RssArticle> doInBackground(String... strings) {
+    protected Pair<String, ArrayList<RssArticle>> doInBackground(String... strings) {
         RSSHandler handler = new RSSHandler();
-        return handler.getArticles(strings[0]);
+        return new Pair<String, ArrayList<RssArticle>>(strings[0], handler.getArticles(strings[0]));
     }
 
     @Override
-    protected void onPostExecute(ArrayList<RssArticle> rssArticles) {
+    protected void onPostExecute(Pair<String, ArrayList<RssArticle>> rssArticles) {
        ctx.onDataLoaded(rssArticles);
     }
 }
