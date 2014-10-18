@@ -2,6 +2,8 @@ package ru.ifmo.md.lesson5.rssreader;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
+import android.database.CursorWrapper;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
@@ -13,12 +15,12 @@ public class RssDatabaseHelper extends SQLiteOpenHelper {
     private static final int VERSION = 1;
 
     private static final String TABLE_RSS = "rss";
+    private static final String COLUMN_RSS_ID = "ID";
     private static final String COLUMN_RSS_NAME = "NAME";
     private static final String COLUMN_RSS_URL = "URL";
     private static final String COLUMN_RSS_FAVOURITE = "FAVOURITE";
 
-
-    public RssDatabaseHelper(Context context, String name, SQLiteDatabase.CursorFactory factory, int version) {
+    public RssDatabaseHelper(Context context) {
         super(context, DB_NAME, null, VERSION);
     }
 
@@ -45,6 +47,25 @@ public class RssDatabaseHelper extends SQLiteOpenHelper {
         cv.put(COLUMN_RSS_URL, rss.getUrl());
         cv.put(COLUMN_RSS_FAVOURITE, rss.getFavourite());
         return getWritableDatabase().insert(TABLE_RSS, null, cv);
+    }
+
+    public static class RssCursor extends CursorWrapper {
+
+        public RssCursor(Cursor cursor) {
+            super(cursor);
+        }
+
+        public Rss getRss() {
+            if (isBeforeFirst() || isAfterLast()) {
+                return null;
+            }
+            Rss rss = new Rss();
+            rss.setId(getLong(getColumnIndex(COLUMN_RSS_ID)));
+            rss.setName(getString(getColumnIndex(COLUMN_RSS_NAME)));
+            rss.setUrl(getString(getColumnIndex(COLUMN_RSS_URL)));
+            rss.setFavourite(getInt(getColumnIndex(COLUMN_RSS_FAVOURITE)));
+            return rss;
+        }
     }
 
 }
