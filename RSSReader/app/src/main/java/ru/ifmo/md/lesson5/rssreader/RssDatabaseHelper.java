@@ -41,6 +41,34 @@ public class RssDatabaseHelper extends SQLiteOpenHelper {
 
     }
 
+    public RssCursor getAllRss() {
+        Cursor wrapped = getReadableDatabase().query(
+                TABLE_RSS,
+                null,                              // all columns
+                null,                              // select *
+                null,                              // selectionArgs
+                null,                              // group by
+                null,                              // order by
+                null,                              // having
+                "1"                                // limit by 1
+        );
+        return new RssCursor(wrapped);
+    }
+
+    public RssCursor getRss(long id) {
+        Cursor wrapped = getReadableDatabase().query(
+                TABLE_RSS,
+                null,                              // all columns
+                COLUMN_RSS_ID + " = ?",            // specify id
+                new String[]{ Long.toString(id) }, // exactly 'id'
+                null,                              // group by
+                null,                              // order by
+                null,                              // having
+                "1"                                // limit by 1
+        );
+        return new RssCursor(wrapped);
+    }
+
     public long insertRss(Rss rss) {
         ContentValues cv = new ContentValues();
         cv.put(COLUMN_RSS_NAME, rss.getName());
