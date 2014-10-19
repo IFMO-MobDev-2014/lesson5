@@ -1,7 +1,10 @@
 package com.wibk.rss;
 
+import android.content.Context;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.widget.Toast;
+
 import org.xml.sax.InputSource;
 
 import java.io.IOException;
@@ -15,9 +18,11 @@ import java.util.List;
 
 public class RssFeedFetcher extends AsyncTask<String, Void, RssFeed> {
     private RssItemAdapter adapter;
+    private Context context;
 
-    public RssFeedFetcher(RssItemAdapter adapter) {
+    public RssFeedFetcher(RssItemAdapter adapter, Context context) {
         this.adapter = adapter;
+        this.context = context;
     }
 
     @Override
@@ -49,10 +54,15 @@ public class RssFeedFetcher extends AsyncTask<String, Void, RssFeed> {
 
     @Override
     protected void onPostExecute(RssFeed rssFeed) {
-        List<RssItem> rssItems = rssFeed.getRssItemList();
-        for (RssItem rssItem : rssItems) {
-            adapter.add(rssItem);
+        if (rssFeed == null) {
+            Toast toast = Toast.makeText(context, "No network connection", Toast.LENGTH_SHORT);
+            toast.show();
+        } else {
+            List<RssItem> rssItems = rssFeed.getRssItemList();
+            for (RssItem rssItem : rssItems) {
+                adapter.add(rssItem);
+            }
+            adapter.notifyDataSetChanged();
         }
-        adapter.notifyDataSetChanged();
     }
 }

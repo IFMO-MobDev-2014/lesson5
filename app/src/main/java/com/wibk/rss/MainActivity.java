@@ -29,7 +29,7 @@ public class MainActivity extends ListActivity {
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                new RssFeedFetcher(rssItemAdapter).execute(editText.getText().toString());
+                new RssFeedFetcher(rssItemAdapter, getBaseContext()).execute(editText.getText().toString());
             }
         });
     }
