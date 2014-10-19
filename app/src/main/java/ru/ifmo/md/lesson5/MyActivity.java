@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.Locale;
 
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
@@ -34,7 +35,6 @@ import javax.xml.parsers.SAXParserFactory;
 
 public class MyActivity extends ListActivity {
     EditText input;
-    String rssStringURL;
     SimpleDateFormat format;
 
     @Override
@@ -42,7 +42,7 @@ public class MyActivity extends ListActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_my);
 
-        format = new SimpleDateFormat(getResources().getString(R.string.date_format));
+        format = new SimpleDateFormat(getResources().getString(R.string.date_format), Locale.ENGLISH);
         input = (EditText) findViewById(R.id.editText1);
 
         input.setOnKeyListener(new View.OnKeyListener() {
@@ -62,18 +62,23 @@ public class MyActivity extends ListActivity {
     }
 
     public void updateList() {
-        rssStringURL = input.getText().toString();
+        String rssStringURL = input.getText().toString();
+        if(!rssStringURL.startsWith("http://")){
+            rssStringURL = "http://" + rssStringURL;
+        }
+        new DownloadAndParseXMLTask().execute(rssStringURL);
         input.setText("");
-        new MyTask().execute();
     }
 
-    class MyTask extends AsyncTask<Void, Void, ArrayList<RSSItem>> {
+    class DownloadAndParseXMLTask extends AsyncTask<String, Void, ArrayList<RSSItem>> {
         private boolean canConnect = true;
         private boolean canOpen = true;
         private boolean canParse = true;
+        private boolean isSorted = false;
 
         @Override
-        protected ArrayList<RSSItem> doInBackground(Void... arg0) {
+        protected ArrayList<RSSItem> doInBackground(String... arg0) {
+            String rssStringURL = arg0[0];
             ArrayList<RSSItem> rssItems = new ArrayList<RSSItem>();
             StringBuilder content = new StringBuilder();
             publishProgress();
@@ -115,8 +120,11 @@ public class MyActivity extends ListActivity {
                 return null;
             }
 
-            Collections.sort(rssItems, new RSSItemComparator());
-            Collections.reverse(rssItems);
+            if (dateParse(rssItems.get(0).getPubdate()) != null) {
+                Collections.sort(rssItems, new RSSItemComparator());
+                Collections.reverse(rssItems);
+                isSorted = true;
+            }
 
             return rssItems;
         }
@@ -128,6 +136,9 @@ public class MyActivity extends ListActivity {
 
         @Override
         protected void onPostExecute(ArrayList<RSSItem> result) {
+            if (!isSorted) {
+                showToast(R.string.cannot_parse_date, Toast.LENGTH_LONG);
+            }
             if (!canConnect) {
                 showToast(R.string.cannot_connect, Toast.LENGTH_LONG);
             } else if (!canOpen) {
