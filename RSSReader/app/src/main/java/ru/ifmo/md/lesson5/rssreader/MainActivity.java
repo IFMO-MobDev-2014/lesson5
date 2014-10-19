@@ -85,10 +85,14 @@ public class MainActivity extends Activity
             }
         });
 
-
-        String[] from = new String[]{RssDatabaseHelper.COLUMN_RSS_URL};
-        int[] to = new int[]{android.R.id.text1};
-        mAdapter = new SimpleCursorAdapter(this, android.R.layout.simple_list_item_1, null, from, to, 0);
+        mAdapter = new SimpleCursorAdapter(
+                this,
+                android.R.layout.simple_list_item_1,
+                null,
+                new String[]{RssDatabaseHelper.COLUMN_RSS_URL},
+                new int[]{android.R.id.text1},
+                0
+        );
 
         mListViewRss.setAdapter(mAdapter);
         registerForContextMenu(mListViewRss);
@@ -99,8 +103,7 @@ public class MainActivity extends Activity
 
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.rss_context, menu);
+        getMenuInflater().inflate(R.menu.rss_context, menu);
         super.onCreateContextMenu(menu, v, menuInfo);
     }
 
@@ -140,10 +143,12 @@ public class MainActivity extends Activity
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
-        if (id == R.id.action_settings) {
-            return true;
+        switch (id) {
+            case R.id.action_settings:
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
         }
-        return super.onOptionsItemSelected(item);
     }
 
     @Override
