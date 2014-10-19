@@ -5,38 +5,19 @@
     android:layout_height="fill_parent"
     android:orientation="vertical">
     
-    <EditText
-        android:layout_width="match_parent"
+    <Button
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:text="Add new URL"
+        android:padding="5dp"
         android:id="@+id/input"
-        android:minWidth="80dp"
-        android:layout_margin="10dp"
-        android:padding="10dp"
-    />
-    <!--<Button-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:id="@+id/buttonAdd"-->
-        <!--android:layout_toRightOf="@+id/input"-->
-        <!--android:minWidth="80dp"-->
-        <!--android:text="Add"-->
-        <!--android:onClick="onAddAction"/>-->
+        android:onClick="addUrlAction"/>
 
     <ListView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@id/android:list"
-        android:layout_above="@+id/input"
-    />
-
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:id="@id/android:empty"
-        android:layout_above="@+id/input"
-        android:gravity="center"
-        android:textSize="40dp"
-        android:text="Nothing to show"
+        android:id="@+id/list_view"
+        android:layout_below="@+id/input"
     />
 
 </RelativeLayout>

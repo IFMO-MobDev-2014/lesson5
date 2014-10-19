@@ -1,6 +1,7 @@
 package ru.ifmo.md.rssdef;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,13 +16,21 @@ import java.util.ArrayList;
 public class ListAdapter extends BaseAdapter {
     Context context;
     ArrayList<String> values;
-    ListAdapter(Context cont) {
+    DataStorage ds;
+    ListAdapter(Context cont, DataStorage data) {
         values = new ArrayList<String>();
         context = cont;
+        ds = data;
+        values = ds.read();
     }
     @Override
     public int getCount() {
-        return 0;
+        return values.size()/2;
+    }
+
+    @Override
+    public void notifyDataSetChanged() {
+        values = ds.read();
     }
 
     @Override
@@ -39,7 +48,7 @@ public class ListAdapter extends BaseAdapter {
         LayoutInflater inflater = LayoutInflater.from(context);
         View v = inflater.inflate(R.layout.item, null);
         TextView cur = (TextView) v.findViewById(R.id.item);
-        cur.setText(values.get(i));
+        cur.setText(values.get(2 * i) + " " + values.get(2 * i + 1));
         return v;
     }
 }
