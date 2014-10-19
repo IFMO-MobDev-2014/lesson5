@@ -7,5 +7,8 @@
     <string name="add_rss">Add</string>
     <string name="hint_add_url">Type RSS url here</string>
     <string name="action_add">Add</string>
+    <string name="bad_url">Invalid URL</string>
+    <string name="delete_item">Delete</string>
+    <string name="add_to_favourite_item">Add to favourite</string>
 
 </resources>
