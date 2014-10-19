@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">RSS Reader</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="show_article_html"><![CDATA[<br><a href=\"javascript:void(0)\" onclick=\"%1$s.showArticle(%2$d)\">more&hellip;</a>]]></string>
+    <string name="title_activity_article">Full Article</string>
+    <string name="refresh_btn">Refresh</string>
+    <string name="refreshing_btn">...</string>
+    <string name="loading_msg">Please wait.\nArticles will be loaded in no time!</string>
+    <string name="net_error_msg">Network error occurred.\nCheck your network connection.</string>
+    <string name="feed_error_msg">RSS feed is corrupted.</string>
+
+</resources>
