@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="default_rss">
+        <item>http://stackoverflow.com/feeds/tag/android</item>
+        <item>http://feeds.bbci.co.uk/news/rss.xml</item>
+        <item>http://echo.msk.ru/interview/rss-fulltext.xml</item>
+        <item>http://bash.im/rss/</item>
+    </string-array>
+</resources>
