@@ -47,8 +47,10 @@ public class ListAdapter extends BaseAdapter {
     public View getView(int i, View view, ViewGroup viewGroup) {
         LayoutInflater inflater = LayoutInflater.from(context);
         View v = inflater.inflate(R.layout.item, null);
-        TextView cur = (TextView) v.findViewById(R.id.item);
-        cur.setText(values.get(2 * i) + " " + values.get(2 * i + 1));
+        TextView name = (TextView) v.findViewById(R.id.name);
+        TextView url = (TextView) v.findViewById(R.id.url);
+        name.setText(values.get(2 * i));
+        url.setText(values.get(2 * i + 1));
         return v;
     }
 }

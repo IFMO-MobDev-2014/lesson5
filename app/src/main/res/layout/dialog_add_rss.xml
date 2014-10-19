@@ -14,7 +14,8 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:id="@+id/rss_name"
-        android:hint="Enter resouce name"/>
+        android:hint="Enter resource name"
+        android:singleLine="true"/>
 
     <TextView
         android:layout_width="wrap_content"
@@ -25,7 +26,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/rss_url"
-        android:hint="Resource URL"/>
+        android:hint="Resource URL"
+        android:singleLine="true"/>
 
     <Button
         android:layout_width="wrap_content"
