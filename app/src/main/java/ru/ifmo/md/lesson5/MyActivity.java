@@ -74,7 +74,7 @@ public class MyActivity extends ListActivity {
         private boolean canConnect = true;
         private boolean canOpen = true;
         private boolean canParse = true;
-        private boolean isSorted = false;
+        private boolean isSorted = true;
 
         @Override
         protected ArrayList<RSSItem> doInBackground(String... arg0) {
@@ -123,7 +123,8 @@ public class MyActivity extends ListActivity {
             if (dateParse(rssItems.get(0).getPubdate()) != null) {
                 Collections.sort(rssItems, new RSSItemComparator());
                 Collections.reverse(rssItems);
-                isSorted = true;
+            } else {
+                isSorted = false;
             }
 
             return rssItems;
