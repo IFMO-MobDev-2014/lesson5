@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.database.CursorWrapper;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 /**
  * Created by Nikita Yaschenko on 18.10.14.
@@ -16,9 +17,16 @@ public class RssDatabaseHelper extends SQLiteOpenHelper {
 
     private static final String TABLE_RSS = "rss";
     private static final String COLUMN_RSS_ID = "_id";
-    private static final String COLUMN_RSS_NAME = "name";
-    private static final String COLUMN_RSS_URL = "url";
+    public static final String COLUMN_RSS_NAME = "name";
+    public static final String COLUMN_RSS_URL = "url";
     private static final String COLUMN_RSS_FAVOURITE = "favourite";
+
+    private static String[] predefinedRss = new String[]{
+        "http://stackoverflow.com/feeds/tag/android",
+        "http://feeds.bbci.co.uk/news/rss.xml",
+        "http://echo.msk.ru/interview/rss-fulltext.xml",
+        "http://bash.im/rss/"
+    };
 
     public RssDatabaseHelper(Context context) {
         super(context, DB_NAME, null, VERSION);
@@ -27,13 +35,20 @@ public class RssDatabaseHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         db.execSQL(
-                "CREATE TABLE " + TABLE_RSS + " (" +
-                COLUMN_RSS_ID        + " INT  PRIMARY KEY AUTOINCREMENT NOT NULL," +
-                COLUMN_RSS_NAME      + " TEXT                           NOT NULL," +
-                COLUMN_RSS_URL       + " TEXT                           NOT NULL," +
-                COLUMN_RSS_FAVOURITE + " INT" +
-                ");"
+                "CREATE TABLE " + TABLE_RSS + "(" +
+                        COLUMN_RSS_ID + " integer primary key autoincrement, " +
+                        COLUMN_RSS_NAME + " text, " +
+                        COLUMN_RSS_URL + " text, " +
+                        COLUMN_RSS_FAVOURITE + " int" +
+                        ");"
         );
+        for (String url : predefinedRss) {
+            ContentValues cv = new ContentValues();
+            cv.put(COLUMN_RSS_NAME, url);
+            cv.put(COLUMN_RSS_URL, url);
+            cv.put(COLUMN_RSS_FAVOURITE, 0);
+            db.insert(TABLE_RSS, null, cv);
+        }
     }
 
     @Override
@@ -41,22 +56,37 @@ public class RssDatabaseHelper extends SQLiteOpenHelper {
 
     }
 
-    public RssCursor getAllRss() {
-        Cursor wrapped = getReadableDatabase().query(
+    public long insertRss(Rss rss) {
+        ContentValues cv = new ContentValues();
+        cv.put(COLUMN_RSS_NAME, rss.getName());
+        cv.put(COLUMN_RSS_URL, rss.getUrl());
+        cv.put(COLUMN_RSS_FAVOURITE, rss.getFavourite());
+        return getWritableDatabase().insert(TABLE_RSS, null, cv);
+    }
+
+    public void deleteRss(long id) {
+        getWritableDatabase().delete(
+                TABLE_RSS,
+                COLUMN_RSS_ID + " = " + id,
+                null
+        );
+    }
+
+    public Cursor getAllRss() {
+        return getReadableDatabase().query(
                 TABLE_RSS,
                 null,                              // all columns
                 null,                              // select *
                 null,                              // selectionArgs
                 null,                              // group by
                 null,                              // order by
-                null,                              // having
-                "1"                                // limit by 1
+                null,
+                null
         );
-        return new RssCursor(wrapped);
     }
 
-    public RssCursor getRss(long id) {
-        Cursor wrapped = getReadableDatabase().query(
+    public Cursor getRss(long id) {
+        return getReadableDatabase().query(
                 TABLE_RSS,
                 null,                              // all columns
                 COLUMN_RSS_ID + " = ?",            // specify id
@@ -66,17 +96,9 @@ public class RssDatabaseHelper extends SQLiteOpenHelper {
                 null,                              // having
                 "1"                                // limit by 1
         );
-        return new RssCursor(wrapped);
     }
 
-    public void insertRss(Rss rss) {
-        ContentValues cv = new ContentValues();
-        cv.put(COLUMN_RSS_NAME, rss.getName());
-        cv.put(COLUMN_RSS_URL, rss.getUrl());
-        cv.put(COLUMN_RSS_FAVOURITE, rss.getFavourite());
-        rss.setId(getWritableDatabase().insert(TABLE_RSS, null, cv));
-    }
-
+/*
     public static class RssCursor extends CursorWrapper {
 
         public RssCursor(Cursor cursor) {
@@ -95,5 +117,5 @@ public class RssDatabaseHelper extends SQLiteOpenHelper {
             return rss;
         }
     }
-
+    */
 }

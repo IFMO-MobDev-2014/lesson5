@@ -1,36 +1,50 @@
 package ru.ifmo.md.lesson5.rssreader;
 
 import android.app.Activity;
+import android.app.LoaderManager;
+import android.content.Context;
+import android.content.CursorLoader;
+import android.content.Loader;
+import android.database.Cursor;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.util.Patterns;
+import android.view.ContextMenu;
 import android.view.KeyEvent;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
+import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
 
-public class MainActivity extends Activity {
+public class MainActivity extends Activity
+        implements LoaderManager.LoaderCallbacks<Cursor> {
     private EditText mEditTextAdd;
     private ListView mListViewRss;
+    private SimpleCursorAdapter mAdapter;
 
-    private RssManager mRssManager;
+    private static final int LOADER_RSS = 1;
+    private static final int CM_ITEM_DELETE = 0;
+
+    private RssManager manager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        manager = RssManager.get(this);
+
         setupViews();
-        mRssManager = RssManager.get(this);
     }
 
     private void setupViews() {
@@ -48,9 +62,9 @@ public class MainActivity extends Activity {
             public void afterTextChanged(Editable editable) {
                 String potentialUrl = mEditTextAdd.getText().toString();
                 if (Patterns.WEB_URL.matcher(potentialUrl).matches()) {
-                    mEditTextAdd.setBackgroundColor(Color.argb(0, 128, 128, 128));
+                    mEditTextAdd.setBackgroundColor(Color.argb(64, 0x5C, 0x85, 0x5C));
                 } else {
-                    mEditTextAdd.setBackgroundColor(Color.argb(255, 128, 128, 128));
+                    mEditTextAdd.setBackgroundColor(Color.argb(64, 0xD9, 0x53, 0x4F));
                 }
             }
         });
@@ -58,24 +72,63 @@ public class MainActivity extends Activity {
         mEditTextAdd.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView textView, int actionId, KeyEvent keyEvent) {
-                Log.d("TAG", "actionId = " + actionId);
                 if (actionId == getResources().getInteger(R.integer.actionAdd)) {
                     String potentialUrl = mEditTextAdd.getText().toString();
                     if (Patterns.WEB_URL.matcher(potentialUrl).matches()) {
                         addRss(potentialUrl);
                     } else {
-                        //Toast.makeText(getApplicationContext(), "Invalid URL", Toast.LENGTH_SHORT).show();
-                        Log.d("TAG", "Bad url: " + potentialUrl);
+                        Toast.makeText(getApplicationContext(), getString(R.string.bad_url), Toast.LENGTH_SHORT).show();
                     }
                     return true;
                 }
                 return false;
             }
         });
+
+
+        String[] from = new String[]{RssDatabaseHelper.COLUMN_RSS_URL};
+        int[] to = new int[]{android.R.id.text1};
+        mAdapter = new SimpleCursorAdapter(this, android.R.layout.simple_list_item_1, null, from, to, 0);
+
+        mListViewRss.setAdapter(mAdapter);
+        registerForContextMenu(mListViewRss);
+
+        getLoaderManager().initLoader(LOADER_RSS, null, this);
+
+    }
+
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.rss_context, menu);
+        super.onCreateContextMenu(menu, v, menuInfo);
+    }
+
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
+        AdapterView.AdapterContextMenuInfo acmi =
+                (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
+        long id = acmi.id;
+        Log.d("TAG", "id: " + id);
+        switch (item.getItemId()) {
+            case R.id.delete:
+                manager.deleteRss(id);
+                getLoaderManager().getLoader(LOADER_RSS).forceLoad();
+                return true;
+            default:
+                return super.onContextItemSelected(item);
+        }
     }
 
     private void addRss(String url) {
         Log.d("TAG", "Add url: " + url);
+        Rss rss = new Rss();
+        rss.setUrl(url);
+        rss.setName(url);
+        rss.setFavourite(0);
+        long id = manager.insertRss(rss);
+        getLoaderManager().getLoader(LOADER_RSS).forceLoad();
+        Log.d("TAG", "Rss id: " + id);
     }
 
     @Override
@@ -91,5 +144,39 @@ public class MainActivity extends Activity {
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
+        return new RssLoader(this, manager);
+    }
+
+    @Override
+    public void onLoadFinished(Loader<Cursor> cursorLoader, Cursor cursor) {
+        try {
+            mAdapter.swapCursor(cursor);
+        } catch (Exception e) {
+            Log.d("TAG", e.getMessage());
+        }
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Cursor> cursorLoader) {
+
+    }
+
+    private static class RssLoader extends CursorLoader {
+
+        private RssManager manager;
+
+        public RssLoader(Context context, RssManager manager) {
+            super(context);
+            this.manager = manager;
+        }
+
+        @Override
+        public Cursor loadInBackground() {
+            return manager.getAllRss();
+        }
     }
 }
