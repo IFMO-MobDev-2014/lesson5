@@ -15,10 +15,10 @@ public class RssDatabaseHelper extends SQLiteOpenHelper {
     private static final int VERSION = 1;
 
     private static final String TABLE_RSS = "rss";
-    private static final String COLUMN_RSS_ID = "ID";
-    private static final String COLUMN_RSS_NAME = "NAME";
-    private static final String COLUMN_RSS_URL = "URL";
-    private static final String COLUMN_RSS_FAVOURITE = "FAVOURITE";
+    private static final String COLUMN_RSS_ID = "_id";
+    private static final String COLUMN_RSS_NAME = "name";
+    private static final String COLUMN_RSS_URL = "url";
+    private static final String COLUMN_RSS_FAVOURITE = "favourite";
 
     public RssDatabaseHelper(Context context) {
         super(context, DB_NAME, null, VERSION);
@@ -28,10 +28,10 @@ public class RssDatabaseHelper extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         db.execSQL(
                 "CREATE TABLE " + TABLE_RSS + " (" +
-                "ID        INT  PRIMARY KEY AUTOINCREMENT NOT NULL," +
-                "NAME      TEXT                           NOT NULL," +
-                "URL       TEXT                           NOT NULL," +
-                "FAVOURITE INT" +
+                COLUMN_RSS_ID        + " INT  PRIMARY KEY AUTOINCREMENT NOT NULL," +
+                COLUMN_RSS_NAME      + " TEXT                           NOT NULL," +
+                COLUMN_RSS_URL       + " TEXT                           NOT NULL," +
+                COLUMN_RSS_FAVOURITE + " INT" +
                 ");"
         );
     }
@@ -69,12 +69,12 @@ public class RssDatabaseHelper extends SQLiteOpenHelper {
         return new RssCursor(wrapped);
     }
 
-    public long insertRss(Rss rss) {
+    public void insertRss(Rss rss) {
         ContentValues cv = new ContentValues();
         cv.put(COLUMN_RSS_NAME, rss.getName());
         cv.put(COLUMN_RSS_URL, rss.getUrl());
         cv.put(COLUMN_RSS_FAVOURITE, rss.getFavourite());
-        return getWritableDatabase().insert(TABLE_RSS, null, cv);
+        rss.setId(getWritableDatabase().insert(TABLE_RSS, null, cv));
     }
 
     public static class RssCursor extends CursorWrapper {
