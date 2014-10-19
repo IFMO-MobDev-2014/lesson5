@@ -13,6 +13,7 @@ import java.util.Locale;
 
 public class MainActivity extends ListActivity {
     public static final String DEFAULT_URL = "http://bash.im/rss/";
+    public static final String LINK_EXTRA = "Link";
     private RssItemAdapter rssItemAdapter;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,7 +37,7 @@ public class MainActivity extends ListActivity {
     public void onItemClick(int number) {
         Intent intent = new Intent(this, ContentActivity.class);
         RssItem rssItem = rssItemAdapter.getItem(number);
-        intent.putExtra("Link", rssItem.getLink());
+        intent.putExtra(LINK_EXTRA, rssItem.getLink());
         startActivity(intent);
     }
 }

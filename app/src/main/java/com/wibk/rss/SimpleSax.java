@@ -18,47 +18,27 @@ import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
 public class SimpleSax extends DefaultHandler {
-
-    public static List<RssItem> parseString(String xmlString) {
-        try {
-            SAXParserFactory saxParserFactory = SAXParserFactory.newInstance();
-            SAXParser saxParser = saxParserFactory.newSAXParser();
-            SimpleSax handler = new SimpleSax();
-            saxParser.parse(xmlString, handler);
-            return handler.getRssItemList();
-        } catch (ParserConfigurationException e) {
-            e.printStackTrace();
-            Log.e("SimpleSax", "Error occurred due to invalid parser configuration");
-        } catch (SAXException e) {
-            e.printStackTrace();
-            Log.e("SimpleSax", "Sax error occurred");
-        } catch (IOException e) {
-            e.printStackTrace();
-            Log.e("SimpleSax", "Error occurred during parsing");
-        }
-        return null;
-    }
+    private static final DateFormat dateFormat = new SimpleDateFormat("EEE, d MMM yyyy HH:mm:ss Z", Locale.US);
+    public static final String LOG_TAG = SimpleSax.class.getSimpleName();
 
     public static List<RssItem> parseInputSource(InputSource is) {
         try {
             SAXParserFactory saxParserFactory = SAXParserFactory.newInstance();
             SAXParser saxParser = saxParserFactory.newSAXParser();
             SimpleSax handler = new SimpleSax();
-            Log.d("SimpleSax", "Begin parsing");
             saxParser.parse(is, handler);
-            Log.d("SimpleSax", "Parsed something");
             return handler.getRssItemList();
         } catch (ParserConfigurationException e) {
             e.printStackTrace();
-            Log.e("SimpleSax", "Error occurred due to invalid parser configuration");
+            Log.e(LOG_TAG, "Error occurred due to invalid parser configuration");
         } catch (SAXException e) {
             e.printStackTrace();
-            Log.e("SimpleSax", "Sax error occurred");
+            Log.e(LOG_TAG, "Sax error occurred");
         } catch (IOException e) {
             e.printStackTrace();
-            Log.e("SimpleSax", "Error occurred during parsing");
+            Log.e(LOG_TAG, "Error occurred during parsing");
         }
-        return null;
+        return new ArrayList<RssItem>();
     }
 
     public List<RssItem> getRssItemList() {
@@ -78,8 +58,6 @@ public class SimpleSax extends DefaultHandler {
     @Override
     public void startElement(String uri, String localName, String qName, Attributes attributes)
             throws SAXException {
-        Log.d("SimpleSax", "Found: " + qName);
-
         if (qName.equalsIgnoreCase("item")) {
             rssItem = new RssItem();
             bItem = true;
@@ -100,7 +78,6 @@ public class SimpleSax extends DefaultHandler {
 
     @Override
     public void endElement(String uri, String localName, String qName) throws SAXException {
-        Log.d("SimpleSax", "End: " + qName);
         if (qName.equalsIgnoreCase("item") && bItem) {
             rssItemList.add(rssItem);
             bItem = false;
@@ -116,7 +93,6 @@ public class SimpleSax extends DefaultHandler {
             rssItem.setDescription(new String(ch, start, length));
             bDescription = false;
         } else if (bDate) {
-            DateFormat dateFormat = new SimpleDateFormat("EEE, d MMM yyyy HH:mm:ss Z", Locale.US);
             try {
                 rssItem.setDate(dateFormat.parse(new String(ch, start, length)));
             } catch (ParseException e) {

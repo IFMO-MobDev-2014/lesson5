@@ -27,7 +27,7 @@ public class RssFeedFetcher extends AsyncTask<String, Void, RssFeed> {
             URL url = new URL(uri.toString());
             HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
             httpURLConnection.setRequestMethod("GET");
-            httpURLConnection.setRequestProperty("Accept-Charset", "UTF-8");
+            httpURLConnection.setRequestProperty("Accept-Charset", "windows-1251");
             httpURLConnection.setRequestProperty("Content-Type", "text/plain; charset=utf-8");
             httpURLConnection.setRequestProperty("Accept-Encoding", "identity");
             httpURLConnection.setRequestProperty("User-Agent", "Mozilla/5.0");

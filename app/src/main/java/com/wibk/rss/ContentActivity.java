@@ -13,7 +13,7 @@ public class ContentActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_content);
         Intent intent = getIntent();
-        String link = intent.getStringExtra("Link");
+        String link = intent.getStringExtra(MainActivity.LINK_EXTRA);
         WebView webView = (WebView) findViewById(R.id.webView);
         webView.loadUrl(link);
     }
