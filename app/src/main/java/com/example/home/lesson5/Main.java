@@ -1,34 +1,33 @@
 package com.example.home.lesson5;
 
-import android.app.Activity;
 import android.app.ListActivity;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.text.Html;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.BaseAdapter;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import org.xml.sax.Attributes;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
-import org.xml.sax.helpers.DefaultHandler;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.parsers.SAXParser;
-import javax.xml.parsers.SAXParserFactory;
 
 public class Main extends ListActivity {
 
@@ -42,6 +41,7 @@ public class Main extends ListActivity {
 
         public void add(T item) {
             list.add(item);
+            notifyDataSetChanged();
         }
 
         @Override
@@ -61,14 +61,24 @@ public class Main extends ListActivity {
 
         @Override
         public View getView(int i, View view, ViewGroup viewGroup) {
-            view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.my_item_1, viewGroup, false);
-            ((TextView) view.findViewById(R.id.title)).setText("mamka tvoya");
-            ((TextView) view.findViewById(R.id.content)).setText((String) getItem(i));
+            if (view == null)
+                view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.my_item_1, viewGroup, false);
+            ((TextView) view.findViewById(R.id.title)).setText(((String[]) getItem(i))[0]);
+            ((TextView) view.findViewById(R.id.content)).setText(Html.fromHtml(((String[]) getItem(i))[1]));
+            if (i % 2 == 1)
+                view.setBackgroundColor(0xFFDDDDDD);
+            else
+                view.setBackgroundColor(0xFFFFFFFF);
             return view;
         }
     }
 
-    public class Downloader extends AsyncTask<String, Void, String> {
+    @SuppressWarnings("unchecked")
+    public void listAdd(String[] s) {
+        ((MyAdapter<String[]>) getListAdapter()).add(s);
+    }
+
+    public class Downloader extends AsyncTask<String, Void, String[][]> {
 
         ListView listView;
 
@@ -77,46 +87,50 @@ public class Main extends ListActivity {
         }
 
         @Override
-        protected void onPostExecute(String s) {
+        protected void onPostExecute(String[][] s) {
             super.onPostExecute(s);
+            final String[][] r = s;
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    for (String[] aR : r) listAdd(aR);
+                }
+            });
         }
 
         @Override
-        protected String doInBackground(String... strings) {
+        protected String[][] doInBackground(String... strings) {
 
             String rssUrl = strings[0];
-            String s;
+            String[][] s = new String[0][];
 
-            URL url = null;
+            int index = 0;
+
             try {
-                url = new URL(rssUrl);
-                URLConnection urlConnection = url.openConnection();
+                URL url = new URL(rssUrl);
 
-                SAXParser saxParser = SAXParserFactory.newInstance().newSAXParser();
+                Document xmlResponse = DocumentBuilderFactory.newInstance()
+                        .newDocumentBuilder().parse((InputStream) url.getContent());
 
-                DefaultHandler handler = new DefaultHandler() {
-                    @Override
-                    public void startDocument() throws SAXException {
-                        super.startDocument();
+                xmlResponse.getDocumentElement().normalize();
+
+                NodeList list = xmlResponse.getElementsByTagName("item");
+
+                s = new String[list.getLength()][];
+
+                for (int i = 0; i < list.getLength(); i++) {
+
+                    Node node = list.item(i);
+
+                    if (node.getNodeType() == Node.ELEMENT_NODE) {
+                        Element element = (Element) node;
+
+                        s[index++] = new String[] {element.getElementsByTagName("title").item(0).getFirstChild().getNodeValue(),
+                                                   element.getElementsByTagName("description").item(0).getFirstChild().getNodeValue(),
+                                                   element.getElementsByTagName("link").item(0).getFirstChild().getNodeValue()};
                     }
 
-                    @Override
-                    public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
-                        super.startElement(uri, localName, qName, attributes);
-                    }
-
-                    @Override
-                    public void endElement(String uri, String localName, String qName) throws SAXException {
-                        super.endElement(uri, localName, qName);
-                    }
-
-                    @Override
-                    public void characters(char[] ch, int start, int length) throws SAXException {
-                        super.characters(ch, start, length);
-                    }
-                };
-
-                saxParser.parse(urlConnection.getInputStream(), handler);
+                }
 
             } catch (MalformedURLException e) {
                 e.printStackTrace();
@@ -128,8 +142,7 @@ public class Main extends ListActivity {
                 e.printStackTrace();
             }
 
-
-            return null;
+            return s;
         }
 
     }
@@ -139,31 +152,20 @@ public class Main extends ListActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        MyAdapter<String> adapter = new MyAdapter<String>(new ArrayList<String>());
-        adapter.add("lolka\nlolka\nlalka");
+        MyAdapter<String[]> adapter = new MyAdapter<String[]>(new ArrayList<String[]>());
 
         setListAdapter(adapter);
 
-        new Downloader(getListView()).execute("http://stackoverflow.com/feeds/tag/android");
+        getListView().setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                Intent intent = new Intent(Main.this, WebActivity.class);
+                intent.putExtra("link", ((String[]) getListView().getAdapter().getItem(i))[2]);
+                startActivity(intent);
+            }
+        });
+
+        new Downloader(getListView()).execute("http://bash.im/rss/");
     }
 
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.main, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-        if (id == R.id.action_settings) {
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
 }
