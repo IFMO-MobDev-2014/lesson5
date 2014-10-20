@@ -135,13 +135,12 @@ public class MainActivity extends ListActivity
     private void addRss(String url) {
         //TODO: use parser instead of this stub
         Log.d("TAG", "Add url: " + url);
-        RSSItem item = new RSSItem();
-        item.setTitle("Title: " + url);
-        item.setUrl(url);
-        item.setDate("date here");
-        item.setFavourite(0);
-        item.setDescription("desc here");
-        long id = mManager.addItem(item);
+        RSSChannel channel = new RSSChannel();
+        channel.setTitle("Title: " + url);
+        channel.setUrl(url);
+        channel.setFavourite(0);
+        channel.setDescription("desc here");
+        long id = mManager.addChannel(channel);
         getLoaderManager().getLoader(LOADER_RSS).forceLoad();
         Log.d("TAG", "Rss id: " + id);
     }
