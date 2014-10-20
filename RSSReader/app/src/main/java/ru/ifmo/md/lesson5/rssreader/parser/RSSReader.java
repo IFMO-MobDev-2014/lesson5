@@ -36,7 +36,8 @@ public class RSSReader {
             XmlPullParser parser = Xml.newPullParser();
             parser.setFeature(XmlPullParser.FEATURE_PROCESS_NAMESPACES, false);
             parser.setInput(stream, null);
-            parser.nextTag();
+            parser.nextTag(); // rss
+            parser.nextTag(); // channel
             return readFeed(parser);
         } finally {
             stream.close();

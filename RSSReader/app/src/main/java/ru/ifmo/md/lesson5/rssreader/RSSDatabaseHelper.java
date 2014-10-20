@@ -18,7 +18,7 @@ public class RSSDatabaseHelper extends SQLiteOpenHelper {
     private static final String COLUMN_CHANNEL_ID = "_id";
     // public for SimpleCursorAdapter
     public static final String COLUMN_CHANNEL_TITLE = "title";
-    private static final String COLUMN_CHANNEL_URL = "url";
+    public static final String COLUMN_CHANNEL_URL = "url";
     private static final String COLUMN_CHANNEL_DESCRIPTION = "description";
     private static final String COLUMN_CHANNEL_FAVOURITE = "favourite";
 
