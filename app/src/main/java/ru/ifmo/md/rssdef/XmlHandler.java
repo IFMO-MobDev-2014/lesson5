@@ -29,7 +29,7 @@ public class XmlHandler extends DefaultHandler {
     @Override
     public void characters(char [] ch, int start, int length) throws SAXException {
         super.characters(ch, start, length);
-        input = input.concat(new String(ch, start, length));
+        input = new String(ch, start, length);
     }
 
     @Override

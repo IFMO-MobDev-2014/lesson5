@@ -27,7 +27,7 @@ public class MyDialog extends Dialog {
         url = (EditText) findViewById(R.id.rss_url);
     }
 
-    public void initFields(DataStorage ds, ListAdapter listAdapter, ListView lv) {
+    public void initFields(final DataStorage ds, final ListAdapter listAdapter, final ListView lv) {
         this.ds = ds;
         this.listAdapter = listAdapter;
         this.lv = lv;
@@ -45,9 +45,7 @@ public class MyDialog extends Dialog {
             public boolean onKey(View view, int i, KeyEvent keyEvent) {
                 if(keyEvent.getKeyCode() == KeyEvent.KEYCODE_ENTER && keyEvent.getAction() == 0) {
                     name.clearFocus();
-                    getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
                     url.requestFocus();
-                    getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
                 }
                 return true;
             }

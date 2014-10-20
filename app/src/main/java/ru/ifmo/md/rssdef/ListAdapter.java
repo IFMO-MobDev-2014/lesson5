@@ -1,6 +1,7 @@
 package ru.ifmo.md.rssdef;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,6 +30,7 @@ public class ListAdapter extends BaseAdapter {
 
     @Override
     public void notifyDataSetChanged() {
+        Log.i("MESSAGE", "UPDATE");
         values = ds.readRssData();
     }
 

@@ -24,8 +24,8 @@ import android.widget.ListView;
 public class MyActivity extends Activity {
 
     static DataStorage ds;
-    ListAdapter listAdapter;
-    ListView lv;
+    static ListAdapter listAdapter;
+    static ListView lv;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -38,7 +38,8 @@ public class MyActivity extends Activity {
 
     public void addUrlAction(View v) {
         MyDialog md = new MyDialog(this);
-        md.initFields(ds, listAdapter, lv);
         md.show();
     }
+
+
 }
