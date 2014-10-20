@@ -46,6 +46,7 @@ public class MainActivity extends Activity {
 
         });
         loadAndParse();
+
     }
 
     public void onConnectPress(View view) {
@@ -58,7 +59,7 @@ public class MainActivity extends Activity {
         items.clear();
         adapter.notifyDataSetChanged();
         try{
-            new RssParseTask().execute(editText.getText().toString());
+            new RssParseTask(this).execute(editText.getText().toString());
         }
         catch (Exception e)
         {

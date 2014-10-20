@@ -1,11 +1,13 @@
 package ru.ifmo.md.lesson5;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.util.Log;
+import android.widget.ListView;
 import android.widget.Toast;
 
 import org.apache.http.HttpConnection;
@@ -35,6 +37,11 @@ public class RssParseTask extends AsyncTask<String, Integer, LinkedList<Item>> {
 
     static int TAGS = 4;
     static String[] tags;
+    Activity activity;
+
+    RssParseTask(Activity act) {
+        activity = act;
+    }
 
     public LinkedList<Item> doInBackground(String... strings) {
         tags = new String[]{"title", "description", "link", "pubDate"};
@@ -64,7 +71,7 @@ public class RssParseTask extends AsyncTask<String, Integer, LinkedList<Item>> {
                     }
                 if (success) {
                     items.add(new Item(lTags));
-               }
+                }
             }
 
         } catch (Exception e) {
@@ -73,6 +80,13 @@ public class RssParseTask extends AsyncTask<String, Integer, LinkedList<Item>> {
         return items;
     }
 
-
-
+    @Override
+    protected void onPostExecute(LinkedList<Item> params) {
+        activity.runOnUiThread(new Runnable() {
+            public void run() {
+                MainActivity.listView.setAdapter(MainActivity.adapter);
+                //MainActivity.adapter.notifyDataSetChanged();
+            }
+        });
+    }
 }
