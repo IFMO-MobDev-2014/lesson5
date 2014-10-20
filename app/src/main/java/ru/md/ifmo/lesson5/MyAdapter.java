@@ -35,9 +35,7 @@ public class MyAdapter extends ArrayAdapter<ItemMaster> {
         TextView title = (TextView) elementView.findViewById(R.id.title);
         TextView date = (TextView) elementView.findViewById(R.id.date);
         TextView description = (TextView) elementView.findViewById(R.id.description);
-
         Button button = (Button) elementView.findViewById((R.id.more));
-
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -48,16 +46,10 @@ public class MyAdapter extends ArrayAdapter<ItemMaster> {
                 link.loadUrl(items.get(position).getLink());
             }
         });
-
-
         title.setText(items.get(position).getTitle());
         date.setText(items.get(position).getPubDate());
         description.setText(items.get(position).getDescription());
-
-
-
         return elementView;
-
     }
 
     private class AppWebViewClient extends WebViewClient {

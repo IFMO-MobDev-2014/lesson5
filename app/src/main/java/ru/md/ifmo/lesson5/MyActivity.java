@@ -31,7 +31,6 @@ public class MyActivity extends Activity  {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_my);
-
         AlertDialog.Builder dialog = new AlertDialog.Builder(MyActivity.this);
         dialog.setTitle("Welcome!");
         dialog.setMessage("Where do you want to show web pages?");
@@ -55,34 +54,25 @@ public class MyActivity extends Activity  {
             @Override
             public void onClick(View view) {
                 parseXML();
+                Toast toast = Toast.makeText(getApplicationContext(),"Loading...", Toast.LENGTH_SHORT);
+                toast.show();
             }
         });
-
-
-
     }
 
     private void parseXML() {
-
         try {
             loader = new RSSTask();
             loader.execute(editText.getText().toString());
             if (loader.exception != null) {
                 throw new Exception();
             }
-
             ArrayList<ItemMaster> itemsList = loader.get();
             MyAdapter adapter = new MyAdapter(this, itemsList, browser);
             listView.setAdapter(adapter);
-
         } catch (Exception e) {
             Toast toast = Toast.makeText(getApplicationContext(), "Oops, something goes wrong", Toast.LENGTH_SHORT);
             toast.show();
         }
-
-
     }
-
-
-
 }

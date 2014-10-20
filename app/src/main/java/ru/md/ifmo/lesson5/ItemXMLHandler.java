@@ -31,7 +31,6 @@ public class ItemXMLHandler extends DefaultHandler {
     @Override
     public void endElement(String uri, String localName, String qName) throws  SAXException {
         currentElement = false;
-
         if (localName.equalsIgnoreCase("item")) {
             openItem = false;
             itemsList.add(item);

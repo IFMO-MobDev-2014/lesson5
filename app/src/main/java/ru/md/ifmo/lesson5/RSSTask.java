@@ -24,7 +24,6 @@ public class RSSTask extends AsyncTask <String, Integer, ArrayList<ItemMaster>> 
     protected ArrayList<ItemMaster> doInBackground(String... strings) {
         String link = strings[0];
         try {
-
             SAXParserFactory saxParserFactory = SAXParserFactory.newInstance();
             SAXParser saxParser = saxParserFactory.newSAXParser();
             XMLReader xmlReader = saxParser.getXMLReader();
@@ -33,7 +32,6 @@ public class RSSTask extends AsyncTask <String, Integer, ArrayList<ItemMaster>> 
             xmlReader.setContentHandler(myXMLHandler);
 
             StringBuilder builder = new StringBuilder();
-
             URLConnection connection = new URL(link).openConnection();
             BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
             String line;
@@ -42,13 +40,8 @@ public class RSSTask extends AsyncTask <String, Integer, ArrayList<ItemMaster>> 
             }
             reader.close();
             InputSource inStream = new InputSource(new StringReader(builder.toString()));
-
             xmlReader.parse(inStream);
-
-
             return myXMLHandler.getItemsList();
-
-
         }  catch (Exception e) {
             this.exception = e;
         }
