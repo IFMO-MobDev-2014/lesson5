@@ -1,7 +1,10 @@
 package ru.ifmo.md.lesson5;
 
 import android.app.ListActivity;
+import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
@@ -12,12 +15,12 @@ import java.util.ArrayList;
 
 
 public class Feeds extends ListActivity {
-
+    TextView channel;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_feed);
-        TextView x = (TextView) findViewById(R.id.textView);
+        channel = (TextView) findViewById(R.id.channel);
         ArrayList<FeedItem> arr = new ArrayList<FeedItem>();
         setListAdapter(new MyCustomAdapter(this, arr));
 
@@ -51,7 +54,25 @@ public class Feeds extends ListActivity {
                 Feeds.this.startActivity(x);
             }
         });
-        new DataDownloader((MyCustomAdapter) getListAdapter()).execute();
-
+        channel.setOnClickListener(new View.OnClickListener() {
+            private boolean downloaded = false;
+            @Override
+            public void onClick(View view) {
+                if (downloaded) {
+                    return;
+                }
+                ConnectivityManager connMgr = (ConnectivityManager)
+                        getSystemService(Context.CONNECTIVITY_SERVICE);
+                NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
+                if (networkInfo != null && networkInfo.isConnected()) {
+                    new DataDownloader(Feeds.this).execute();
+                    downloaded = true;
+                } else {
+                    Feeds.this.channel.setText("No Internet connection.\n" +
+                            "Connect to the Internet and click here.");
+                }
+            }
+        });
+        channel.callOnClick();
     }
 }

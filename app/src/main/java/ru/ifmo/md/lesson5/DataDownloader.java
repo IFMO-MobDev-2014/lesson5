@@ -1,12 +1,10 @@
 package ru.ifmo.md.lesson5;
 
-import android.content.Context;
 import android.os.AsyncTask;
 import android.text.Html;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
@@ -22,10 +20,10 @@ import javax.xml.parsers.ParserConfigurationException;
  * Created by Snopi on 20.10.2014.
  */
 public class DataDownloader extends AsyncTask<String, Void, ArrayList<FeedItem>> {
-    MyCustomAdapter adapter;
-
-    public DataDownloader(MyCustomAdapter adapter) {
-        this.adapter = adapter;
+    Feeds context;
+    private String channel;
+    public DataDownloader(Feeds context) {
+        this.context = context;
     }
 
     @Override
@@ -36,6 +34,12 @@ public class DataDownloader extends AsyncTask<String, Void, ArrayList<FeedItem>>
             Document xmlResponse = DocumentBuilderFactory.newInstance()
                     .newDocumentBuilder().parse((InputStream) new URL(url).getContent());
             NodeList nodeList = xmlResponse.getElementsByTagName("item");
+            channel = xmlResponse.getElementsByTagName("channel").
+                    item(0).
+                    getChildNodes().
+                    item(1).
+                    getFirstChild().
+                    getNodeValue();
             for (int i = 0; i < nodeList.getLength(); i++) {
                 Element tmp = (Element) nodeList.item(i);
                 FeedItem feed = new FeedItem();
@@ -48,6 +52,10 @@ public class DataDownloader extends AsyncTask<String, Void, ArrayList<FeedItem>>
                         getFirstChild().
                         getNodeValue());
                 feed.setUrl(tmp.getElementsByTagName("link").
+                        item(0).
+                        getFirstChild().
+                        getNodeValue());
+                feed.setDate(tmp.getElementsByTagName("pubDate").
                         item(0).
                         getFirstChild().
                         getNodeValue());
@@ -65,8 +73,10 @@ public class DataDownloader extends AsyncTask<String, Void, ArrayList<FeedItem>>
 
     @Override
     protected void onPostExecute(ArrayList<FeedItem> feedItems) {
+        MyCustomAdapter adapter = (MyCustomAdapter) context.getListAdapter();
         for (FeedItem x : feedItems) {
             adapter.add(x);
         }
+        context.channel.setText(channel);
     }
 }

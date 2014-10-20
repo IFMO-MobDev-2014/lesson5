@@ -22,6 +22,7 @@ package ru.ifmo.md.lesson5;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ValueAnimator;
+import android.app.ActionBar;
 import android.graphics.Rect;
 import android.os.SystemClock;
 import android.view.MotionEvent;
@@ -31,6 +32,7 @@ import android.view.ViewConfiguration;
 import android.view.ViewGroup;
 import android.view.ViewPropertyAnimator;
 import android.widget.AbsListView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 
 import java.util.ArrayList;
@@ -378,7 +380,7 @@ public class SwipeDismissListViewTouchListener implements View.OnTouchListener {
                         pendingDismiss.view.setAlpha(1f);
                         pendingDismiss.view.setTranslationX(0);
                         lp = pendingDismiss.view.getLayoutParams();
-                        lp.height = originalHeight;
+                        lp.height = LinearLayout.LayoutParams.WRAP_CONTENT; // such crutch
                         pendingDismiss.view.setLayoutParams(lp);
                     }
 

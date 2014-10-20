@@ -1,9 +1,6 @@
 package ru.ifmo.md.lesson5;
 
-import android.app.ActionBar;
 import android.content.Context;
-import android.content.Intent;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -68,6 +65,8 @@ public class MyCustomAdapter extends BaseAdapter {
         FeedItem tmp = getItem(i);
         ((TextView) res.findViewById(R.id.title)).setText(tmp.getTitle());
         ((TextView) res.findViewById(R.id.description)).setText(tmp.getDescription());
+        ((TextView) res.findViewById(R.id.date)).setText(tmp.getDate());
+
 //        res.setMinimumWidth(ActionBar.LayoutParams.WRAP_CONTENT);
 //        res.setMinimumHeight(ActionBar.LayoutParams.WRAP_CONTENT);
         return res;

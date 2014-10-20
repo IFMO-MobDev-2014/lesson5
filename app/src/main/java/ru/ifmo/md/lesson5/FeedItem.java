@@ -6,6 +6,16 @@ package ru.ifmo.md.lesson5;
 public class FeedItem {
     private String title;
     private String description;
+    private String date;
+
+    public String getDate() {
+        return date;
+    }
+
+    public void setDate(String date) {
+        this.date = date;
+    }
+
 
     public String getTitle() {
         return title;
@@ -37,6 +47,7 @@ public class FeedItem {
         title = "";
         description = "";
         url = "http://google.com";
+        date = "";
     }
 
     public FeedItem(String title, String description, String url) {
