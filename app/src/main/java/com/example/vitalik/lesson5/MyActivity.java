@@ -1,6 +1,8 @@
 package com.example.vitalik.lesson5;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -10,6 +12,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -36,10 +39,12 @@ import javax.xml.parsers.ParserConfigurationException;
 public class MyActivity extends Activity {
     private ArrayAdapter<Feed> aa;
     ArrayList<Feed> feeds;
+    TextView textView;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_my);
+        textView = (TextView)findViewById(R.id.textView);
         ListView listView = (ListView)findViewById(R.id.myListView);
         feeds = new ArrayList<Feed>();
         aa = new ArrayAdapter<Feed>(this, android.R.layout.simple_list_item_1, feeds);
@@ -53,12 +58,24 @@ public class MyActivity extends Activity {
             }
         });
         refreshFeed();
-//        listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-//            @Override
-//            public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
-//                return false;
-//            }
-//        });
+        listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(MyActivity.this);
+                builder.setTitle(feeds.get(i).getTitle());
+                builder.setMessage(feeds.get(i).getIssue());
+                builder.setCancelable(true);
+                builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() { // Кнопка ОК
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss(); // Отпускает диалоговое окно
+                    }
+                });
+                AlertDialog dialog = builder.create();
+                dialog.show();
+                return true;
+            }
+        });
     }
 
 
@@ -89,14 +106,15 @@ public class MyActivity extends Activity {
         new LoadFeeds().execute(String.valueOf(R.string.feed));
     }
 
-    class LoadFeeds extends AsyncTask<String, String, NodeList> {
+
+    class LoadFeeds extends AsyncTask<String, String, Element> {
         String rssFeed = getString(R.string.feed);
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
         }
         @Override
-        protected NodeList doInBackground(String... strings) {
+        protected Element doInBackground(String... strings) {
             try {
                 URL url = new URL(rssFeed);
                 URLConnection connection;
@@ -109,8 +127,8 @@ public class MyActivity extends Activity {
                     DocumentBuilder db = dbf.newDocumentBuilder();
                     Document dom = db.parse(in);
                     Element docEle = dom.getDocumentElement();
-                    NodeList nl = docEle.getElementsByTagName("entry");
-                    return nl;
+                    //NodeList nl = docEle.getElementsByTagName("entry");
+                    return docEle;
                 }
             } catch (MalformedURLException e) {
                 e.printStackTrace();
@@ -128,7 +146,9 @@ public class MyActivity extends Activity {
             aa.notifyDataSetChanged();
         }
         @Override
-        protected void onPostExecute(NodeList nodeList) {
+        protected void onPostExecute(Element element) {
+            textView.setText(element.getElementsByTagName("title").item(0).getFirstChild().getNodeValue());
+            NodeList nodeList = element.getElementsByTagName("entry");
             if (nodeList != null && nodeList.getLength() > 0) {
                 feeds.clear();
                 for (int i = 0 ; i < nodeList.getLength(); i++) {
