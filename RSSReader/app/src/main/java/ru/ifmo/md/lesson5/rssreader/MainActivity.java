@@ -26,20 +26,20 @@ import android.widget.Toast;
 
 public class MainActivity extends ListActivity
         implements LoaderManager.LoaderCallbacks<Cursor> {
-    private EditText mEditTextAdd;
-    private SimpleCursorAdapter mAdapter;
-
     private static final int LOADER_RSS = 1;
     private static final String EXTRA_RSS_ID = "RSS_ID";
 
-    private RssManager mManager;
+    private EditText mEditTextAdd;
+    private SimpleCursorAdapter mAdapter;
+
+    private RSSManager mManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        mManager = RssManager.get(this);
+        mManager = RSSManager.get(this);
 
         setupViews();
     }
@@ -88,7 +88,7 @@ public class MainActivity extends ListActivity
                 this,
                 android.R.layout.simple_list_item_1,
                 null,
-                new String[]{RssDatabaseHelper.COLUMN_RSS_URL},
+                new String[]{RSSDatabaseHelper.COLUMN_CHANNEL_TITLE},
                 new int[]{android.R.id.text1},
                 0
         );
@@ -119,11 +119,12 @@ public class MainActivity extends ListActivity
     public boolean onContextItemSelected(MenuItem item) {
         AdapterView.AdapterContextMenuInfo acmi =
                 (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
+        //TODO: use Channel.getId() instead of position
         long id = acmi.id;
         Log.d("TAG", "id: " + id);
         switch (item.getItemId()) {
             case R.id.delete:
-                mManager.deleteRss(id);
+                mManager.deleteChannel(id);
                 getLoaderManager().getLoader(LOADER_RSS).forceLoad();
                 return true;
             default:
@@ -132,12 +133,15 @@ public class MainActivity extends ListActivity
     }
 
     private void addRss(String url) {
+        //TODO: use parser instead of this stub
         Log.d("TAG", "Add url: " + url);
-        RssItem rssItem = new RssItem();
-        rssItem.setUrl(url);
-        rssItem.setName(url);
-        rssItem.setFavourite(0);
-        long id = mManager.insertRss(rssItem);
+        RSSItem item = new RSSItem();
+        item.setTitle("Title: " + url);
+        item.setUrl(url);
+        item.setDate("date here");
+        item.setFavourite(0);
+        item.setDescription("desc here");
+        long id = mManager.addItem(item);
         getLoaderManager().getLoader(LOADER_RSS).forceLoad();
         Log.d("TAG", "Rss id: " + id);
     }
@@ -161,7 +165,7 @@ public class MainActivity extends ListActivity
 
     @Override
     public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
-        return new RssLoader(this, mManager);
+        return new ChannelsLoader(this, mManager);
     }
 
     @Override

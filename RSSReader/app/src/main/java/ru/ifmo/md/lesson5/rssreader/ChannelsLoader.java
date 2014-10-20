@@ -7,17 +7,17 @@ import android.database.Cursor;
 /**
  * Created by Nikita Yaschenko on 19.10.14.
  */
-public class RssLoader extends CursorLoader {
+public class ChannelsLoader extends CursorLoader {
 
-    private RssManager manager;
+    private RSSManager mRSSManager;
 
-    public RssLoader(Context context, RssManager manager) {
+    public ChannelsLoader(Context context, RSSManager mRSSManager) {
         super(context);
-        this.manager = manager;
+        this.mRSSManager = mRSSManager;
     }
 
     @Override
     public Cursor loadInBackground() {
-        return manager.getAllRss();
+        return mRSSManager.getAllChannels();
     }
 }

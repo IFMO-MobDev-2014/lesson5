@@ -1,15 +1,17 @@
 package ru.ifmo.md.lesson5.rssreader;
 
 /**
- * Created by Nikita Yaschenko on 18.10.14.
+ * Created by Nikita Yaschenko on 20.10.14.
  */
-public class RssItem {
+public class RSSChannel {
     private long mId;
-    private String mName;
     private String mUrl;
+    private String mTitle;
+    private String mDescription;
     private int mFavourite;
+    private RSSItem[] mRssItems;
 
-    public RssItem() {
+    public RSSChannel() {
         mId = -1;
     }
 
@@ -18,15 +20,7 @@ public class RssItem {
     }
 
     public void setId(long id) {
-        mId = id;
-    }
-
-    public String getName() {
-        return mName;
-    }
-
-    public void setName(String name) {
-        mName = name;
+        this.mId = id;
     }
 
     public String getUrl() {
@@ -35,6 +29,22 @@ public class RssItem {
 
     public void setUrl(String url) {
         mUrl = url;
+    }
+
+    public String getTitle() {
+        return mTitle;
+    }
+
+    public void setTitle(String title) {
+        mTitle = title;
+    }
+
+    public String getDescription() {
+        return mDescription;
+    }
+
+    public void setDescription(String description) {
+        mDescription = description;
     }
 
     public int getFavourite() {
