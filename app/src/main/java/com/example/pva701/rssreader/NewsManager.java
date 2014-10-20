@@ -64,6 +64,8 @@ public class NewsManager {
         }
 
         public ArrayList<String> getCategory() {
+            if (category == null)
+                category = new ArrayList<String>();
             return category;
         }
 
@@ -94,6 +96,8 @@ public class NewsManager {
         }
 
         public String toStringCategory() {
+            if (category == null)
+                category = new ArrayList<String>();
             String ret = "";
             for (int i = 0; i < category.size(); ++i)
                 if (i != category.size() - 1)

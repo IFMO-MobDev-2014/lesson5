@@ -92,6 +92,20 @@ public class RSSDatabaseHelper extends SQLiteOpenHelper {
                                 "category varchar(100), " +
                                 "`read` integer, " +
                                 "source_id integer)");
+
+        /*ContentValues cv = new ContentValues();
+        SourcesManager.Source source = new SourcesManager.Source("bash", "http://bash.im/rss/", new Date(0));
+        cv.put(COLUMN_SOURCES_NAME, source.getName());
+        cv.put(COLUMN_SOURCES_URL, source.getUrl());
+        cv.put(COLUMN_SOURCES_LAST_UPDATE, source.getLastUpdate().getTime());
+        db.insert(TABLE_SOURCES, null, cv);*/
+
+        ContentValues cv1 = new ContentValues();
+        SourcesManager.Source source1 = new SourcesManager.Source("echo moscow", "http://echo.msk.ru/interview/rss-fulltext.xml", new Date(0));
+        cv1.put(COLUMN_SOURCES_NAME, source1.getName());
+        cv1.put(COLUMN_SOURCES_URL, source1.getUrl());
+        cv1.put(COLUMN_SOURCES_LAST_UPDATE, source1.getLastUpdate().getTime());
+        db.insert(TABLE_SOURCES, null, cv1);
     }
 
     @Override
@@ -113,7 +127,7 @@ public class RSSDatabaseHelper extends SQLiteOpenHelper {
         cv.put(COLUMN_NEWS_LINK, cur.getLink());
         cv.put(COLUMN_NEWS_DESCRIPTION, cur.getDescription());
         cv.put(COLUMN_NEWS_PUB_DATE, cur.getPubDate().getTime() / 1000);
-        cv.put(COLUMN_NEWS_CATEGORY, cur.getCategory().toString());
+        cv.put(COLUMN_NEWS_CATEGORY, cur.toStringCategory());
         cv.put(COLUMN_NEWS_READ, cur.isRead());
         if (cur.getSourceId() == 0)
             throw new RuntimeException("source id incorrect!");

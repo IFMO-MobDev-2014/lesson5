@@ -17,7 +17,7 @@ import java.util.ArrayList;
 /**
  * Created by pva701 on 16.10.14.
  */
-public class PollService extends IntentService {
+public class PollService extends IntentService  {
     private static final String TAG = "PollService";
     public static final String NOTIFICATION = "notification";
     public static final String POLL_INTERVAL = "poll_interval";

@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.text.Html;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,6 +21,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
 /**
@@ -47,6 +49,7 @@ public class NewsListFragment extends Fragment {
     }
 
     private boolean shitAlreadyRefreshed = false;
+    private final SimpleDateFormat NEWS_DATE_FORMAT = new SimpleDateFormat("d MMM yyyy, hh:mm");
     @Override
     public View onCreateView(final LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         final View v = inflater.inflate(R.layout.fragment_news_list, container, false);
@@ -118,7 +121,10 @@ public class NewsListFragment extends Fragment {
                 if (news.isRead())
                     title.setTypeface(null, Typeface.BOLD);
                 title.setText(news.getTitle());
-                pubDate.setText("Published: " + news.getPubDate().toString());
+                pubDate.setText("Published: " + NEWS_DATE_FORMAT.format(news.getPubDate()));
+
+                //TextView description = (TextView)convertView.findViewById(R.id.description);
+                //description.setText(Html.fromHtml(news.getDescription()));
                 return convertView;
             }
         };
