@@ -48,9 +48,9 @@ public class Parser {
             if (parser.getEventType() == XmlPullParser.START_TAG && parser.getName().equals("item")) {
                 result.add(parseItem());
             }
-            if (result.size() == 10) {
+            /*if (result.size() == 10) {
                 break;
-            }
+            }*/
         }
         return result;
     }

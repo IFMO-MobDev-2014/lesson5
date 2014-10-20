@@ -52,16 +52,15 @@ public class Downloader extends AsyncTask<Void, Void, Void> {
             download();
             adapter.clear();
             ArrayList<Item> items = new Parser(parser).parse();
-            Log.i("", Integer.toString(items.size()));
             for (int i = 0; i < items.size(); i++) {
-                adapter.add(items.get(i).description);
+                adapter.add(items.get(i).link + "\n" + items.get(i).title + "\n" + items.get(i).description + "\n\n");
             }
             if (adapter.isEmpty()) {
                 throw new Exception();
             }
-            Log.i("", "OK");
         } catch (Exception e) {
             Toast.makeText(context, "network error", Toast.LENGTH_SHORT).show();
+            adapter.clear();
             Log.i("", e.getMessage());
         }
         return null;
@@ -72,6 +71,8 @@ public class Downloader extends AsyncTask<Void, Void, Void> {
         super.onPostExecute(aVoid);
         Log.i("", Integer.toString(adapter.getCount()));
         Log.i("", "OK");
-        lv.setAdapter(adapter);
+        if (!adapter.isEmpty()) {
+            lv.setAdapter(adapter);
+        }
     }
 }
