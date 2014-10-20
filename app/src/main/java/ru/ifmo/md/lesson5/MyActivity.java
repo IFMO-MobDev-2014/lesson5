@@ -1,8 +1,12 @@
 package ru.ifmo.md.lesson5;
 
 import android.app.ListActivity;
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -17,6 +21,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.StringReader;
+import java.net.InetAddress;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
@@ -49,7 +54,11 @@ public class MyActivity extends ListActivity {
 
             public boolean onKey(View v, int keyCode, KeyEvent event) {
                 if ((event.getAction() == KeyEvent.ACTION_DOWN) && (keyCode == KeyEvent.KEYCODE_ENTER)) {
-                    updateList();
+                    if (input.getText().toString().isEmpty()) {
+                        showToast(R.string.correct_url, Toast.LENGTH_LONG);
+                    } else {
+                        updateList();
+                    }
                     return true;
                 }
                 return false;
@@ -58,7 +67,11 @@ public class MyActivity extends ListActivity {
     }
 
     public void onClick(View view) {
-        updateList();
+        if (input.getText().toString().isEmpty()) {
+            showToast(R.string.correct_url, Toast.LENGTH_LONG);
+        } else {
+            updateList();
+        }
     }
 
     public void updateList() {
@@ -66,12 +79,16 @@ public class MyActivity extends ListActivity {
         if(!rssStringURL.startsWith("http://")){
             rssStringURL = "http://" + rssStringURL;
         }
-        new DownloadAndParseXMLTask().execute(rssStringURL);
-        input.setText("");
+        if (isNetworkConnected()) {
+            new DownloadAndParseXMLTask().execute(rssStringURL);
+            input.setText("");
+        } else {
+            showToast(R.string.no_internet_connection, Toast.LENGTH_LONG);
+        }
     }
 
     class DownloadAndParseXMLTask extends AsyncTask<String, Void, ArrayList<RSSItem>> {
-        private boolean canConnect = true;
+        private boolean correctURL = true;
         private boolean canOpen = true;
         private boolean canParse = true;
         private boolean isSorted = true;
@@ -111,7 +128,7 @@ public class MyActivity extends ListActivity {
                 e.printStackTrace();
                 return null;
             } catch (MalformedURLException e) {
-                canConnect = false;
+                correctURL = false;
                 e.printStackTrace();
                 return null;
             } catch (IOException e) {
@@ -120,11 +137,15 @@ public class MyActivity extends ListActivity {
                 return null;
             }
 
-            if (dateParse(rssItems.get(0).getPubdate()) != null) {
-                Collections.sort(rssItems, new RSSItemComparator());
-                Collections.reverse(rssItems);
+            if (rssItems != null && !rssItems.isEmpty()) {
+                if (dateParse(rssItems.get(0).getPubdate()) != null) {
+                    Collections.sort(rssItems, new RSSItemComparator());
+                    Collections.reverse(rssItems);
+                } else {
+                    isSorted = false;
+                }
             } else {
-                isSorted = false;
+                canParse = false;
             }
 
             return rssItems;
@@ -140,8 +161,8 @@ public class MyActivity extends ListActivity {
             if (!isSorted) {
                 showToast(R.string.cannot_parse_date, Toast.LENGTH_LONG);
             }
-            if (!canConnect) {
-                showToast(R.string.cannot_connect, Toast.LENGTH_LONG);
+            if (!correctURL) {
+                showToast(R.string.correct_url, Toast.LENGTH_LONG);
             } else if (!canOpen) {
                 showToast(R.string.cannot_open, Toast.LENGTH_LONG);
             } else if (!canParse) {
@@ -176,4 +197,28 @@ public class MyActivity extends ListActivity {
         Toast toast = Toast.makeText(getApplicationContext(), message, time);
         toast.show();
     }
+
+    private boolean isNetworkConnected() {
+        ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo netInfo = cm.getActiveNetworkInfo();
+        if (netInfo == null) {
+            return false;
+        } else
+            return true;
+    }
+
+    /*public boolean isInternetAvailable() {
+        try {
+            InetAddress inAddr = InetAddress.getByName("www.google.com");
+            
+
+            if (inAddr.equals("")) {
+                return false;
+            } else {
+                return true;
+            }
+        } catch (Exception e) {
+            return false;
+        }
+    }*/
 }
