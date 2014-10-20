@@ -65,7 +65,7 @@ public class MainActivity extends Activity {
                     } else if (eventType == XmlPullParser.TEXT) {
                         if ("title".equals(tag)) {
                             title = xpp.getText();
-                        } else if ("description".equals(tag) || "summary".equals(tag)) {
+                        } else if ("description".equals(tag)) {
                             description = xpp.getText();
                         } else if ("link".equals(tag)) {
                             link = xpp.getText();
