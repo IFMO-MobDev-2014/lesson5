@@ -25,7 +25,14 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Read"
-            android:onClick="onClick"/>
+            android:onClick="onReadClick"/>
+
+        <Button
+            android:id="@+id/button2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="BBC"
+            android:onClick="onBBCClick"/>
 
     </LinearLayout>
 

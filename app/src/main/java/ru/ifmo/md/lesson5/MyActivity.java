@@ -60,7 +60,7 @@ public class MyActivity extends ListActivity {
                     if (input.getText().toString().isEmpty()) {
                         showToast(R.string.correct_url, Toast.LENGTH_LONG);
                     } else {
-                        updateList();
+                        updateList(input.getText().toString());
                     }
                     return true;
                 }
@@ -69,16 +69,19 @@ public class MyActivity extends ListActivity {
         });
     }
 
-    public void onClick(View view) {
+    public void onReadClick(View view) {
         if (input.getText().toString().isEmpty()) {
             showToast(R.string.correct_url, Toast.LENGTH_LONG);
         } else {
-            updateList();
+            updateList(input.getText().toString());
         }
     }
 
-    public void updateList() {
-        String rssStringURL = input.getText().toString();
+    public void onBBCClick(View view) {
+        updateList(getResources().getString(R.string.bbc_feed));
+    }
+
+    public void updateList(String rssStringURL) {
         if(!rssStringURL.startsWith("http://")){
             rssStringURL = "http://" + rssStringURL;
         }
