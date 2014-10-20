@@ -2,6 +2,7 @@ package com.example.izban.lesson5;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -44,12 +45,6 @@ public class MyActivity extends Activity {
     }
 
     public void onButton1Click(View view) {
-        TextView v = (TextView)findViewById(R.id.editText);
-        //Toast.makeText(getApplicationContext(), v.getText(), Toast.LENGTH_SHORT).show();
-
-        if (adapter.getCount() > 5) {
-            adapter.clear();
-        }
-        adapter.add(v.getText().toString());
+        new Downloader(this, lv).execute();
     }
 }
