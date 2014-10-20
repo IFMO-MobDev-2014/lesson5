@@ -55,7 +55,6 @@ public class MyActivity extends ListActivity {
         input = (EditText) findViewById(R.id.editText1);
 
         input.setOnKeyListener(new View.OnKeyListener() {
-
             public boolean onKey(View v, int keyCode, KeyEvent event) {
                 if ((event.getAction() == KeyEvent.ACTION_DOWN) && (keyCode == KeyEvent.KEYCODE_ENTER)) {
                     if (input.getText().toString().isEmpty()) {
@@ -85,7 +84,7 @@ public class MyActivity extends ListActivity {
     public void updateList(String rssStringURL) {
         InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(input.getWindowToken(), 0);
-        
+
         if(!rssStringURL.startsWith("http://")){
             rssStringURL = "http://" + rssStringURL;
         }
@@ -169,9 +168,6 @@ public class MyActivity extends ListActivity {
         @Override
         protected void onPostExecute(ArrayList<RSSItem> result) {
             final ArrayList<RSSItem> rssItems = result;
-            if (!isSorted) {
-                showToast(R.string.cannot_parse_date, Toast.LENGTH_LONG);
-            }
             if (!correctURL) {
                 showToast(R.string.correct_url, Toast.LENGTH_LONG);
             } else if (!canOpen) {
@@ -179,6 +175,9 @@ public class MyActivity extends ListActivity {
             } else if (!canParse) {
                 showToast(R.string.cannot_parse, Toast.LENGTH_LONG);
             } else {
+                if (!isSorted) {
+                    showToast(R.string.cannot_parse_date, Toast.LENGTH_LONG);
+                }
                 ArrayAdapter<RSSItem> adapter = new RSSArrayAdapter(getApplicationContext(), rssItems);
                 setListAdapter(adapter);
                 final ListView myListView = getListView();
