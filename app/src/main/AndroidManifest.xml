@@ -2,6 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.alexey.lesson5" >
 
+    <uses-permission android:name="android.permission.INTERNET" />
+
     <application
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
@@ -15,6 +17,28 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
+        <activity
+            android:name=".MyActivity2"
+            android:label="@string/title_activity_my_activity2" >
+        </activity>
+        <activity
+            android:name=".FullscreenActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:label="@string/title_activity_fullscreen"
+            android:theme="@style/FullscreenTheme" >
+        </activity>
+        <activity
+            android:name=".util.MyActivity_3"
+            android:label="@string/title_activity_my_activity_3" >
+        </activity>
+        <activity
+            android:name=".MyActivity3"
+            android:label="@string/title_activity_my_activity3" >
+        </activity>
+        <activity
+            android:name=".MyActivity15"
+            android:label="@string/title_activity_my_activity15" >
         </activity>
     </application>
 
