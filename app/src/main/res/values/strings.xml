@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">RSS Viewer</string>
+    <string name="action_settings">Settings</string>
+    <string name="ok_button">OK</string>
+    <string name="empty_text">No news loaded</string>
+    <string name="fetching_error">Error while fetching RSS feed</string>
+    <string name="feed_refresh">Refreshing the feed…</string>
+    <string name="more_btn_text">More…</string>
+    <string name="title_activity_web_preview">News view page</string>
+    <string name="hello_world">Hello world!</string>
+
+</resources>
