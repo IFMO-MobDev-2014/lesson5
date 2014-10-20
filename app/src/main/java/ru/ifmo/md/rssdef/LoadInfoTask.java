@@ -26,6 +26,7 @@ public class LoadInfoTask extends AsyncTask<String, Void, String> {
         HttpResponse response;
         String answer = null;
         try {
+            Log.i("MESSAGE", strings[0]);
             response = httpCliend.execute(new HttpGet(strings[0]));
             StatusLine statusLine = response.getStatusLine();
             if(statusLine.getStatusCode() == HttpStatus.SC_OK) {

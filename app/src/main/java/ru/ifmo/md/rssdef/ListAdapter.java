@@ -1,7 +1,6 @@
 package ru.ifmo.md.rssdef;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,22 +14,22 @@ import java.util.ArrayList;
  */
 public class ListAdapter extends BaseAdapter {
     Context context;
-    ArrayList<String> values;
+    ArrayList<Message> values;
     DataStorage ds;
     ListAdapter(Context cont, DataStorage data) {
-        values = new ArrayList<String>();
+        values = new ArrayList<Message>();
         context = cont;
         ds = data;
-        values = ds.read();
+        values = ds.readRssData();
     }
     @Override
     public int getCount() {
-        return values.size()/2;
+        return values.size();
     }
 
     @Override
     public void notifyDataSetChanged() {
-        values = ds.read();
+        values = ds.readRssData();
     }
 
     @Override
@@ -49,8 +48,8 @@ public class ListAdapter extends BaseAdapter {
         View v = inflater.inflate(R.layout.item, null);
         TextView name = (TextView) v.findViewById(R.id.name);
         TextView url = (TextView) v.findViewById(R.id.url);
-        name.setText(values.get(2 * i));
-        url.setText(values.get(2 * i + 1));
+        name.setText(values.get(i).title);
+        url.setText(values.get(i).description);
         return v;
     }
 }

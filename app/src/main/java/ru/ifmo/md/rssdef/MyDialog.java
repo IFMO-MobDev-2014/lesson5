@@ -79,7 +79,7 @@ public class MyDialog extends Dialog {
     private void updateDatabaseAndListView() {
         String rssName = name.getText().toString();
         String rssUrl = url.getText().toString();
-        ds.put(rssName, rssUrl);
+        ds.putSourceData(rssName, rssUrl);
         listAdapter.notifyDataSetChanged();
         lv.setAdapter(listAdapter);
     }
