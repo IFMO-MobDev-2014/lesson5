@@ -2,8 +2,11 @@ package ru.ifmo.md.lesson5;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
+import org.xmlpull.v1.XmlPullParserFactory;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
 import java.util.ArrayList;
 
 /**
@@ -15,7 +18,14 @@ public class RssParser {
         TITLE, DESCRIPTION, LINK, ITEM, OTHER;
     }
 
-    public static ArrayList<RssItem> parseRss(XmlPullParser xpp) throws XmlPullParserException, IOException {
+    public static ArrayList<RssItem> parseRss(String url) throws XmlPullParserException, IOException {
+        InputStream inputStream = new URL(url).openStream();
+
+        XmlPullParserFactory factory = XmlPullParserFactory .newInstance();
+        factory.setNamespaceAware(true);
+        XmlPullParser xpp = factory.newPullParser();
+        xpp.setInput(inputStream, null);
+
         ArrayList<RssItem> rssItems = new ArrayList<RssItem>();
         RssTag currentTag = RssTag.OTHER;
 
