@@ -10,5 +10,6 @@
     <string name="bad_url">Invalid URL</string>
     <string name="delete_item">Delete</string>
     <string name="add_to_favourite_item">Add to favourite</string>
+    <string name="title_activity_rss">RssActivity</string>
 
 </resources>

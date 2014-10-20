@@ -1,11 +1,7 @@
 package ru.ifmo.md.lesson5.rssreader;
 
-import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
-import android.database.CursorWrapper;
-import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteOpenHelper;
 
 /**
  * Created by Nikita Yaschenko on 18.10.14.
@@ -35,13 +31,13 @@ public class RssManager {
         return mHelper.getAllRss();
     }
 
-    public Cursor getRss(long id) {
-        return mHelper.getRss(id);
+    public RssItem getRss(long id) {
+        return mHelper.getRss(id).getRss();
     }
 
-    public long insertRss(Rss rss) {
-        long id = mHelper.insertRss(rss);
-        rss.setId(id);
+    public long insertRss(RssItem rssItem) {
+        long id = mHelper.insertRss(rssItem);
+        rssItem.setId(id);
         return id;
     }
 

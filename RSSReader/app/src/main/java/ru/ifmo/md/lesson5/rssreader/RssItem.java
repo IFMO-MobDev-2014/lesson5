@@ -3,13 +3,13 @@ package ru.ifmo.md.lesson5.rssreader;
 /**
  * Created by Nikita Yaschenko on 18.10.14.
  */
-public class Rss {
+public class RssItem {
     private long mId;
     private String mName;
     private String mUrl;
     private int mFavourite;
 
-    public Rss() {
+    public RssItem() {
         mId = -1;
     }
 

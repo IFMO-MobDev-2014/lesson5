@@ -1,9 +1,8 @@
 package ru.ifmo.md.lesson5.rssreader;
 
-import android.app.Activity;
+import android.app.ListActivity;
 import android.app.LoaderManager;
-import android.content.Context;
-import android.content.CursorLoader;
+import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
 import android.graphics.Color;
@@ -15,7 +14,6 @@ import android.util.Patterns;
 import android.view.ContextMenu;
 import android.view.KeyEvent;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
@@ -26,42 +24,43 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 
-public class MainActivity extends Activity
+public class MainActivity extends ListActivity
         implements LoaderManager.LoaderCallbacks<Cursor> {
     private EditText mEditTextAdd;
-    private ListView mListViewRss;
     private SimpleCursorAdapter mAdapter;
 
     private static final int LOADER_RSS = 1;
-    private static final int CM_ITEM_DELETE = 0;
+    private static final String EXTRA_RSS_ID = "RSS_ID";
 
-    private RssManager manager;
+    private RssManager mManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        manager = RssManager.get(this);
+        mManager = RssManager.get(this);
 
         setupViews();
     }
 
     private void setupViews() {
         mEditTextAdd = (EditText) findViewById(R.id.editText_addUrl);
-        mListViewRss = (ListView) findViewById(R.id.listView_rss);
 
         mEditTextAdd.addTextChangedListener(new TextWatcher() {
             @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3) {}
+            public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3) {
+            }
 
             @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i2, int i3) {}
+            public void onTextChanged(CharSequence charSequence, int i, int i2, int i3) {
+            }
 
             @Override
             public void afterTextChanged(Editable editable) {
                 String potentialUrl = mEditTextAdd.getText().toString();
                 if (Patterns.WEB_URL.matcher(potentialUrl).matches()) {
+                    //TODO: constants for colors, make 9-patch
                     mEditTextAdd.setBackgroundColor(Color.argb(64, 0x5C, 0x85, 0x5C));
                 } else {
                     mEditTextAdd.setBackgroundColor(Color.argb(64, 0xD9, 0x53, 0x4F));
@@ -94,11 +93,20 @@ public class MainActivity extends Activity
                 0
         );
 
-        mListViewRss.setAdapter(mAdapter);
-        registerForContextMenu(mListViewRss);
+        setListAdapter(mAdapter);
+        registerForContextMenu(findViewById(android.R.id.list));
 
         getLoaderManager().initLoader(LOADER_RSS, null, this);
 
+    }
+
+    @Override
+    protected void onListItemClick(ListView lv, View v, int position, long id) {
+        Cursor cursor = (Cursor) mAdapter.getItem(position);
+        long rssId = cursor.getInt(cursor.getColumnIndex("_id"));
+        Intent intent = new Intent(this, RssActivity.class);
+        intent.putExtra(EXTRA_RSS_ID, rssId);
+        startActivity(intent);
     }
 
     @Override
@@ -115,7 +123,7 @@ public class MainActivity extends Activity
         Log.d("TAG", "id: " + id);
         switch (item.getItemId()) {
             case R.id.delete:
-                manager.deleteRss(id);
+                mManager.deleteRss(id);
                 getLoaderManager().getLoader(LOADER_RSS).forceLoad();
                 return true;
             default:
@@ -125,11 +133,11 @@ public class MainActivity extends Activity
 
     private void addRss(String url) {
         Log.d("TAG", "Add url: " + url);
-        Rss rss = new Rss();
-        rss.setUrl(url);
-        rss.setName(url);
-        rss.setFavourite(0);
-        long id = manager.insertRss(rss);
+        RssItem rssItem = new RssItem();
+        rssItem.setUrl(url);
+        rssItem.setName(url);
+        rssItem.setFavourite(0);
+        long id = mManager.insertRss(rssItem);
         getLoaderManager().getLoader(LOADER_RSS).forceLoad();
         Log.d("TAG", "Rss id: " + id);
     }
@@ -153,16 +161,12 @@ public class MainActivity extends Activity
 
     @Override
     public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
-        return new RssLoader(this, manager);
+        return new RssLoader(this, mManager);
     }
 
     @Override
     public void onLoadFinished(Loader<Cursor> cursorLoader, Cursor cursor) {
-        try {
-            mAdapter.swapCursor(cursor);
-        } catch (Exception e) {
-            Log.d("TAG", e.getMessage());
-        }
+        mAdapter.swapCursor(cursor);
     }
 
     @Override
@@ -170,18 +174,4 @@ public class MainActivity extends Activity
 
     }
 
-    private static class RssLoader extends CursorLoader {
-
-        private RssManager manager;
-
-        public RssLoader(Context context, RssManager manager) {
-            super(context);
-            this.manager = manager;
-        }
-
-        @Override
-        public Cursor loadInBackground() {
-            return manager.getAllRss();
-        }
-    }
 }
