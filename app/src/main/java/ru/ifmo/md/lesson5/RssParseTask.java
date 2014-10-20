@@ -1,28 +1,12 @@
 package ru.ifmo.md.lesson5;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.os.AsyncTask;
-import android.os.Handler;
-import android.os.Looper;
-import android.os.Message;
-import android.util.Log;
-import android.widget.ListView;
-import android.widget.Toast;
 
-import org.apache.http.HttpConnection;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.ResponseHandler;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.BasicResponseHandler;
-import org.apache.http.impl.client.DefaultHttpClient;
-
-import org.apache.http.protocol.HTTP;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
-import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.LinkedList;
@@ -31,7 +15,7 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
 /**
- * Created by ComradeK on 28/09/2014.
+ * Created by Comradekoval on 20/10/2014.
  */
 public class RssParseTask extends AsyncTask<String, Integer, LinkedList<Item>> {
 

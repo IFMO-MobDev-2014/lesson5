@@ -2,24 +2,19 @@ package ru.ifmo.md.lesson5;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Message;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
-import android.widget.ProgressBar;
 import android.widget.Toast;
 
-import java.lang.ref.WeakReference;
 import java.util.LinkedList;
 
 public class MainActivity extends Activity {
 
-    public static String string;
     public EditText editText;
     static public ListView listView;
     static LinkedList<Item> items = new LinkedList<Item>();
