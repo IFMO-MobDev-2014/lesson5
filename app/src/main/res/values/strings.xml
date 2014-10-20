@@ -11,7 +11,7 @@
     <string name="cannot_parse_date">Date format of this rss isn\'t supported. News wouldn\'t be sorted by date</string>
     <string name="waiting">Loading… Please wait</string>
     <string name="no_internet_connection">No Internet connection</string>
-    <string name="google">http://google.com</string>
+    <string name="rss_item_url_error">Link to this news isn\'t correct or doesn\'t exist</string>
 
 
 

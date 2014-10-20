@@ -2,6 +2,7 @@ package ru.ifmo.md.lesson5;
 
 import android.app.ListActivity;
 import android.content.Context;
+import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
@@ -9,8 +10,10 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.ListView;
 import android.widget.Toast;
 
 import org.xml.sax.InputSource;
@@ -158,6 +161,7 @@ public class MyActivity extends ListActivity {
 
         @Override
         protected void onPostExecute(ArrayList<RSSItem> result) {
+            final ArrayList<RSSItem> rssItems = result;
             if (!isSorted) {
                 showToast(R.string.cannot_parse_date, Toast.LENGTH_LONG);
             }
@@ -168,8 +172,28 @@ public class MyActivity extends ListActivity {
             } else if (!canParse) {
                 showToast(R.string.cannot_parse, Toast.LENGTH_LONG);
             } else {
-                ArrayAdapter<RSSItem> adapter = new RSSArrayAdapter(getApplicationContext(), result);
+                ArrayAdapter<RSSItem> adapter = new RSSArrayAdapter(getApplicationContext(), rssItems);
                 setListAdapter(adapter);
+                final ListView myListView = getListView();
+                myListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
+                        String rssItemStringURL = rssItems.get(position).getLink();
+                        URL rssItemURL = null;
+                        try {
+                            rssItemURL = new URL(rssItemStringURL);
+                        } catch (MalformedURLException e) {
+                            e.printStackTrace();
+                        }
+                        if (rssItemStringURL != null && rssItemURL != null) {
+                            Intent intent = new Intent(MyActivity.this, WebViewActivity.class);
+                            intent.putExtra("RSSItemURL", rssItemStringURL);
+                            startActivity(intent);
+                        } else {
+                            showToast(R.string.rss_item_url_error, Toast.LENGTH_LONG);
+                        }
+                    }
+                });
             }
         }
     }
