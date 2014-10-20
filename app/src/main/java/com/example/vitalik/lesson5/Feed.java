@@ -1,5 +1,6 @@
 package com.example.vitalik.lesson5;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
@@ -24,6 +25,8 @@ public class Feed {
 
     @Override
     public String toString() {
-        return "" + title;
+        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyyy hh:mm");
+        String dateString = sdf.format(date);
+        return dateString + " " + title;
     }
 }

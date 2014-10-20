@@ -52,6 +52,13 @@ public class MyActivity extends Activity {
                 startActivity(intent);
             }
         });
+        refreshFeed();
+//        listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+//            @Override
+//            public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
+//                return false;
+//            }
+//        });
     }
 
 
