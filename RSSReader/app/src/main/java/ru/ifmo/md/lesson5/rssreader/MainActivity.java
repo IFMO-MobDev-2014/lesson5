@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.util.Pair;
 import android.util.Patterns;
 import android.view.ContextMenu;
 import android.view.KeyEvent;
@@ -23,16 +24,65 @@ import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.xmlpull.v1.XmlPullParserException;
 
-public class MainActivity extends ListActivity
-        implements LoaderManager.LoaderCallbacks<Cursor> {
+import java.io.IOException;
+import java.net.URL;
+import java.nio.channels.Channel;
+import java.text.ParseException;
+import java.util.List;
+
+import ru.ifmo.md.lesson5.rssreader.parser.RSSLoader;
+import ru.ifmo.md.lesson5.rssreader.parser.RSSReader;
+
+
+public class MainActivity extends ListActivity {
     private static final int LOADER_RSS = 1;
+    private static final int LOADER_CHANNELS = 2;
     private static final String EXTRA_RSS_ID = "RSS_ID";
+    private static final String ARGS_URL = "URL";
+
 
     private EditText mEditTextAdd;
     private SimpleCursorAdapter mAdapter;
 
     private RSSManager mManager;
+
+    private final LoaderManager.LoaderCallbacks<Cursor> mChannelLoaderCallbacks =
+            new LoaderManager.LoaderCallbacks<Cursor>() {
+                @Override
+                public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
+                    return new ChannelsLoader(getApplicationContext(), mManager);
+                }
+
+                @Override
+                public void onLoadFinished(Loader<Cursor> cursorLoader, Cursor cursor) {
+                    mAdapter.swapCursor(cursor);
+                }
+
+                @Override
+                public void onLoaderReset(Loader<Cursor> cursorLoader) {
+
+                }
+            };
+    private final LoaderManager.LoaderCallbacks<RSSChannel> mRSSLoaderCallbacks =
+            new LoaderManager.LoaderCallbacks<RSSChannel>() {
+                @Override
+                public Loader<RSSChannel> onCreateLoader(int i, Bundle bundle) {
+                    return new RSSLoader(getApplicationContext(), bundle);
+                }
+
+                @Override
+                public void onLoadFinished(Loader<RSSChannel> rssChannelLoader, RSSChannel channel) {
+                    addRss(channel);
+                }
+
+                @Override
+                public void onLoaderReset(Loader<RSSChannel> rssChannelLoader) {
+
+                }
+            };
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,7 +124,9 @@ public class MainActivity extends ListActivity
                 if (actionId == getResources().getInteger(R.integer.actionAdd)) {
                     String potentialUrl = mEditTextAdd.getText().toString();
                     if (Patterns.WEB_URL.matcher(potentialUrl).matches()) {
-                        addRss(potentialUrl);
+                        Bundle args = new Bundle();
+                        args.putString(ARGS_URL, potentialUrl);
+                        getLoaderManager().initLoader(LOADER_CHANNELS, args, mRSSLoaderCallbacks).forceLoad();
                     } else {
                         Toast.makeText(getApplicationContext(), getString(R.string.bad_url), Toast.LENGTH_SHORT).show();
                     }
@@ -86,24 +138,30 @@ public class MainActivity extends ListActivity
 
         mAdapter = new SimpleCursorAdapter(
                 this,
-                android.R.layout.simple_list_item_1,
+                android.R.layout.simple_list_item_2,
                 null,
-                new String[]{RSSDatabaseHelper.COLUMN_CHANNEL_TITLE},
-                new int[]{android.R.id.text1},
+                new String[]{
+                        RSSDatabaseHelper.COLUMN_CHANNEL_TITLE,
+                        RSSDatabaseHelper.COLUMN_CHANNEL_URL
+                },
+                new int[]{
+                        android.R.id.text1,
+                        android.R.id.text2
+                },
                 0
         );
 
         setListAdapter(mAdapter);
         registerForContextMenu(findViewById(android.R.id.list));
 
-        getLoaderManager().initLoader(LOADER_RSS, null, this);
+        getLoaderManager().initLoader(LOADER_RSS, null, mChannelLoaderCallbacks);
 
     }
 
     @Override
     protected void onListItemClick(ListView lv, View v, int position, long id) {
         Cursor cursor = (Cursor) mAdapter.getItem(position);
-        long rssId = cursor.getInt(cursor.getColumnIndex("_id"));
+        long rssId = cursor.getLong(cursor.getColumnIndex("_id"));
         Intent intent = new Intent(this, RssActivity.class);
         intent.putExtra(EXTRA_RSS_ID, rssId);
         startActivity(intent);
@@ -132,17 +190,11 @@ public class MainActivity extends ListActivity
         }
     }
 
-    private void addRss(String url) {
-        //TODO: use parser instead of this stub
-        Log.d("TAG", "Add url: " + url);
-        RSSChannel channel = new RSSChannel();
-        channel.setTitle("Title: " + url);
-        channel.setUrl(url);
-        channel.setFavourite(0);
-        channel.setDescription("desc here");
-        long id = mManager.addChannel(channel);
-        getLoaderManager().getLoader(LOADER_RSS).forceLoad();
-        Log.d("TAG", "Rss id: " + id);
+    private void addRss(RSSChannel channel) {
+        if (channel != null) {
+            long id = mManager.addChannel(channel);
+            getLoaderManager().getLoader(LOADER_RSS).forceLoad();
+        }
     }
 
     @Override
@@ -160,21 +212,6 @@ public class MainActivity extends ListActivity
             default:
                 return super.onOptionsItemSelected(item);
         }
-    }
-
-    @Override
-    public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
-        return new ChannelsLoader(this, mManager);
-    }
-
-    @Override
-    public void onLoadFinished(Loader<Cursor> cursorLoader, Cursor cursor) {
-        mAdapter.swapCursor(cursor);
-    }
-
-    @Override
-    public void onLoaderReset(Loader<Cursor> cursorLoader) {
-
     }
 
 }
