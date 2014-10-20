@@ -12,6 +12,7 @@ import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -80,11 +81,7 @@ public class Main extends ListActivity {
 
     public class Downloader extends AsyncTask<String, Void, String[][]> {
 
-        ListView listView;
-
-        public Downloader(ListView listView) {
-            this.listView = listView;
-        }
+        private boolean showToast = false;
 
         @Override
         protected void onPostExecute(String[][] s) {
@@ -96,6 +93,10 @@ public class Main extends ListActivity {
                     for (String[] aR : r) listAdd(aR);
                 }
             });
+            if (showToast) {
+                Toast.makeText(Main.this, "Problem with internet connection", Toast.LENGTH_SHORT).show();
+                showToast = false;
+            }
         }
 
         @Override
@@ -113,6 +114,17 @@ public class Main extends ListActivity {
                         .newDocumentBuilder().parse((InputStream) url.getContent());
 
                 xmlResponse.getDocumentElement().normalize();
+
+                final String rssTitle = ((Element) xmlResponse.getElementsByTagName("channel").item(0)).getElementsByTagName("title").item(0).getFirstChild().getNodeValue();
+                final String rssDescription = ((Element) xmlResponse.getElementsByTagName("channel").item(0)).getElementsByTagName("description").item(0).getFirstChild().getNodeValue();
+
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        ((TextView) findViewById(R.id.rss_title)).setText(rssTitle);
+                        ((TextView) findViewById(R.id.rss_description)).setText(rssDescription);
+                    }
+                });
 
                 NodeList list = xmlResponse.getElementsByTagName("item");
 
@@ -136,6 +148,7 @@ public class Main extends ListActivity {
                 e.printStackTrace();
             } catch (IOException e) {
                 e.printStackTrace();
+                showToast = true;
             } catch (ParserConfigurationException e) {
                 e.printStackTrace();
             } catch (SAXException e) {
@@ -165,7 +178,7 @@ public class Main extends ListActivity {
             }
         });
 
-        new Downloader(getListView()).execute("http://bash.im/rss/");
+        new Downloader().execute("http://bash.im/rss/");
     }
 
 }
