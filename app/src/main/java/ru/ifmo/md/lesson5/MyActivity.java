@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
@@ -82,6 +83,9 @@ public class MyActivity extends ListActivity {
     }
 
     public void updateList(String rssStringURL) {
+        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(input.getWindowToken(), 0);
+        
         if(!rssStringURL.startsWith("http://")){
             rssStringURL = "http://" + rssStringURL;
         }
