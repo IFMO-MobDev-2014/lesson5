@@ -1,5 +1,6 @@
 package ru.ifmo.md.lesson5;
 
+import android.app.ProgressDialog;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -16,6 +17,7 @@ public class DataStorage {
 
     DatabaseHelper db;
     SQLiteDatabase sql;
+
     DataStorage(Context c) {
         db = new DatabaseHelper(c, "database.db", null, 1);
         updateInformation();
@@ -23,12 +25,16 @@ public class DataStorage {
 
     public void updateInformation() {
         ArrayList<Resource> resources = readResourceData();
+        ArrayList<Message> oldMessages = readRssData();
+        if(resources.size() == 0) {
+            resources.add(new Resource("BBC", "http://feeds.bbci.co.uk/news/rss.xml"));
+            putSourceData("BBC", "http://feeds.bbci.co.uk/news/rss.xml");
+        }
         for(Resource resource : resources) {
             try {
                 String data = new LoadInfoTask().execute(resource.url).get();
-                ArrayList<Message> oldMessaegs = readRssData();
                 ArrayList<Message> messages = XMLParser.parse(resource.name, data);
-                for(Message m : getChanges(oldMessaegs, messages)) {
+                for(Message m : getChanges(oldMessages, messages)) {
                     putRssRada(m);
                 }
             }catch(ExecutionException e) {
@@ -42,7 +48,6 @@ public class DataStorage {
     private ArrayList<Message> getChanges(ArrayList<Message> ar1, ArrayList<Message> ar2) {
         ArrayList<Message> result = new ArrayList<Message>();
         for(Message i : ar2) {
-            Log.i("MESSAGE", "inside adding circle");
             boolean c = true;
             for(Message j : ar1) {
                 if(i.link.equals(j.link)) {
@@ -117,5 +122,14 @@ public class DataStorage {
         cursor.close();
         db.close();
         return res;
+    }
+
+    public void deleteTables() {
+        sql = db.getWritableDatabase();
+
+        sql.delete(db.urlTable, null, null);
+        sql.delete(db.rssTable, null, null);
+
+        db.close();
     }
 }

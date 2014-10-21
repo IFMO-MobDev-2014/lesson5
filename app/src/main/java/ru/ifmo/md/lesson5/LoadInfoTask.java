@@ -1,5 +1,6 @@
 package ru.ifmo.md.lesson5;
 
+import android.app.ProgressDialog;
 import android.os.AsyncTask;
 import android.util.Log;
 
@@ -18,6 +19,7 @@ import java.io.IOException;
  * Created by Svet on 19.10.2014.
  */
 public class LoadInfoTask extends AsyncTask<String, Void, String> {
+    ProgressDialog progress;
 
     @Override
     protected String doInBackground(String... strings) {
@@ -25,7 +27,6 @@ public class LoadInfoTask extends AsyncTask<String, Void, String> {
         HttpResponse response;
         String answer = null;
         try {
-            Log.i("MESSAGE", strings[0]);
             response = httpCliend.execute(new HttpGet(strings[0]));
             StatusLine statusLine = response.getStatusLine();
             if(statusLine.getStatusCode() == HttpStatus.SC_OK) {

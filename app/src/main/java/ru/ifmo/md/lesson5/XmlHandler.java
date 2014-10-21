@@ -1,5 +1,7 @@
 package ru.ifmo.md.lesson5;
 
+import android.util.Log;
+
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
@@ -27,7 +29,9 @@ public class XmlHandler extends DefaultHandler {
     @Override
     public void characters(char [] ch, int start, int length) throws SAXException {
         super.characters(ch, start, length);
-        input = new String(ch, start, length);
+        if(current != null) {
+            input = input.concat(new String(ch, start, length));
+        }
     }
 
     @Override
@@ -63,6 +67,7 @@ public class XmlHandler extends DefaultHandler {
                              Attributes attributes) throws SAXException {
         super.startElement(uri, localName, name, attributes);
         if(localName.equalsIgnoreCase("item")) {
+//            Log.i("MY", "item created");
             current = new Message();
             current.source = source;
         }
