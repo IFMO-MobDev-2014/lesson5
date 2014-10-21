@@ -5,9 +5,11 @@ import android.content.Context;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.WindowManager;
+import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.TextView;
 
 /**
  * Created by Svet on 19.10.2014.
@@ -36,28 +38,32 @@ public class AddNewResourceDialog extends Dialog {
     }
 
     private void addKeyListeners() {
-        name.requestFocus();
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
 
-        name.setOnKeyListener(new View.OnKeyListener() {
+        name.requestFocus();
+
+        name.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
-            public boolean onKey(View view, int i, KeyEvent keyEvent) {
-                if(keyEvent.getKeyCode() == KeyEvent.KEYCODE_ENTER && keyEvent.getAction() == 0) {
-                    name.clearFocus();
+            public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
+                boolean handled = false;
+                if(i == EditorInfo.IME_ACTION_SEND) {
                     url.requestFocus();
+                    handled = true;
                 }
-                return true;
+                return handled;
             }
         });
 
-        url.setOnKeyListener(new View.OnKeyListener() {
+        url.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
-            public boolean onKey(View view, int i, KeyEvent keyEvent) {
-                if(keyEvent.getKeyCode() == KeyEvent.KEYCODE_ENTER && keyEvent.getAction() == 0) {
+            public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
+                boolean handled = false;
+                if(i == EditorInfo.IME_ACTION_SEND) {
                     updateDatabaseAndListView();
                     dismiss();
+                    handled = true;
                 }
-                return false;
+                return handled;
             }
         });
     }
