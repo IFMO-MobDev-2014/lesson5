@@ -2,6 +2,7 @@ package com.example.izban.lesson5;
 
 import android.content.Context;
 import android.os.AsyncTask;
+import android.text.Html;
 import android.util.Log;
 import android.util.Xml;
 import android.widget.ArrayAdapter;
@@ -53,7 +54,7 @@ public class Downloader extends AsyncTask<Void, Void, Void> {
             adapter.clear();
             ArrayList<Item> items = new Parser(parser).parse();
             for (int i = 0; i < items.size(); i++) {
-                adapter.add(items.get(i).link + "\n" + items.get(i).title + "\n" + items.get(i).description + "\n\n");
+                adapter.add(items.get(i).link + "\n" + items.get(i).title + "\n" + Html.fromHtml(items.get(i).description).toString() + "\n\n");
             }
             if (adapter.isEmpty()) {
                 throw new Exception();
