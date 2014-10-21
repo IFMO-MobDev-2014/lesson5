@@ -101,7 +101,10 @@ public class FeedParser extends AsyncTask<String, Void, List<Feed>> {
         String tag = parser.getName();
         String relType = parser.getAttributeValue(null, "rel");
         if (tag.equals("link")) {
-            if (relType.equals("alternate")){
+            if (relType == null) {
+                link = parser.getAttributeValue(null, "href");
+                parser.nextTag();
+            } else if (relType.equals("alternate")){
                 link = parser.getAttributeValue(null, "href");
                 parser.nextTag();
             }
