@@ -16,7 +16,8 @@
             android:layout_height="wrap_content"
             android:id="@+id/editText"
             android:layout_weight="4"
-            android:layout_gravity="center"/>
+            android:layout_gravity="center"
+            android:text="http://bash.im/rss/"/>
 
         <Button
             android:layout_width="0dp"

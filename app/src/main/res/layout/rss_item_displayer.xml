@@ -6,19 +6,37 @@
     android:orientation="vertical"
     >
 
-    <TextView
-        android:id="@+id/titleTextView"
-        android:text="Title:"
-        android:layout_width="fill_parent"
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="10dp"
-        android:textSize="13sp"
-        android:autoLink="all"
-        />
+        android:layout_gravity="center_horizontal">
+
+        <TextView
+            android:id="@+id/titleTextView"
+            android:text=""
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="3"
+            android:padding="10dp"
+            android:textSize="15sp"
+            android:autoLink="all"
+            />
+        <TextView
+            android:id="@+id/dateTextView"
+            android:text=""
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:padding="10dp"
+            android:textSize="15sp"
+            android:autoLink="all"
+            />
+    </LinearLayout>
 
     <TextView
         android:id="@+id/contentTextView"
-        android:text="Content:"
+        android:text=""
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:textSize="13sp"
