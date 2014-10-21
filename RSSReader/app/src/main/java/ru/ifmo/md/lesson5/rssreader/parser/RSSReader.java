@@ -48,13 +48,13 @@ public class RSSReader {
         List<RSSItem> items = new ArrayList<RSSItem>();
         RSSChannel channel = new RSSChannel();
 
-        parser.require(XmlPullParser.START_TAG, ns, "channel");
+        //parser.require(XmlPullParser.START_TAG, ns, "channel");
         while (parser.next() != XmlPullParser.END_TAG) {
             if (parser.getEventType() != XmlPullParser.START_TAG) {
                 continue;
             }
             String name = parser.getName();
-            if (name.equals("entry")) {
+            if (name.equals("entry") || name.equals("item")) {
                 items.add(readEntry(parser));
             } else if (name.equals("title")) {
                 channel.setTitle(readText(parser));
@@ -71,7 +71,7 @@ public class RSSReader {
 
     private RSSItem readEntry(XmlPullParser parser)
             throws XmlPullParserException, IOException, ParseException {
-        parser.require(XmlPullParser.START_TAG, ns, "entry");
+        //parser.require(XmlPullParser.START_TAG, ns, "entry");
 
         RSSItem item = new RSSItem();
 
