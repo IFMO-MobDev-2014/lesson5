@@ -17,7 +17,7 @@ public class Feed {
 //    private double magnitude;
 
 //    public Date getDate() { return date; }
-//    public String getLink() { return link; }
+    public String getLink() { return link; }
 //
 //    public String getDetails() { return details; }
 //    public Location getLocation() { return location; }

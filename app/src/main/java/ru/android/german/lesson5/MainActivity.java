@@ -1,9 +1,14 @@
 package ru.android.german.lesson5;
 
 import android.app.Activity;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.location.Location;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
@@ -34,19 +39,31 @@ import javax.xml.parsers.ParserConfigurationException;
 public class MainActivity extends Activity {
     ListView listView;
     ArrayAdapter<Feed> adapter;
-
     ArrayList<Feed> feeds = new ArrayList<Feed>();
+    Context thisContext;
+
     FeedLoader feedLoader = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.mian);
+        thisContext = this;
 
         listView = (ListView)this.findViewById(R.id.listView);
         int layoutID = android.R.layout.simple_list_item_1;
         adapter = new ArrayAdapter<Feed>(this, layoutID, feeds);
         listView.setAdapter(adapter);
+
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                Feed clickedFeed = feeds.get(i);
+                Intent intent = new Intent(thisContext, WebActivity.class);
+                intent.putExtra("link", clickedFeed.getLink());
+                startActivity(intent);
+            }
+        });
 
         refreshFeeds();
     }
@@ -165,7 +182,7 @@ public class MainActivity extends Activity {
                     String title = titleElement.getFirstChild().getNodeValue();
                     String link = linkElement.getFirstChild().getNodeValue();
 
-                    System.out.println(title);
+//                    System.out.println(title);
 
                     addNewFeed(new Feed(title, link));
                 }
