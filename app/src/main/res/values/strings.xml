@@ -4,5 +4,9 @@
     <string name="app_name">BBC News!</string>
     <string name="title_activity_web"></string>
 
+    <string name="URL_BBC_RSS_NEWS">http://feeds.bbci.co.uk/news/rss.xml</string>
     <string name="URL">URL</string>
+    <string name="DOWNLOADING_NEWS">Downloading news...</string>
+    <string name="CANT_FIND_NEWS">Can\'t find news :(</string>
+
 </resources>

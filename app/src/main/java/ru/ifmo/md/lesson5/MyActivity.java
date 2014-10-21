@@ -1,17 +1,11 @@
 package ru.ifmo.md.lesson5;
 
 import android.app.Activity;
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.ExecutionException;
 
 public class MyActivity extends Activity {
 
@@ -23,17 +17,9 @@ public class MyActivity extends Activity {
 
         ListView listView1 = (ListView) findViewById(R.id.listView1);
 
-        List<NewsItem> news = new ArrayList<NewsItem>();
-        try {
-            news = (new NewsDownloadTask(this).execute("http://feeds.bbci.co.uk/news/rss.xml")).get();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        new NewsDownloadTask(this, listView1).execute(getString(R.string.URL_BBC_RSS_NEWS));
 
-        NewsListAdapter adapter = new NewsListAdapter(news);
-        listView1.setAdapter(adapter);
         listView1.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-
             @Override
             public void onItemClick(AdapterView<?> adapter, View v, int position, long x) {
 
