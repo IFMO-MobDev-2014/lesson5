@@ -3,6 +3,7 @@ package com.pokrasko.lesson5;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.WebView;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.TextView;
@@ -38,20 +39,22 @@ public class FeedAdapter extends BaseAdapter {
     }
 
     @Override
-    public View getView(final int i, View view, final ViewGroup viewGroup) {
+    public View getView(int i, View view, final ViewGroup viewGroup) {
         if (view == null) {
             view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.item, viewGroup, false);
         }
+        final FeedItem item = feed.getItem(i);
+
         TextView title = (TextView) view.findViewById(R.id.title);
-        final TextView description = (TextView) view.findViewById(R.id.description);
-        title.setText(feed.getItem(i).getTitle());
-        description.setText(feed.getItem(i).getDescription());
+        final WebView description = (WebView) view.findViewById(R.id.description);
+        title.setText(item.getTitle());
+        description.loadData(item.getDescription(), "text/html; charset=utf-8", null);
 
         title.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                feed.getItem(i).changeVisibility();
-                if (feed.getItem(i).isVisible()) {
+                item.changeVisibility();
+                if (item.isVisible()) {
                     description.setVisibility(View.VISIBLE);
                 } else {
                     description.setVisibility(View.GONE);
@@ -63,9 +66,7 @@ public class FeedAdapter extends BaseAdapter {
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ((MainActivity) viewGroup.getContext()).showMore(
-                        feed.getItem(i).getTitle()
-                      , feed.getItem(i).getLink());
+                ((MainActivity) viewGroup.getContext()).showMore(item.getTitle(), item.getLink());
             }
         });
         return view;
