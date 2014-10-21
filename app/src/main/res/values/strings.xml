@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">RSS reader</string>
+    <string name="title_activity_main">RSS reader</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="error">Can\'t read RSS feed</string>
+    <string name="title_activity_content">Content</string>
+
+</resources>
