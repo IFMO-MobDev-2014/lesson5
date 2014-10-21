@@ -1,0 +1,17 @@
+<resources>
+    <string name="app_name">RSS Reader</string>
+
+    <string name="default_rss_link">http://bash.im/rss/</string>
+
+    <string name="no_feed">No feeds to load</string>
+    <string name="no_news">There is no news in the feed.</string>
+
+    <string name="refresh">Refresh</string>
+    <string name="refreshing">Wait&#8230;</string>
+
+    <string name="get_full">More</string>
+    <string name="web_title">Full article</string>
+
+    <string name="no_internet">There is no Internet Connection.</string>
+    <string name="bad_feed">RSS feed file is corrupted.</string>
+</resources>
