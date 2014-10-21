@@ -3,8 +3,6 @@ package com.example.alexey.lesson5;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
@@ -26,13 +24,9 @@ public class MyActivity2 extends Activity {
         Intent intent=new Intent(this,MyActivity3.class);
         intent.putExtra("count",g);
         startActivity(intent);
-        onDestroy();
     }
-    public void goBack(View view){
-        Intent intent1=new Intent(this,MyActivity15.class);
-        startActivity(intent1);
-        onDestroy();
-    }
+
+
 
 
 }

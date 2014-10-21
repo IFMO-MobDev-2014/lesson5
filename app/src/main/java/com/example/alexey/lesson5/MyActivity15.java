@@ -3,8 +3,6 @@ package com.example.alexey.lesson5;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -20,13 +18,13 @@ public class MyActivity15 extends Activity {
         ListView lv = (ListView) findViewById(R.id.listView);
 
         int size = MyActivity.a.size();
-        final String[] catnames = new String[size - 2];
+        final String[] titels = new String[size - 2];
         for (int i = 2; i < size; i++) {
-            catnames[i - 2] = MyActivity.a.get(i);
+            titels[i - 2] = MyActivity.a.get(i);
         }
 
 
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_activated_1, catnames);
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_activated_1, titels);
 
         lv.setAdapter(adapter);
 
@@ -44,6 +42,12 @@ public class MyActivity15 extends Activity {
             }
         });
     }
+    @Override
+    public void onBackPressed() {
+
+
+    }
+
 
 
 }

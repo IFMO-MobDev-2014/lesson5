@@ -1,11 +1,7 @@
 package com.example.alexey.lesson5;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.view.View;
 import android.webkit.WebView;
 
 
@@ -18,16 +14,8 @@ public class MyActivity3 extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_my_activity3);
         WebView webView=(WebView) findViewById(R.id.webView);
-
         g=getIntent().getExtras().getInt("count");
         webView.loadUrl(MyActivity.c.get(g));
 
-    }
-
-    public void go(View view){
-        Intent intent=new Intent(this,MyActivity2.class);
-        intent.putExtra("count",g);
-        startActivity(intent);
-        onDestroy();
     }
 }
