@@ -1,7 +1,3 @@
-# Built application files
-*.apk
-*.ap_
-
 # Files for the Dalvik VM
 *.dex
 
@@ -9,12 +5,10 @@
 *.class
 
 # Generated files
-bin/
-gen/
+bin/ gen/
 
 # Gradle files
-.gradle/
-build/
+.gradle/ build/
 
 # Local configuration file (sdk path, etc)
 local.properties
@@ -25,5 +19,6 @@ proguard/
 # Log Files
 *.log
 
-.idea/
+.idea/ 
 *.iml
+
