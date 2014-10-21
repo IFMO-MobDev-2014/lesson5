@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">RSS Reader 1</string>
+    <string name="default_rss_link">http://echo.msk.ru/interview/rss-fulltext.xml</string>
+    <string name="default_rss_title">Горячие интервью  | Эхо Москвы</string>
+    <string name="default_rss_description">Эхо Москвы: Интервью</string>
+    <string name="get_full">More</string>
+    <string name="refresh">Refresh</string>
+    <string name="refreshing">Wait...</string>
+    <string name="web_title">Full article</string>
+    <string name="no_news">There is no news in the feed.</string>
+</resources>
