@@ -4,6 +4,7 @@ import android.app.ListActivity;
 import android.app.LoaderManager;
 import android.content.Intent;
 import android.content.Loader;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -86,6 +87,18 @@ public class MainActivity extends ListActivity {
         mManager = RSSManager.get(this);
 
         setupViews();
+
+        if (firstLaunch()) {
+            for (String url : new String[]{
+                    "http://feeds.bbci.co.uk/news/rss.xml",
+                    "http://echo.msk.ru/interview/rss-fulltext.xml",
+                    "http://bash.im/rss/"
+            }) {
+                Bundle args = new Bundle();
+                args.putString(ARGS_URL, url);
+                getLoaderManager().initLoader(LOADER_CHANNELS, args, mRSSLoaderCallbacks).forceLoad();
+            }
+        }
     }
 
     private void setupViews() {
@@ -215,6 +228,20 @@ public class MainActivity extends ListActivity {
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    private boolean firstLaunch() {
+        SharedPreferences prefs = getPreferences(MODE_PRIVATE);
+        String first = prefs.getString("first launch", null);
+        boolean ret = first == null;
+
+        Log.d("TAG", "First launch: " + ret);
+
+        SharedPreferences.Editor editor = getPreferences(MODE_PRIVATE).edit();
+        editor.putString("first launch", "no");
+        editor.commit();
+
+        return ret;
     }
 
 }

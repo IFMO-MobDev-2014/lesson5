@@ -15,6 +15,7 @@ import ru.ifmo.md.lesson5.rssreader.utils.RSSItem;
 
 public class WebViewActivity extends Activity implements LoaderManager.LoaderCallbacks<RSSItem> {
     private static final String EXTRA_ITEM_ID = "ITEM_ID";
+    private static final String EXTRA_ITEM_TITLE = "ITEM_TITLE";
     private static final int LOADER_ITEM = 1;
 
     private WebView mWebView;
@@ -27,6 +28,10 @@ public class WebViewActivity extends Activity implements LoaderManager.LoaderCal
 
         Intent intent = getIntent();
         long itemId = intent.getLongExtra(EXTRA_ITEM_ID, -1);
+        String title = intent.getStringExtra(EXTRA_ITEM_TITLE);
+        if (title != null) {
+            setTitle(title);
+        }
         mRSSManager = RSSManager.get(getApplicationContext());
         mWebView = (WebView) findViewById(R.id.webView);
 

@@ -19,6 +19,8 @@ import ru.ifmo.md.lesson5.rssreader.utils.RSSChannel;
 
 public class RssActivity extends ListActivity implements LoaderManager.LoaderCallbacks<Cursor> {
     private static final String EXTRA_RSS_ID = "RSS_ID";
+
+    private static final String EXTRA_ITEM_TITLE = "ITEM_TITLE";
     private static final String EXTRA_ITEM_ID = "ITEM_ID";
     private static final int LOADER_ITEMS = 1;
 
@@ -47,8 +49,10 @@ public class RssActivity extends ListActivity implements LoaderManager.LoaderCal
     protected void onListItemClick(ListView lv, View v, int position, long id) {
         Cursor cursor = (Cursor) mAdapter.getItem(position);
         long itemId = cursor.getLong(cursor.getColumnIndex("_id"));
+        String title = cursor.getString(cursor.getColumnIndex("title"));
         Intent intent = new Intent(this, WebViewActivity.class);
         intent.putExtra(EXTRA_ITEM_ID, itemId);
+        intent.putExtra(EXTRA_ITEM_TITLE, title);
         startActivity(intent);
     }
 
