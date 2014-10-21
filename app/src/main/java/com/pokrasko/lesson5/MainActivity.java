@@ -49,10 +49,6 @@ public class MainActivity extends ListActivity {
         onRefresh();
     }
 
-    public void setDescription(String description) {
-        descriptionView.setText(description);
-    }
-
     public void setFeed(final Feed feed) {
         runOnUiThread(new Runnable() {
             @Override
@@ -72,7 +68,7 @@ public class MainActivity extends ListActivity {
         new RSSLoader(this).execute(res.getString(R.string.default_rss_link));
     }
 
-    public void onRefreshed(boolean valid, String newTitle, final String errorMessage) {
+    public void onRefreshed(boolean valid, String newTitle, String newDescription, final String errorMessage) {
         if (valid) {
             emptyView.setVisibility(View.GONE);
             listView.setVisibility(View.VISIBLE);
@@ -80,6 +76,7 @@ public class MainActivity extends ListActivity {
             emptyView.setText(errorMessage);
         }
         setTitle(newTitle);
+        descriptionView.setText(newDescription);
         refreshButton.setText(R.string.refresh);
         refreshButton.setEnabled(true);
     }

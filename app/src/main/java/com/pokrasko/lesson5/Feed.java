@@ -20,10 +20,6 @@ public class Feed {
         return title;
     }
 
-    public String getDescription() {
-        return description;
-    }
-
     public FeedItem getItem(int i) {
         return items.get(i);
     }

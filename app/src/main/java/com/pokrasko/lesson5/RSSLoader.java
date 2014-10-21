@@ -67,12 +67,10 @@ public class RSSLoader extends AsyncTask<String, Void, Feed> {
     protected void onPostExecute(final Feed feed) {
         super.onPostExecute(feed);
         if (feed != null) {
-            activity.setDescription(rssDescription);
             activity.setFeed(feed);
-            activity.onRefreshed(true, feed.getTitle(), "");
+            activity.onRefreshed(true, feed.getTitle(), rssDescription, "");
         } else {
-            activity.setDescription("");
-            activity.onRefreshed(false, activity.getResources().getString(R.string.no_feed), errorMessage);
+            activity.onRefreshed(false, activity.getResources().getString(R.string.no_feed), "", errorMessage);
         }
     }
 }
