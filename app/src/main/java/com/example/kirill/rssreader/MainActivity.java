@@ -31,6 +31,8 @@ public class MainActivity extends ListActivity implements OnTaskCompleted {
         setContentView(R.layout.activity_main);
         adapter = new MySimpleArrayAdapter(this, listItems);
         setListAdapter(adapter);
+        listItems.add(new FeedItem(" ", " ", "Press refresh button to download feed", " "));
+        adapter.notifyDataSetChanged();
     }
 
     @Override

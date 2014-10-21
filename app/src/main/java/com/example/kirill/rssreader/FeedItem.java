@@ -42,7 +42,11 @@ public class FeedItem {
     }
 
     public String getDate() {
-        return new SimpleDateFormat("EEE, H:mm").format(realDate);
+        String result = "";
+        try {
+            result = new SimpleDateFormat("EEE, H:mm").format(realDate);
+        } catch (Exception e) {}
+        return result;
     }
 
     public String getDate(String format) {
