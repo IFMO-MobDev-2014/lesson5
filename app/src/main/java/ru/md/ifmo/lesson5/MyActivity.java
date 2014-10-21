@@ -5,13 +5,9 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.View;
-import android.webkit.WebView;
-import android.webkit.WebViewClient;
-import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -24,7 +20,6 @@ public class MyActivity extends Activity  {
     EditText editText;
     ListView listView;
     RSSTask loader;
-    AlertDialog.Builder dialog;
     boolean browser;
 
     @Override
