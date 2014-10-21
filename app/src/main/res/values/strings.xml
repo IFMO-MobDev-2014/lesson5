@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">lesson5</string>
+    <string name="feed">
+        http://echo.msk.ru/interview/rss-fulltext.xml
+    </string>
+
+</resources>
