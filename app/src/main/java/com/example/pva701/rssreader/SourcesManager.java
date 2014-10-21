@@ -59,6 +59,10 @@ public class SourcesManager {
         public int getId() {
             return id;
         }
+
+        public void setLastUpdate(Date lastUpdate) {
+            this.lastUpdate = lastUpdate;
+        }
     }
 
     public static SourcesManager getInstance(Context context) {

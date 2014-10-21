@@ -27,6 +27,6 @@
         android:textSize="15dp"
         android:text="12.02.32"
         android:id="@+id/last_update"
-        android:layout_gravity="right"
+        android:padding="0dp"
         style="?android:listSeparatorTextViewStyle"/>
 </LinearLayout>

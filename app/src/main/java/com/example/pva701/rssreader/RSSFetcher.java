@@ -145,7 +145,6 @@ public class RSSFetcher {
                 saxParser.parse(new InputSource(new StringReader(xml)), handler);
                 ret.addAll(handler.getNewsItems());
             } catch (Exception e) {
-                e.printStackTrace();
             }
         }
         return ret;

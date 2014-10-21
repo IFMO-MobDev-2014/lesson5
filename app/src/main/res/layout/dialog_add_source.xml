@@ -22,5 +22,6 @@
         android:layout_gravity="center_horizontal"
         android:layout_weight="0.02"
         android:hint="Source"
-        android:layout_marginTop="10dp"/>
+        android:layout_marginTop="10dp"
+        android:inputType="textUri"/>
 </LinearLayout>

@@ -15,9 +15,9 @@ import java.util.Set;
  */
 public class NewsManager {
     private static NewsManager instance;
-    private RSSDatabaseHelper helper;
-    private ArrayList <News> allNewses;
-    private Set<Integer> savedIds;
+    private volatile RSSDatabaseHelper helper;
+    private volatile ArrayList <News> allNewses;
+    private volatile Set<Integer> savedIds;
 
     public static class News {
         private int id;
@@ -201,6 +201,7 @@ public class NewsManager {
         for (int i = 0; i < allNewses.size(); ++i)
             if (sourceId == allNewses.get(i).getSourceId())
                 ret.add(allNewses.get(i));
+        sortGreat(ret);
         return ret;
     }
 

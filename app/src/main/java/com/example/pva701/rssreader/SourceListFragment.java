@@ -1,13 +1,19 @@
 package com.example.pva701.rssreader;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -40,6 +46,32 @@ public class SourceListFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         sources = SourcesManager.getInstance(getActivity()).getSources();
+        /*Bundle bundle = new Bundle();
+        bundle.putBoolean(PollService.NOTIFICATION, true);
+        bundle.putInt(PollService.POLL_INTERVAL, 1000);
+        PollService.setServiceAlarm(getActivity(), true, bundle);*/
+        //PollService.setServiceAlarm(getActivity(), false, null);
+    }
+
+    private BroadcastReceiver onUpdateBroadcastReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            adapter.notifyDataSetChanged();
+            SourcesManager.getInstance(getActivity()).resume();
+        }
+    };
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        adapter.notifyDataSetChanged();
+        LocalBroadcastManager.getInstance(getActivity()).registerReceiver(onUpdateBroadcastReceiver, new IntentFilter(PollService.UPDATE_BROADCAST));
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(onUpdateBroadcastReceiver);
     }
 
     @Override
@@ -64,7 +96,7 @@ public class SourceListFragment extends Fragment {
                 Source source = getItem(position);
                 sourceName.setText(source.getName());
                 if (source.getLastUpdate().getTime() != 0)
-                    lastUpdate.setText("Last update: " + new SimpleDateFormat("dd.MM.yyyy hh:mm").format(source.getLastUpdate()));
+                    lastUpdate.setText("Last update: " + new SimpleDateFormat("d MMM yyyy, HH:mm").format(source.getLastUpdate()));
                 else
                     lastUpdate.setText("");
                 url.setText(source.getUrl());
@@ -90,6 +122,7 @@ public class SourceListFragment extends Fragment {
         inflater.inflate(R.menu.fragment_source_list, menu);
     }
 
+    private AlertDialog intervalDialog;
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.menu_item_add_source) {
@@ -98,6 +131,39 @@ public class SourceListFragment extends Fragment {
             dialog.setTargetFragment(SourceListFragment.this, REQUEST_ADD_SOURCE);
             dialog.show(fm, DIALOG_ADD_SOURCE);
             return true;
+        } else if (item.getItemId() == R.id.menu_item_auto_update) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+            builder.setTitle("Interval");
+            final CharSequence[] intervals = {"Never", "1 minute", "5 minute", "15 minute", "30 minute", "1 hour", "3 hour", "6 hour", "12 hour", "1 day"};
+            builder.setSingleChoiceItems(intervals, -1, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    if (i == 0)
+                        PollService.setServiceAlarm(getActivity(), false, null);
+                    else {
+                        int j = 0, num = 0;
+                        String s = intervals[i].toString();
+                        while (Character.isDigit(s.charAt(j))) {
+                            num = num * 10 + s.charAt(j) - '0';
+                            ++j;
+                        }
+                        ++j;
+                        int mills = 0;
+                        if (s.charAt(j) == 'm') mills = num * 60;
+                        else if (s.charAt(j) == 'h') mills = num * 3600;
+                        else if (s.charAt(j) == 'd') mills = num * 3600 * 24;
+                        PollService.setServiceAlarm(getActivity(), false, null);
+                        mills *= 1000;
+                        Bundle bundle = new Bundle();
+                        bundle.putInt(PollService.POLL_INTERVAL, mills);
+                        bundle.putBoolean(PollService.NOTIFICATION, false);
+                        PollService.setServiceAlarm(getActivity(), true, bundle);
+                    }
+                    intervalDialog.dismiss();
+                }
+            });
+            intervalDialog = builder.create();
+            intervalDialog.show();
         }
         return super.onOptionsItemSelected(item);
     }
@@ -111,17 +177,11 @@ public class SourceListFragment extends Fragment {
                 if (!source.startsWith("http://"))
                     source = "http://" + source;
                 final Source cur = new Source(name, source, new Date(0));
-                sources.add(cur);//TODO change
+                sources.add(cur);
                 adapter.notifyDataSetChanged();
                 SourcesManager.getInstance(getActivity()).resume();
-
-                new AsyncTask<Void, Void, Boolean>() {
-                    @Override
-                    protected Boolean doInBackground(Void... voids) {
-                        NewsManager.getInstance(getActivity()).mergeNews(RSSFetcher.fetch(cur.getUrl()), cur.getId());
-                        return true;
-                    }
-                };//TODO execute
+                //getActivity().startService(new Intent(getActivity(), PollService.class).putExtra(PollService.TARGET_SOURCE_ID, cur.getId()).
+                        //putExtra(PollService.TARGET_URL, cur.getUrl()));
             }
         } else {
 

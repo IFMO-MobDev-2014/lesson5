@@ -27,7 +27,7 @@ public class RSSDatabaseHelper extends SQLiteOpenHelper {
             return new SourcesManager.Source(getLong(getColumnIndexOrThrow(COLUMN_SOURCES_ID)),
                     getString(getColumnIndexOrThrow(COLUMN_SOURCES_NAME)),
                     getString(getColumnIndexOrThrow(COLUMN_SOURCES_URL)),
-                    new Date(getLong(getColumnIndexOrThrow(COLUMN_SOURCES_LAST_UPDATE))));
+                    new Date(getInt(getColumnIndexOrThrow(COLUMN_SOURCES_LAST_UPDATE)) * 1000L));
         }
     }
 
@@ -35,7 +35,6 @@ public class RSSDatabaseHelper extends SQLiteOpenHelper {
         public NewsCursor(Cursor cursor) {
             super(cursor);
         }
-
 
         public NewsManager.News getNews() {
             NewsManager.News ret = new NewsManager.News();
@@ -117,7 +116,7 @@ public class RSSDatabaseHelper extends SQLiteOpenHelper {
         ContentValues cv = new ContentValues();
         cv.put(COLUMN_SOURCES_NAME, source.getName());
         cv.put(COLUMN_SOURCES_URL, source.getUrl());
-        cv.put(COLUMN_SOURCES_LAST_UPDATE, source.getLastUpdate().getTime());
+        cv.put(COLUMN_SOURCES_LAST_UPDATE, source.getLastUpdate().getTime() / 1000);
         return getWritableDatabase().insert(TABLE_SOURCES, null, cv);
     }
 
@@ -179,6 +178,6 @@ public class RSSDatabaseHelper extends SQLiteOpenHelper {
 
     public void updateSource(SourcesManager.Source source) {
         getWritableDatabase().execSQL("UPDATE " + TABLE_SOURCES + " SET name=?, url=?, last_update=? WHERE _id=?",
-                new Object[] {source.getName(), source.getUrl(), source.getLastUpdate(), source.getId()});
+                new Object[] {source.getName(), source.getUrl(), source.getLastUpdate().getTime() / 1000, source.getId()});
     }
 }

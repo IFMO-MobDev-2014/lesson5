@@ -27,6 +27,7 @@ public class SaveDataService extends IntentService {
         isRunning = true;
         Log.i("SaveDataService", "onHandleIntent");
         NewsManager.getInstance(getApplicationContext()).resume();
+        SourcesManager.getInstance(getApplicationContext()).resume();
         isRunning = false;
     }
 
