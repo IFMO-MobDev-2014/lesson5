@@ -1,4 +1,6 @@
-package ru.ifmo.md.lesson5.rssreader;
+package ru.ifmo.md.lesson5.rssreader.utils;
+
+import java.util.List;
 
 /**
  * Created by Nikita Yaschenko on 20.10.14.
@@ -9,7 +11,7 @@ public class RSSChannel {
     private String mTitle;
     private String mDescription;
     private int mFavourite;
-    private RSSItem[] mRssItems;
+    private List<RSSItem> mRssItems;
 
     public RSSChannel() {
         mId = -1;
@@ -53,5 +55,13 @@ public class RSSChannel {
 
     public void setFavourite(int favourite) {
         mFavourite = favourite;
+    }
+
+    public List<RSSItem> getRssItems() {
+        return mRssItems;
+    }
+
+    public void setRssItems(List<RSSItem> rssItems) {
+        mRssItems = rssItems;
     }
 }

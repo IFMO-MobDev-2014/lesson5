@@ -1,4 +1,4 @@
-package ru.ifmo.md.lesson5.rssreader.parser;
+package ru.ifmo.md.lesson5.rssreader.utils;
 
 import android.util.Pair;
 import android.util.Xml;
@@ -13,11 +13,6 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.xml.parsers.SAXParserFactory;
-
-import ru.ifmo.md.lesson5.rssreader.RSSChannel;
-import ru.ifmo.md.lesson5.rssreader.RSSItem;
-
 /**
  * Created by Nikita Yaschenko on 21.10.14.
  */
@@ -25,12 +20,12 @@ public class RSSReader {
 
     private static final String ns = null;
 
-    public Pair<RSSChannel, List<RSSItem>> parse(URL url)
+    public RSSChannel parse(URL url)
             throws IOException, XmlPullParserException, ParseException {
         return parse(url.openStream());
     }
 
-    public Pair<RSSChannel, List<RSSItem>> parse(InputStream stream)
+    public RSSChannel parse(InputStream stream)
             throws IOException, XmlPullParserException, ParseException {
         try {
             XmlPullParser parser = Xml.newPullParser();
@@ -44,7 +39,7 @@ public class RSSReader {
         }
     }
 
-    private Pair<RSSChannel, List<RSSItem>> readFeed(XmlPullParser parser) throws IOException, XmlPullParserException, ParseException {
+    private RSSChannel readFeed(XmlPullParser parser) throws IOException, XmlPullParserException, ParseException {
         List<RSSItem> items = new ArrayList<RSSItem>();
         RSSChannel channel = new RSSChannel();
 
@@ -66,7 +61,8 @@ public class RSSReader {
                 skip(parser);
             }
         }
-        return Pair.create(channel, items);
+        channel.setRssItems(items);
+        return channel;
     }
 
     private RSSItem readEntry(XmlPullParser parser)

@@ -7,6 +7,9 @@ import android.database.CursorWrapper;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+import ru.ifmo.md.lesson5.rssreader.utils.RSSChannel;
+import ru.ifmo.md.lesson5.rssreader.utils.RSSItem;
+
 /**
  * Created by Nikita Yaschenko on 18.10.14.
  */

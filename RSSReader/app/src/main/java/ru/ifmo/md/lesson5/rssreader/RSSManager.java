@@ -3,6 +3,9 @@ package ru.ifmo.md.lesson5.rssreader;
 import android.content.Context;
 import android.database.Cursor;
 
+import ru.ifmo.md.lesson5.rssreader.utils.RSSChannel;
+import ru.ifmo.md.lesson5.rssreader.utils.RSSItem;
+
 /**
  * Created by Nikita Yaschenko on 18.10.14.
  */

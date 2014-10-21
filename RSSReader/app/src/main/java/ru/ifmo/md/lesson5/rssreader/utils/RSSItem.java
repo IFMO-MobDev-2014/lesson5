@@ -1,4 +1,4 @@
-package ru.ifmo.md.lesson5.rssreader;
+package ru.ifmo.md.lesson5.rssreader.utils;
 
 /**
  * Created by Nikita Yaschenko on 18.10.14.

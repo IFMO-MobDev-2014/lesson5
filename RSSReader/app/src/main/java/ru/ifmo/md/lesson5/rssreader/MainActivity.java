@@ -10,7 +10,6 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
-import android.util.Pair;
 import android.util.Patterns;
 import android.view.ContextMenu;
 import android.view.KeyEvent;
@@ -24,16 +23,9 @@ import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import org.xmlpull.v1.XmlPullParserException;
-
-import java.io.IOException;
-import java.net.URL;
-import java.nio.channels.Channel;
-import java.text.ParseException;
-import java.util.List;
-
-import ru.ifmo.md.lesson5.rssreader.parser.RSSLoader;
-import ru.ifmo.md.lesson5.rssreader.parser.RSSReader;
+import ru.ifmo.md.lesson5.rssreader.utils.ChannelsLoader;
+import ru.ifmo.md.lesson5.rssreader.utils.RSSChannel;
+import ru.ifmo.md.lesson5.rssreader.utils.RSSLoader;
 
 
 public class MainActivity extends ListActivity {
