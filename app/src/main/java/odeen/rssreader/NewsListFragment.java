@@ -31,6 +31,7 @@ import org.w3c.dom.Text;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -40,15 +41,20 @@ import java.util.UUID;
  * Created by Женя on 18.10.2014.
  */
 public class NewsListFragment extends ListFragment {
+
+    private boolean canRefresh = true;
+    private int table_id;
+
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        table_id = getArguments().getInt(NewsListActivity.CHANNEL_ID);
         BroadcastReceiver receiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
                 if (intent.getStringExtra(Constants.BROADCAST_ACTION).equals(Constants.BROADCAST_ACTION_PROCESS)) {
-                    //News news = IntentShell.get(intent);
-                    RSSNewsLibrary.get(getActivity()).takeFromPipe();
+                    RSSNewsLibrary.get(getActivity()).takeFromPipe(table_id);
                     ((NewsAdapter) getListAdapter()).notifyDataSetChanged();
                 }
                 if (intent.getStringExtra(Constants.BROADCAST_ACTION).equals(Constants.BROADCAST_ACTION_INTERNET_PROBLEM)) {
@@ -56,13 +62,12 @@ public class NewsListFragment extends ListFragment {
                     stopRefresh();
                 }
                 if (intent.getStringExtra(Constants.BROADCAST_ACTION).equals(Constants.BROADCAST_ACTION_FINISHED)) {
-                    Log.d("FINISH","");
                     stopRefresh();
                 }
             }
         };
         LocalBroadcastManager.getInstance(getActivity()).registerReceiver(receiver, new IntentFilter(Constants.BROADCAST_ACTION));
-        NewsAdapter newsAdapter = new NewsAdapter(RSSNewsLibrary.get(getActivity()).getNews());
+        NewsAdapter newsAdapter = new NewsAdapter(RSSNewsLibrary.get(getActivity()).getNews(table_id));
         setListAdapter(newsAdapter);
         setHasOptionsMenu(true);
         setRetainInstance(true);
@@ -73,6 +78,7 @@ public class NewsListFragment extends ListFragment {
         News news = ((NewsAdapter)getListAdapter()).getItem(position);
         Intent intent = new Intent(getActivity(), NewsWebViewActivity.class);
         intent.putExtra(Constants.BUNDLE_ID, news.getId());
+        intent.putExtra(NewsListActivity.CHANNEL_ID, table_id);
         startActivity(intent);
     }
 
@@ -93,6 +99,8 @@ public class NewsListFragment extends ListFragment {
         }
     }
 
+    private SimpleDateFormat format = new SimpleDateFormat("dd LLL HH:mm");
+
     private class NewsAdapter extends ArrayAdapter<News> {
         public NewsAdapter(ArrayList<News> news) {
             super(getActivity(), 0, news);
@@ -106,22 +114,22 @@ public class NewsListFragment extends ListFragment {
             TextView title = (TextView)convertView.findViewById(R.id.news_list_item_titleTextView);
             if (news.getTitle() != null)
                 title.setText(news.getTitle());
-            TextView description = (TextView)convertView.findViewById(R.id.news_list_item_descriptionTextView);
-            if (news.getDescription() != null)
-                description.setText(news.getDescription());
-            ImageView imageView = (ImageView)convertView.findViewById(R.id.news_list_item_imageView);
-            if (news.getImage() != null)
-                imageView.setImageBitmap(news.getImage());
+            TextView dateView = (TextView)convertView.findViewById(R.id.news_list_item_dateTextView);
+            if (news.getPubDate() != null)
+                dateView.setText(format.format(news.getPubDate()));
             return convertView;
         }
     }
-    private ProgressDialog progressDialog;
+
     private void refresh() {
-        RSSNewsLibrary.get(getActivity()).refresh();
-        //progressDialog = ProgressDialog.show(getActivity(), "Wait", "loading data...", true);
+        if (canRefresh) {
+            getListView().smoothScrollToPosition(0);
+            canRefresh = false;
+            RSSNewsLibrary.get(getActivity()).refresh(table_id);
+        }
     }
     private void stopRefresh() {
-        //progressDialog.dismiss();
+        canRefresh = true;
     }
 
 

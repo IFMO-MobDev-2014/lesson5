@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:id="@+id/menu_item_refresh_news"
-        android:title="@string/refresh"
-        android:icon="@android:drawable/ic_popup_sync"
+    <item android:id="@+id/menu_rss_list_add"
+        android:title="@string/add"
+        android:icon="@android:drawable/ic_menu_add"
         android:showAsAction="ifRoom|withText"
         />
 </menu>

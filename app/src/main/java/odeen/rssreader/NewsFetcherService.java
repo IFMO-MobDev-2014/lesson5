@@ -6,13 +6,16 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.app.TaskStackBuilder;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.ResultReceiver;
 import android.renderscript.Element;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
+import android.widget.Toast;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
@@ -34,10 +37,24 @@ import javax.xml.parsers.ParserConfigurationException;
  * Created by Женя on 18.10.2014.
  */
 public class NewsFetcherService extends IntentService {
-
-
     public NewsFetcherService() {
         super("NewsFetcherIntentService");
+    }
+    private int table_id;
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        Intent startIntent = new Intent(Constants.BROADCAST_ACTION_SERVICE_STARTS);
+        LocalBroadcastManager.getInstance(this).sendBroadcast(startIntent);
+        table_id = intent.getIntExtra(NewsListActivity.CHANNEL_ID, -1);
+        BroadcastReceiver receiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                RSSNewsLibrary.get(getApplicationContext()).clearPipe(table_id);
+                stopSelf();
+            }
+        };
+        LocalBroadcastManager.getInstance(getApplicationContext()).registerReceiver(receiver, new IntentFilter(Constants.BROADCAST_ACTION_SERVICE_STARTS));
+        return super.onStartCommand(intent, flags, startId);
     }
 
 
@@ -109,7 +126,6 @@ public class NewsFetcherService extends IntentService {
         return news;
     }
 
-
     @Override
     protected void onHandleIntent(Intent intent) {
         URL url = null;
@@ -142,27 +158,26 @@ public class NewsFetcherService extends IntentService {
                 break;
             }
         }
-        RSSReaderDBSource db = new RSSReaderDBSource(getApplicationContext());
-        db.open();
         NodeList itemList = rssNode.getChildNodes().item(1).getChildNodes();
-        for (int i = 0; i < itemList.getLength(); i++) {
+        int count = 0;
+        for (int i = 0; count < RSSNewsLibrary.NEWS_MAX_COUNT && i < itemList.getLength(); i++) {
             if (itemList.item(i).getNodeName().equals("item")) {
                 News news = parseItemLenta(itemList.item(i));
-                sendBroadcast(Constants.BROADCAST_ACTION_PROCESS, news);
-                db.insertNews(news);
-                Log.i("WORKING", "HARD");
+                if (!RSSNewsLibrary.get(getApplicationContext()).alreadyHave(news, table_id)) {
+                    sendBroadcast(Constants.BROADCAST_ACTION_PROCESS, news);
+                    ++count;
+                }
             }
         }
-        db.close();
+        RSSNewsLibrary.get(getApplicationContext()).dump(table_id);
         sendBroadcast(Constants.BROADCAST_ACTION_FINISHED, null);
     }
-
 
     public void sendBroadcast(String message, News news) {
         Intent intent = new Intent(Constants.BROADCAST_ACTION);
         intent.putExtra(Constants.BROADCAST_ACTION, message);
         if (news != null) {
-            RSSNewsLibrary.get(getApplicationContext()).addToPipe(news);
+            RSSNewsLibrary.get(getApplicationContext()).addToPipe(news, table_id);
         }
         LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
     }

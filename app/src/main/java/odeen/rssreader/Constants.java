@@ -14,11 +14,11 @@ public class Constants {
     public static final String BROADCAST_NEWS_DESCRIPTION = "odeen.BROADCAST_DESCRIPTION";
     public static final String BROADCAST_NEWS_IMAGE_LINK= "odeen.BROADCAST_IMAGE_LINK";
     public static final String BROADCAST_ACTION_INTERNET_PROBLEM = "odeen.BROADCAST_INTERNET_PROBLEM";
+    public static final String BROADCAST_ACTION_SERVICE_STARTS = "odeen.BROADCAST_ACTION_SERVICE_STARTS";
+
 
 
     public static final String BUNDLE_ID = "odeen.BUNDLE_ID";
-
-
 
 
     public static final String EXTENDED_DATA_STATUS = "odeen.STATUS";

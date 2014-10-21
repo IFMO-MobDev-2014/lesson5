@@ -23,18 +23,21 @@ public class NewsWebViewFragment extends Fragment {
 
     private News mNews;
 
-    public static Fragment newInstance(UUID id) {
+    public static Fragment newInstance(UUID id, int table_id) {
         NewsWebViewFragment fragment = new NewsWebViewFragment();
         Bundle args = new Bundle();
         args.putSerializable(Constants.BUNDLE_ID, id);
+        args.putInt(NewsListActivity.CHANNEL_ID, table_id);
         fragment.setArguments(args);
+
         return fragment;
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mNews = RSSNewsLibrary.get(getActivity()).get((UUID)getArguments().getSerializable(Constants.BUNDLE_ID));
+        int table_id = getArguments().getInt(NewsListActivity.CHANNEL_ID);
+        mNews = RSSNewsLibrary.get(getActivity()).get((UUID)getArguments().getSerializable(Constants.BUNDLE_ID), table_id);
         setHasOptionsMenu(true);
         setRetainInstance(true);
     }
@@ -75,5 +78,4 @@ public class NewsWebViewFragment extends Fragment {
                 return false;
         }
     }
-
 }

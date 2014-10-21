@@ -11,6 +11,7 @@ public class NewsWebViewActivity extends SingleFragmentActivity {
     @Override
     protected Fragment createFragment() {
         UUID id = (UUID)(getIntent().getSerializableExtra(Constants.BUNDLE_ID));
-        return NewsWebViewFragment.newInstance(id);
+        int table_id = (getIntent().getIntExtra(NewsListActivity.CHANNEL_ID, -1));
+        return NewsWebViewFragment.newInstance(id, table_id);
     }
 }

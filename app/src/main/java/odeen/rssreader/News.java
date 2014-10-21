@@ -75,7 +75,8 @@ public class News {
         return mImage;
     }
     public void decodeBitmap(String url) throws IOException {
-        mImage = decodeSampledBitmap(url, 100, 100);
+        return;
+        //mImage = decodeSampledBitmap(url, 100, 100);
     }
     public static Bitmap decodeSampledBitmap(String url, int reqWidth, int reqHeight) throws IOException {
         final BitmapFactory.Options options = new BitmapFactory.Options();
@@ -101,4 +102,9 @@ public class News {
         return inSampleSize;
     }
 
+    @Override
+    public boolean equals(Object nw) {
+        News news = (News)nw;
+        return news.getURL().equals(getURL());
+    }
 }

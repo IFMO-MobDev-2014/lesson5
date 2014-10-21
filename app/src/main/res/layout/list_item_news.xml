@@ -18,16 +18,15 @@
         android:layout_height="wrap_content"
         android:id="@+id/news_list_item_titleTextView"
         android:textStyle="bold"
+        android:textSize="20dp"
         android:paddingLeft="4dp"
         android:paddingRight="4dp"
-        android:text="Crime title"
         android:layout_toLeftOf="@id/news_list_item_imageView"/>
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Crime date"
-        android:id="@+id/news_list_item_descriptionTextView"
+        android:id="@+id/news_list_item_dateTextView"
         android:layout_below="@id/news_list_item_titleTextView"
         android:paddingLeft="4dp"
         android:paddingRight="4dp"
