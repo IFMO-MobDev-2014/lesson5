@@ -4,6 +4,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.Color;
 import android.graphics.Typeface;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -84,10 +85,11 @@ public class NewsListFragment extends Fragment {
         final View v = inflater.inflate(R.layout.fragment_news_list, container, false);
         //final LayoutInflater myInflater = LayoutInflater.from(getActivity());
         refreshLayout = (SwipeRefreshLayout)v.findViewById(R.id.refresh);
-        refreshLayout.setColorScheme(android.R.color.holo_blue_light,
-                android.R.color.holo_green_light,
-                android.R.color.holo_orange_light,
-                android.R.color.holo_red_light);//TODO change colors
+        refreshLayout.setColorSchemeColors(
+                Color.parseColor("#008b45"),
+                Color.parseColor("#00cd66"),
+                Color.parseColor("#00ee76"),
+                Color.parseColor("#00ff7f"));
 
         refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
