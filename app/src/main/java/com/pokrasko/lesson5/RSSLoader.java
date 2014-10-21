@@ -22,6 +22,8 @@ public class RSSLoader extends AsyncTask<String, Void, Feed> {
     private String rssTitle;
     private String rssDescription;
 
+    private String errorMessage = "";
+
     public RSSLoader(MainActivity activity) {
         this.activity = activity;
     }
@@ -51,11 +53,11 @@ public class RSSLoader extends AsyncTask<String, Void, Feed> {
                 feed.addItem(new FeedItem(itemTitle, itemDescription, itemLink));
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            errorMessage = activity.getResources().getString(R.string.no_internet);
         } catch (ParserConfigurationException e) {
-            e.printStackTrace();
+            errorMessage = activity.getResources().getString(R.string.bad_feed);
         } catch (SAXException e) {
-            e.printStackTrace();
+            errorMessage = activity.getResources().getString(R.string.bad_feed);
         }
 
         return feed;
@@ -64,8 +66,13 @@ public class RSSLoader extends AsyncTask<String, Void, Feed> {
     @Override
     protected void onPostExecute(final Feed feed) {
         super.onPostExecute(feed);
-        activity.setDescription(rssDescription);
-        activity.setFeed(feed);
-        activity.onRefreshed();
+        if (feed != null) {
+            activity.setDescription(rssDescription);
+            activity.setFeed(feed);
+            activity.onRefreshed(true, "");
+        } else {
+            activity.setDescription("");
+            activity.onRefreshed(false, errorMessage);
+        }
     }
 }

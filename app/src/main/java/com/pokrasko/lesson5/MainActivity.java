@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 /**
  * Created by pokrasko on 21.10.14.
@@ -72,9 +73,13 @@ public class MainActivity extends ListActivity {
         new RSSLoader(this).execute(res.getString(R.string.default_rss_link));
     }
 
-    public void onRefreshed() {
-        emptyView.setVisibility(View.GONE);
-        listView.setVisibility(View.VISIBLE);
+    public void onRefreshed(boolean valid, final String errorMessage) {
+        if (valid) {
+            emptyView.setVisibility(View.GONE);
+            listView.setVisibility(View.VISIBLE);
+        } else {
+            emptyView.setText(errorMessage);
+        }
         refreshButton.setText(R.string.refresh);
         refreshButton.setEnabled(true);
     }
