@@ -19,7 +19,7 @@ import java.util.List;
 /**
  * Created by vi34 on 20.10.14.
  */
-public class RssDownloader extends AsyncTask<String,Void,List<Entry>> {
+public class AtomDownloader extends AsyncTask<String,Void,List<Entry>> {
 
     @Override
     protected List<Entry> doInBackground(String... params) {
@@ -76,7 +76,7 @@ public class RssDownloader extends AsyncTask<String,Void,List<Entry>> {
     }
 
     private Entry readEntry(XmlPullParser parser) throws XmlPullParserException, IOException{
-        String name = null;
+        String name = "";
         String title = null;
         String summary = null;
         String link = null;
@@ -132,10 +132,8 @@ public class RssDownloader extends AsyncTask<String,Void,List<Entry>> {
         String tag = parser.getName();
         String relType = parser.getAttributeValue(null, "rel");
         if (tag.equals("link")) {
-            if (relType.equals("alternate")){
                 link = parser.getAttributeValue(null, "href");
                 parser.nextTag();
-            }
         }
         parser.require(XmlPullParser.END_TAG, null, "link");
         return link;
