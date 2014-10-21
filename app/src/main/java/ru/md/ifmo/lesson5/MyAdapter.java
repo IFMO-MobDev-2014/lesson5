@@ -10,6 +10,7 @@ import android.webkit.WebViewClient;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -42,7 +43,12 @@ public class MyAdapter extends ArrayAdapter<ItemMaster> {
                 if (!browser) {
                     link.setWebViewClient(new AppWebViewClient());
                 } else link.getSettings().setJavaScriptEnabled(true);
-                link.loadUrl(items.get(position).getLink());
+                if (items.get(position).getLink()!=null) {
+                    link.loadUrl(items.get(position).getLink());
+                } else {
+                    Toast toast = Toast.makeText(getContext(), "Can't find link", Toast.LENGTH_SHORT);
+                    toast.show();
+                }
             }
         });
         title.setText(items.get(position).getTitle());

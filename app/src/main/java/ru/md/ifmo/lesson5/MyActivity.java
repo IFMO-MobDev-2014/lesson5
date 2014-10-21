@@ -48,9 +48,9 @@ public class MyActivity extends Activity  {
         go.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                parseXML();
                 Toast toast = Toast.makeText(getApplicationContext(),"Loading...", Toast.LENGTH_SHORT);
                 toast.show();
+                parseXML();
             }
         });
     }
