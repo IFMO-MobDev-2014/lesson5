@@ -5,6 +5,7 @@
               android:layout_height="match_parent"
               android:onClick="onPostClick"
               android:layout_margin="5dp"
+              android:padding="10dp"
               android:background="#DDDDDD">
 
     <TextView
@@ -12,15 +13,22 @@
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:id="@+id/post_header" android:layout_gravity="center_horizontal"
-            android:text="Headliner" android:layout_margin="5dp"/>
+            android:text="Headliner" />
     <ImageView
             android:layout_width="fill_parent"
-            android:layout_height="80dp"
+            android:layout_height="120dp"
+            android:scaleType="centerCrop"
             android:id="@+id/post_image" android:layout_gravity="center_horizontal" android:layout_margin="5dp"/>
     <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceSmall"
-            android:text="hudioteui douehi doneuthid noteud intouditnhdoenuthi onetuh inhuo iheunitoenui onuhit onteui dnoueth inoteudi euinou"
-            android:id="@+id/post_description" android:layout_gravity="center_horizontal" android:layout_margin="10dp"/>
+            android:text="description description description description description description description description "
+            android:id="@+id/post_description" android:layout_gravity="center_horizontal" android:visibility="visible"/>
+    <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:text="date"
+            android:id="@+id/post_date" android:layout_gravity="center_horizontal|right" android:textColor="#AAAAAA"/>
 </LinearLayout>

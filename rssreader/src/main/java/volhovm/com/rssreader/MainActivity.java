@@ -27,6 +27,7 @@ public class MainActivity extends Activity {
 
         listView = (ListView) findViewById(R.id.listView);
         textView = (TextView) findViewById(R.id.editText);
+        postRSS("http://bash.im/rss/");
     }
 
 
@@ -53,6 +54,10 @@ public class MainActivity extends Activity {
 
     public void onRssRequest(View view) {
         String rss = textView.getText().toString();
+        postRSS(rss);
+    }
+
+    void postRSS(String rss) {
         try {
             rssUrl = new URL(rss);
             new LoadRSSTask(this).execute(rssUrl);

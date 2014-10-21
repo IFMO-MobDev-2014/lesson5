@@ -8,7 +8,12 @@ import org.xmlpull.v1.XmlPullParserFactory;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.Locale;
 
 /**
  * @author volhovm
@@ -18,15 +23,17 @@ import java.util.ArrayList;
 public class LoadRSSTask extends AsyncTask<URL, Void, ArrayList<LoadRSSTask.Item>>{
     public class Item {
         String title;
+        Date date;
         URL link;
         String description;
         URL enclosure;
 
-        public Item(String title, URL link, String summary, URL enclosure) {
+        public Item(String title, URL link, String summary, URL enclosure, Date pubdate) {
             this.title = title;
             this.link = link;
             this.description = summary;
             this.enclosure = enclosure;
+            this.date = pubdate;
         }
     }
     private String ns = null;
@@ -64,6 +71,7 @@ public class LoadRSSTask extends AsyncTask<URL, Void, ArrayList<LoadRSSTask.Item
         String title = null;
         URL link = null;
         String description = null;
+        Date pubdate = null;
         URL enclosure = null;
         while (parser.next() != XmlPullParser.END_TAG) {
             if (parser.getEventType() != XmlPullParser.START_TAG) {
@@ -78,11 +86,25 @@ public class LoadRSSTask extends AsyncTask<URL, Void, ArrayList<LoadRSSTask.Item
                 link = readLink(parser);
             } else if (name.equals("description")) {
                 description = readDescription(parser);
+            } else if (name.equals("pubDate")) {
+                try {
+                    pubdate = readPubDate(parser);
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
             } else {
                 skip(parser);
             }
         }
-        return new Item(title, link, description, enclosure);
+        return new Item(title, link, description, enclosure, pubdate);
+    }
+
+    private Date readPubDate(XmlPullParser parser) throws ParseException, IOException, XmlPullParserException {
+        parser.require(XmlPullParser.START_TAG, ns, "pubDate");
+        DateFormat formatter = new SimpleDateFormat("E, dd MMM yyyy HH:mm:ss Z", Locale.ENGLISH);
+        Date date = formatter.parse(readText(parser));
+        parser.require(XmlPullParser.END_TAG, ns, "pubDate");
+        return date;
     }
 
     private URL readEnclosure(XmlPullParser parser) throws IOException, XmlPullParserException {
@@ -90,7 +112,7 @@ public class LoadRSSTask extends AsyncTask<URL, Void, ArrayList<LoadRSSTask.Item
         URL enclosure = null;
         String tag = parser.getName();
         String type = parser.getAttributeValue(null, "type");
-        if (tag.equals("link")) {
+        if (tag.equals("enclosure")) {
             if (type.equals("image/jpeg")){
                 enclosure = new URL(parser.getAttributeValue(null, "url"));
                 parser.nextTag();
