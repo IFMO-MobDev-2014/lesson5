@@ -4,15 +4,16 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ListView;
-
-import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserFactory;
+import android.widget.Toast;
 
 import org.apache.http.impl.cookie.DateUtils;
+import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserFactory;
 
 import java.net.URL;
 import java.util.ArrayList;
@@ -22,6 +23,7 @@ public class MainActivity extends Activity {
 
     private EditText urlText;
     private ListView newsList;
+    private Handler h;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,6 +31,7 @@ public class MainActivity extends Activity {
         setContentView(R.layout.activity_main);
         urlText = (EditText) findViewById(R.id.urlText);
         newsList = (ListView) findViewById(R.id.newsList);
+        h = new Handler();
     }
 
     public void okClicked(View view) {
@@ -76,7 +79,12 @@ public class MainActivity extends Activity {
                     eventType = xpp.next();
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                h.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(getApplicationContext(), R.string.exception, Toast.LENGTH_SHORT).show();
+                    }
+                });
             }
             return null;
         }
