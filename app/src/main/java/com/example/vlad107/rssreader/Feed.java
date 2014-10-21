@@ -6,14 +6,12 @@ package com.example.vlad107.rssreader;
 public class Feed {
     private String author;
     private String title;
-    private String summary;
     private String link;
     private String date;
 
-    public Feed(String author, String title, String summary, String date, String link) {
+    public Feed(String author, String title, String date, String link) {
         this.author = author;
         this.title = title;
-        this.summary = summary;
         this.date = date;
         this.link = link;
     }
@@ -35,8 +33,4 @@ public class Feed {
         return title;
     }
 
-    public String getSummary() {
-
-        return summary;
-    }
 }

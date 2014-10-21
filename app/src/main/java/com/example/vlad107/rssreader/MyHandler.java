@@ -1,7 +1,5 @@
 package com.example.vlad107.rssreader;
 
-import android.text.Html;
-
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
@@ -18,13 +16,11 @@ public class MyHandler extends DefaultHandler {
 
     private boolean bAuthor = false;
     private boolean bTitle = false;
-    private boolean bSummary = false;
     private boolean bName = false;
     private boolean bDate = false;
     private boolean bEntry = false;
     private String nAuthor = null;
     private String nTitle = null;
-    private String nSummary = "";
     private String nLink = null;
     private String nDate = null;
 
@@ -38,8 +34,6 @@ public class MyHandler extends DefaultHandler {
             bAuthor = true;
         } else if (qName.equalsIgnoreCase("title")) {
             bTitle = true;
-        } else if (qName.equalsIgnoreCase("summary")) {
-            bSummary = true;
         } else if (qName.equalsIgnoreCase("name")) {
             bName = true;
         } else if (qName.equalsIgnoreCase("link") && bEntry) {
@@ -54,9 +48,7 @@ public class MyHandler extends DefaultHandler {
     @Override
     public void endElement(String uri, String localName, String qName) {
         if (qName.equalsIgnoreCase("entry")) {
-            feed.add(new Feed(nAuthor, nTitle, Html.fromHtml(nSummary).toString(), nDate, nLink));
-            bSummary = false;
-            nSummary = "";
+            feed.add(new Feed(nAuthor, nTitle, nDate, nLink));
             bEntry = false;
         }
     }
@@ -70,8 +62,6 @@ public class MyHandler extends DefaultHandler {
         } else if (bTitle) {
             nTitle = new String(ch, start, length);
             bTitle = false;
-        } else if (bSummary) {
-            nSummary += new String(ch, start, length);
         } else if (bDate) {
             nDate = new String(ch, start, length);
             bDate = false;

@@ -23,7 +23,7 @@ public class GetFeed extends AsyncTask<String, Void, MyHandler> {
 
     ListView listView = null;
     Context context;
-    boolean error;
+    boolean error = false;
 
     public GetFeed(ListView listView, Context context) {
         this.listView = listView;
