@@ -1,28 +1,16 @@
 package retloko.org.rssreader;
 
-import android.app.Activity;
 import android.app.ListActivity;
 import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.view.View;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
-
-import java.util.ArrayList;
-
 
 public class MainActivity extends ListActivity {
-    private static final String RSS_URL = "http://stackoverflow.com/feeds/tag/android";
+    private static final String RSS_URL = "http://bash.im/rss";
 
-    private Button refreshButton;
     private RssLoader rssLoader;
     private TextView emptyView;
+    private ListView listView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,37 +20,42 @@ public class MainActivity extends ListActivity {
         rssLoader = new RssLoader(this);
 
         emptyView = (TextView) findViewById(android.R.id.empty);
-
-        refreshButton = (Button) findViewById(R.id.refresh);
-        refreshButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                onRefresh();
-            }
-        });
+        listView = (ListView) findViewById(android.R.id.list);
 
         onRefresh();
     }
 
     public void onRefresh() {
-        refreshButton.setEnabled(false);
-        refreshButton.setText(R.string.refreshing_btn);
-        emptyView.setText(R.string.loading_msg);
-        rssLoader.loadUrl(RSS_URL);
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                emptyView.setText(R.string.loading_msg);
+                rssLoader.loadUrl(RSS_URL);
+            }
+        });
     }
 
-    public void onRefreshDone() {
-        refreshButton.setText(R.string.refresh_btn);
-        refreshButton.setEnabled(true);
+    public void onRefreshDone(EntryAdapter adapter) {
+        listView.setAdapter(adapter);
     }
 
     public void onNetworkError(Exception e) {
-        emptyView.setText(R.string.net_error_msg);
-        onRefreshDone();
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                setTitle(R.string.app_name);
+                emptyView.setText(R.string.net_error_msg);
+            }
+        });
     }
 
     public void onFeedError(Exception e) {
-        emptyView.setText(R.string.feed_error_msg);
-        onRefreshDone();
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                setTitle(R.string.app_name);
+                emptyView.setText(R.string.feed_error_msg);
+            }
+        });
     }
 }

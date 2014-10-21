@@ -8,7 +8,6 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.List;
 import java.util.Random;
@@ -19,20 +18,6 @@ import java.util.Random;
 public class EntryAdapter extends BaseAdapter {
     public static final String ARTICLE_TITLE = "title";
     public static final String ARTICLE_URL = "url";
-
-    private class JavascriptInterface {
-        @android.webkit.JavascriptInterface
-        public void showArticle(int i) {
-            RssLoader.Entry entry = (RssLoader.Entry) getItem(i);
-            Intent articleIntent = new Intent(activity, ArticleActivity.class);
-
-            articleIntent.putExtra(ARTICLE_TITLE, entry.title);
-            articleIntent.putExtra(ARTICLE_URL, entry.link);
-
-            activity.startActivity(articleIntent);
-        }
-    }
-
     private final String javascriptNamespace;
     private final MainActivity activity;
     private final List<RssLoader.Entry> data;
@@ -81,7 +66,7 @@ public class EntryAdapter extends BaseAdapter {
 
         final RssLoader.Entry entry = (RssLoader.Entry) getItem(i);
 
-        titleView.setText(entry.title);
+        titleView.setText(entry.title.trim());
         titleView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -93,12 +78,25 @@ public class EntryAdapter extends BaseAdapter {
         String showArticleHtml = String.format(activity.getString(R.string.show_article_html), javascriptNamespace, i);
 
         summaryView.setVisibility(entry.isShowSummary() ? View.VISIBLE : View.GONE);
-        summaryView.loadData(entry.summary + showArticleHtml, "text/html", null);
+        summaryView.loadData(entry.summary + showArticleHtml, "text/html; charset=utf-8", null);
 
         WebSettings webSettings = summaryView.getSettings();
         webSettings.setJavaScriptEnabled(true);
         summaryView.addJavascriptInterface(javascriptInterface, javascriptNamespace);
 
         return convertView;
+    }
+
+    private class JavascriptInterface {
+        @android.webkit.JavascriptInterface
+        public void showArticle(int i) {
+            RssLoader.Entry entry = (RssLoader.Entry) getItem(i);
+            Intent articleIntent = new Intent(activity, ArticleActivity.class);
+
+            articleIntent.putExtra(ARTICLE_TITLE, entry.title);
+            articleIntent.putExtra(ARTICLE_URL, entry.link);
+
+            activity.startActivity(articleIntent);
+        }
     }
 }
