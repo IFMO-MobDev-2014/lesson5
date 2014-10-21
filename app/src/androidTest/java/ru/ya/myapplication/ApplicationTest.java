@@ -1,4 +1,4 @@
-package ru.ya.lesson5;
+package ru.ya.myapplication;
 
 import android.app.Application;
 import android.test.ApplicationTestCase;
