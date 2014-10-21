@@ -28,11 +28,13 @@ public class Downloader extends AsyncTask<Void, Void, Void> {
     ArrayAdapter<String> adapter;
     XmlPullParser parser;
     ListView lv;
+    boolean failed;
 
     Downloader(Context context, ListView lv) {
         this.context = context;
         this.lv = lv;
         this.adapter = new ArrayAdapter<String>(context, android.R.layout.simple_list_item_1);
+        this.failed = false;
     }
 
     void download() throws IOException, XmlPullParserException {
@@ -60,8 +62,8 @@ public class Downloader extends AsyncTask<Void, Void, Void> {
                 throw new Exception();
             }
         } catch (Exception e) {
-            Toast.makeText(context, "network error", Toast.LENGTH_SHORT).show();
             adapter.clear();
+            failed = true;
             Log.i("", e.getMessage());
         }
         return null;
@@ -70,8 +72,11 @@ public class Downloader extends AsyncTask<Void, Void, Void> {
     @Override
     protected void onPostExecute(Void aVoid) {
         super.onPostExecute(aVoid);
-        Log.i("", Integer.toString(adapter.getCount()));
-        Log.i("", "OK");
+        if (failed) {
+            Toast.makeText(context, "network error", Toast.LENGTH_SHORT).show();
+        } else {
+            Log.i("", "OK");
+        }
         if (!adapter.isEmpty()) {
             lv.setAdapter(adapter);
         }
