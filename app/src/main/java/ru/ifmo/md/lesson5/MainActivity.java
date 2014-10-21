@@ -48,16 +48,14 @@ public class MainActivity extends Activity {
         loadAndParse();
     }
 
-    public void loadAndParse(){
+    public void loadAndParse() {
         Toast toast = Toast.makeText(this, "Please wait while the RSS feed is being downloaded", Toast.LENGTH_LONG);
         toast.show();
         items.clear();
         adapter.notifyDataSetChanged();
-        try{
+        try {
             new RssParseTask(this).execute(editText.getText().toString());
-        }
-        catch (Exception e)
-        {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }

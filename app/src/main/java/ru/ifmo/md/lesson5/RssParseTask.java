@@ -69,7 +69,6 @@ public class RssParseTask extends AsyncTask<String, Integer, LinkedList<Item>> {
         activity.runOnUiThread(new Runnable() {
             public void run() {
                 MainActivity.listView.setAdapter(MainActivity.adapter);
-                //MainActivity.adapter.notifyDataSetChanged();
             }
         });
     }

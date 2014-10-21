@@ -1,36 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="horizontal" android:layout_width="match_parent"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="horizontal"
     android:weightSum="1">
 
     <TextView
+        android:id="@+id/textView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/textView"
         android:layout_gravity="center_horizontal" />
 
     <WebView
+        android:id="@+id/webView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:id="@+id/webView" />
+        android:layout_height="match_parent" />
 
     <ImageView
+        android:id="@+id/imageView"
         android:layout_width="wrap_content"
         android:layout_height="337dp"
-        android:id="@+id/imageView"
+        android:layout_gravity="center_vertical"
         android:clickable="true"
-        android:onClick="nextImage"
         android:minHeight="500dp"
         android:minWidth="500dp"
-        android:layout_gravity="center_vertical" />
+        android:onClick="nextImage" />
 
     <ProgressBar
+        android:id="@+id/progressBar"
         style="?android:attr/progressBarStyleHorizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/progressBar"
         android:max="9" />
 
 </LinearLayout>

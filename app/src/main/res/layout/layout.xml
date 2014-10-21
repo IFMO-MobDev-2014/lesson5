@@ -1,34 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    android:orientation="vertical"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
     android:weightSum="1">
 
 
     <EditText
+        android:id="@+id/editText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/editText"
-        android:textStyle="normal"
         android:inputType="text"
-        android:text="http://feeds.bbci.co.uk/news/rss.xml" />
+        android:text="@string/defaultPage"
+        android:textStyle="normal" />
 
     <Button
+        android:id="@+id/button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
 
-        android:id="@+id/button"
-        android:text="Connect"
+        android:layout_gravity="center_horizontal"
         android:clickable="true"
         android:enabled="true"
-        android:onClick="onConnectPress" />
+        android:onClick="onConnectPress"
+        android:text="@string/connect" />
 
     <ListView
+        android:id="@+id/listView"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/listView" />
+        android:layout_height="wrap_content" />
 
 </LinearLayout>
