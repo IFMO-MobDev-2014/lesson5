@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical"
+    android:gravity="center">
+    
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Add URL"
+        android:padding="10dp"
+        android:id="@+id/add"
+        android:onClick="addUrlAction"/>
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/edit"
+        android:text="Edit URLs"
+        android:layout_toRightOf="@+id/add"
+        android:padding="10dp"
+        android:onClick="editResources"/>
+    
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Update"
+        android:padding="10dp"
+        android:layout_toRightOf="@+id/edit"
+        android:onClick="update"
+        />
+    
+
+    <ListView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/list_view"
+        android:layout_below="@+id/add"
+    />
+
+</RelativeLayout>
