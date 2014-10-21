@@ -1,6 +1,7 @@
 package volhovm.com.rssreader;
 
 import android.os.AsyncTask;
+import android.text.Html;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 import org.xmlpull.v1.XmlPullParserFactory;
@@ -141,7 +142,7 @@ public class LoadRSSTask extends AsyncTask<URL, Void, ArrayList<LoadRSSTask.Item
     // Processes summary tags in the feed.
     private String readDescription(XmlPullParser parser) throws IOException, XmlPullParserException {
         parser.require(XmlPullParser.START_TAG, ns, "description");
-        String summary = readText(parser);
+        String summary = Html.fromHtml(readText(parser)).toString();
         parser.require(XmlPullParser.END_TAG, ns, "description");
         return summary;
     }

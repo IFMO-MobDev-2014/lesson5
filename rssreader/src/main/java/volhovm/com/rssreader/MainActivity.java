@@ -75,8 +75,4 @@ public class MainActivity extends Activity {
         adapter = new PostAdapter(this, list, listA);
         listView.setAdapter(adapter);
     }
-
-    void onPostClick(View view) {
-        // TODO
-    }
 }

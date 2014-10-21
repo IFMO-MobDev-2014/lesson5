@@ -3,25 +3,30 @@
               android:orientation="vertical"
               android:layout_width="match_parent"
               android:layout_height="match_parent"
-              android:onClick="onPostClick"
               android:layout_margin="5dp"
+              android:padding="5dp"
               android:background="#DDDDDD">
-
     <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceLarge"
-            android:id="@+id/post_noim_header" android:layout_gravity="center_horizontal"
-            android:text="Headliner" android:layout_margin="10dp"/>
+            android:hint="@string/test_title"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:id="@+id/post_noim_header"
+            android:layout_gravity="center_horizontal"/>
     <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:hint="@string/test_description"
             android:textAppearance="?android:attr/textAppearanceSmall"
-            android:id="@+id/post_noim_description" android:layout_gravity="center_horizontal" android:layout_margin="10dp"/>
+            android:id="@+id/post_noim_description"
+            android:layout_gravity="center_horizontal"/>
 
     <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:hint="@string/test_date"
             android:textAppearance="?android:attr/textAppearanceSmall"
-            android:text="date"
-            android:id="@+id/post_noim_date" android:layout_gravity="center_horizontal|right" android:textColor="#AAAAAA"/></LinearLayout>
+            android:layout_gravity="end"
+            android:id="@+id/post_noim_date"
+            android:textColor="#AAAAAA"/>
+</LinearLayout>

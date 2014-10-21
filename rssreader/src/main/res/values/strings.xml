@@ -4,5 +4,10 @@
     <string name="app_name">RSSReader</string>
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
+    <string name="show_feed">Show</string>
+    <string name="default_text_feed">http://news.liga.net/news/rss.xml</string>
+    <string name="test_title">Title</string>
+    <string name="test_description">description</string>
+    <string name="test_date">time</string>
 
 </resources>
