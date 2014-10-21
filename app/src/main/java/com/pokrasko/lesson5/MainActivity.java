@@ -25,6 +25,8 @@ public class MainActivity extends ListActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        setTitle(R.string.default_rss_title);
+
         res = getResources();
 
         descriptionView = (TextView) findViewById(R.id.description);
@@ -77,9 +79,10 @@ public class MainActivity extends ListActivity {
         refreshButton.setEnabled(true);
     }
 
-    public void showMore(String link) {
+    public void showMore(String title, String link) {
         Intent intent = new Intent(this, WebActivity.class);
         intent.putExtra("link", link);
+        intent.putExtra("title", title);
         startActivity(intent);
     }
 }

@@ -16,6 +16,8 @@ public class WebActivity extends Activity {
         webView = new WebView(this);
         setContentView(webView);
 
+        setTitle(getIntent().getStringExtra("title"));
+
         String link = getIntent().getStringExtra("link");
         webView.loadUrl(link);
     }

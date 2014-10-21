@@ -17,10 +17,6 @@ public class FeedAdapter extends BaseAdapter {
         this.feed = feed;
     }
 
-    public void setFeed(Feed feed) {
-        this.feed = feed;
-    }
-
     public void add(FeedItem item) {
         feed.addItem(item);
         notifyDataSetChanged();
@@ -67,7 +63,9 @@ public class FeedAdapter extends BaseAdapter {
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ((MainActivity) viewGroup.getContext()).showMore(feed.getItem(i).getLink());
+                ((MainActivity) viewGroup.getContext()).showMore(
+                        feed.getItem(i).getTitle()
+                      , feed.getItem(i).getLink());
             }
         });
         return view;

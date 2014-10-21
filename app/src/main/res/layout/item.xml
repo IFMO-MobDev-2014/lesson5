@@ -6,21 +6,25 @@
 
     <LinearLayout
         android:orientation="horizontal"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent">
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
 
         <TextView
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/title"
             android:layout_weight="1"
-            android:clickable="true" />
+            android:clickable="true"
+            android:textStyle="bold"
+            style="@android:style/TextAppearance.DeviceDefault.Medium"
+            android:layout_gravity="center_vertical" />
 
         <Button
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="50dp"
             android:text="@string/get_full"
-            android:id="@+id/fullButton" />
+            android:id="@+id/fullButton"
+            android:layout_gravity="center_vertical" />
     </LinearLayout>
 
     <TextView
