@@ -21,7 +21,7 @@ public class SimpleSax extends DefaultHandler {
     private static final DateFormat dateFormat = new SimpleDateFormat("EEE, d MMM yyyy HH:mm:ss Z", Locale.US);
     public static final String LOG_TAG = SimpleSax.class.getSimpleName();
 
-    public static List<RssItem> parseInputSource(InputSource is) {
+    public static List<RssItem> parseInputSource(InputSource is) throws SAXException {
         try {
             SAXParserFactory saxParserFactory = SAXParserFactory.newInstance();
             SAXParser saxParser = saxParserFactory.newSAXParser();
@@ -31,9 +31,6 @@ public class SimpleSax extends DefaultHandler {
         } catch (ParserConfigurationException e) {
             e.printStackTrace();
             Log.e(LOG_TAG, "Error occurred due to invalid parser configuration");
-        } catch (SAXException e) {
-            e.printStackTrace();
-            Log.e(LOG_TAG, "Sax error occurred");
         } catch (IOException e) {
             e.printStackTrace();
             Log.e(LOG_TAG, "Error occurred during parsing");

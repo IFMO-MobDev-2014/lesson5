@@ -6,6 +6,7 @@ import android.os.AsyncTask;
 import android.widget.Toast;
 
 import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -19,6 +20,7 @@ import java.util.List;
 public class RssFeedFetcher extends AsyncTask<String, Void, RssFeed> {
     private RssItemAdapter adapter;
     private Context context;
+    private String errorMessage;
 
     public RssFeedFetcher(RssItemAdapter adapter, Context context) {
         this.adapter = adapter;
@@ -46,8 +48,13 @@ public class RssFeedFetcher extends AsyncTask<String, Void, RssFeed> {
             return new RssFeed(is);
         } catch (MalformedURLException e) {
             e.printStackTrace();
+            errorMessage = "Invalid URL";
         } catch (IOException e) {
             e.printStackTrace();
+            errorMessage = "No network connection";
+        } catch (SAXException e) {
+            e.printStackTrace();
+            errorMessage = "Couldn't parse RSS from web page";
         }
         return null;
     }
@@ -55,7 +62,7 @@ public class RssFeedFetcher extends AsyncTask<String, Void, RssFeed> {
     @Override
     protected void onPostExecute(RssFeed rssFeed) {
         if (rssFeed == null) {
-            Toast toast = Toast.makeText(context, "No network connection", Toast.LENGTH_SHORT);
+            Toast toast = Toast.makeText(context, errorMessage, Toast.LENGTH_SHORT);
             toast.show();
         } else {
             List<RssItem> rssItems = rssFeed.getRssItemList();
