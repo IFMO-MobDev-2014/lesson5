@@ -14,7 +14,8 @@
             android:layout_height="wrap_content"
             android:id="@+id/description"
             style="@android:style/TextAppearance.DeviceDefault.Medium"
-            android:layout_weight="1" />
+            android:layout_weight="1"
+            android:layout_gravity="center_vertical" />
 
         <Button
             android:layout_width="100dp"

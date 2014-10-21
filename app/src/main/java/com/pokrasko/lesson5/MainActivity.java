@@ -8,7 +8,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 /**
  * Created by pokrasko on 21.10.14.
@@ -26,7 +25,7 @@ public class MainActivity extends ListActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        setTitle(R.string.default_rss_title);
+//        setTitle(R.string.default_rss_title);
 
         res = getResources();
 
@@ -35,8 +34,8 @@ public class MainActivity extends ListActivity {
         emptyView = (TextView) findViewById(R.id.empty);
 
         FeedAdapter adapter = new FeedAdapter(new Feed(
-                res.getString(R.string.default_rss_title)
-              , res.getString(R.string.default_rss_description)));
+                ""
+              , ""));
         setListAdapter(adapter);
 
         refreshButton = (Button) findViewById(R.id.refreshButton);
@@ -73,13 +72,14 @@ public class MainActivity extends ListActivity {
         new RSSLoader(this).execute(res.getString(R.string.default_rss_link));
     }
 
-    public void onRefreshed(boolean valid, final String errorMessage) {
+    public void onRefreshed(boolean valid, String newTitle, final String errorMessage) {
         if (valid) {
             emptyView.setVisibility(View.GONE);
             listView.setVisibility(View.VISIBLE);
         } else {
             emptyView.setText(errorMessage);
         }
+        setTitle(newTitle);
         refreshButton.setText(R.string.refresh);
         refreshButton.setEnabled(true);
     }
