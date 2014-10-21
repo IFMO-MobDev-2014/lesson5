@@ -20,19 +20,19 @@ public class RSSDatabaseHelper extends SQLiteOpenHelper {
     private static final String TABLE_CHANNEL = "channel";
     private static final String COLUMN_CHANNEL_ID = "_id";
     // public for SimpleCursorAdapter
-    public static final String COLUMN_CHANNEL_TITLE = "title";
-    public static final String COLUMN_CHANNEL_URL = "url";
+    public  static final String COLUMN_CHANNEL_TITLE = "title";
+    public  static final String COLUMN_CHANNEL_URL = "url";
     private static final String COLUMN_CHANNEL_DESCRIPTION = "description";
     private static final String COLUMN_CHANNEL_FAVOURITE = "favourite";
 
     private static final String TABLE_ITEM = "item";
     private static final String COLUMN_ITEM_ID = "_id";
-    private static final String COLUMN_ITEM_TITLE = "title";
+    public  static final String COLUMN_ITEM_TITLE = "title";
     private static final String COLUMN_ITEM_URL = "url";
-    private static final String COLUMN_ITEM_DESCRIPTION = "description";
+    public  static final String COLUMN_ITEM_DESCRIPTION = "description";
     private static final String COLUMN_ITEM_DATE = "date";
     private static final String COLUMN_ITEM_FAVOURITE = "favourite";
-    private static final String COLUMN_ITEM_CHANNEL_ID = "_id";
+    private static final String COLUMN_ITEM_CHANNEL_ID = "ch_id";
 
     private static final String INIT_CHANNEL_DB =
             "CREATE TABLE " + TABLE_CHANNEL + " (" +
@@ -51,8 +51,9 @@ public class RSSDatabaseHelper extends SQLiteOpenHelper {
                     COLUMN_ITEM_DESCRIPTION + " TEXT, "    +
                     COLUMN_ITEM_DATE        + " TEXT, "    +
                     COLUMN_ITEM_FAVOURITE   + " TEXT, "    +
-                    "FOREIGN KEY(" + COLUMN_ITEM_CHANNEL_ID + ") REFERENCES " +
-                            TABLE_CHANNEL + "(" + COLUMN_CHANNEL_ID + ")"     +
+                    //"FOREIGN KEY(" + COLUMN_ITEM_CHANNEL_ID + ") REFERENCES " +
+                    //        TABLE_CHANNEL + "(" + COLUMN_CHANNEL_ID + ")"     +
+                    COLUMN_ITEM_CHANNEL_ID  + " INTEGER"   +
             ");";
 
 
@@ -76,7 +77,7 @@ public class RSSDatabaseHelper extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         db.execSQL(INIT_CHANNEL_DB);
         db.execSQL(INIT_ITEM_DB);
-
+        /*
         for (String url : predefinedRss) {
             ContentValues cv = new ContentValues();
             cv.put(COLUMN_CHANNEL_TITLE, "Title: " + url);
@@ -85,7 +86,7 @@ public class RSSDatabaseHelper extends SQLiteOpenHelper {
             cv.put(COLUMN_CHANNEL_FAVOURITE, 0);
             db.insert(TABLE_CHANNEL, null, cv);
         }
-
+        */
     }
 
     @Override
@@ -109,6 +110,7 @@ public class RSSDatabaseHelper extends SQLiteOpenHelper {
         cv.put(COLUMN_ITEM_DESCRIPTION, item.getDescription());
         cv.put(COLUMN_ITEM_DATE, item.getDate());
         cv.put(COLUMN_ITEM_FAVOURITE, item.getFavourite());
+        cv.put(COLUMN_ITEM_CHANNEL_ID, item.getChannelId());
         return mWritableDB.insert(TABLE_ITEM, null, cv);
     }
 
@@ -133,14 +135,64 @@ public class RSSDatabaseHelper extends SQLiteOpenHelper {
     public Cursor getAllChannels() {
         return mReadableDB.query(
                 TABLE_CHANNEL,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+        );
+    }
+
+    public Cursor getAllItems(long rssId) {
+        Cursor cursor = mReadableDB.query(
+                TABLE_ITEM,
                 null,                              // all columns
-                null,                              // select *
-                null,                              // selectionArgs
+                COLUMN_ITEM_CHANNEL_ID + " = ?",
+                new String[]{String.valueOf(rssId)},                              // selectionArgs
                 null,                              // group by
                 null,                              // order by
                 null,
                 null
         );
+        return cursor;
+    }
+
+    public ItemCursor getItem(long itemId) {
+        Cursor cursor = mReadableDB.query(
+                TABLE_ITEM,
+                null,                              // all columns
+                COLUMN_ITEM_ID + " = ?",           // specify id
+                new String[]{String.valueOf(itemId)},  // exactly 'id'
+                null,                              // group by
+                null,                              // order by
+                null,                              // having
+                "1"                                // limit by 1
+        );
+        return new ItemCursor(cursor);
+    }
+
+    public static class ItemCursor extends CursorWrapper {
+
+        public ItemCursor(Cursor cursor) {
+            super(cursor);
+        }
+
+        public RSSItem getItem() {
+            moveToFirst();
+            if (isBeforeFirst() || isAfterLast()) {
+                return null;
+            }
+            RSSItem item = new RSSItem();
+            item.setId(getLong(getColumnIndex(COLUMN_ITEM_ID)));
+            item.setTitle(getString(getColumnIndex(COLUMN_ITEM_TITLE)));
+            item.setUrl(getString(getColumnIndex(COLUMN_ITEM_URL)));
+            item.setDescription(getString(getColumnIndex(COLUMN_ITEM_DESCRIPTION)));
+            item.setDate(getString(getColumnIndex(COLUMN_ITEM_DATE)));
+            item.setFavourite(getInt(getColumnIndex(COLUMN_ITEM_FAVOURITE)));
+            return item;
+        }
     }
 
     public static class ChannelCursor extends CursorWrapper {
@@ -163,8 +215,6 @@ public class RSSDatabaseHelper extends SQLiteOpenHelper {
             return channel;
         }
 
-        //TODO: implement
-        //public RSSChannel[] getAllChannels() {}
     }
 
 }

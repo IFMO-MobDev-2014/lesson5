@@ -16,7 +16,7 @@ import java.util.List;
 /**
  * Created by Nikita Yaschenko on 21.10.14.
  */
-public class RSSReader {
+public class RSSParser {
 
     private static final String ns = null;
 

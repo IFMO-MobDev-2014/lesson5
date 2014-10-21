@@ -3,6 +3,8 @@ package ru.ifmo.md.lesson5.rssreader;
 import android.content.Context;
 import android.database.Cursor;
 
+import java.util.List;
+
 import ru.ifmo.md.lesson5.rssreader.utils.RSSChannel;
 import ru.ifmo.md.lesson5.rssreader.utils.RSSItem;
 
@@ -46,18 +48,22 @@ public class RSSManager {
         return id;
     }
 
+    public void addItems(List<RSSItem> items) {
+        for (RSSItem item : items) {
+            addItem(item);
+        }
+    }
+
     public Cursor getAllChannels() {
         return mHelper.getAllChannels();
     }
-    /*
 
-    public Cursor getAllRss() {
-        return mHelper.getAllRss();
+    public Cursor getAllItems(long rssId) {
+        return mHelper.getAllItems(rssId);
     }
 
-    public RssItem getRss(long id) {
-        return mHelper.getRss(id).getRss();
+    public RSSItem getItem(long itemId) {
+        return mHelper.getItem(itemId).getItem();
     }
 
-    */
 }

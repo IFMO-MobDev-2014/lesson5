@@ -3,15 +3,13 @@ package ru.ifmo.md.lesson5.rssreader.utils;
 import android.content.AsyncTaskLoader;
 import android.content.Context;
 import android.os.Bundle;
-import android.util.Pair;
 
 import java.net.URL;
-import java.util.List;
 
 /**
  * Created by Nikita Yaschenko on 21.10.14.
  */
-public class RSSLoader extends DataLoader<RSSChannel> {
+public class RSSLoader extends AsyncTaskLoader<RSSChannel> {
     private static final String ARGS_URL = "URL";
 
     private String mUrl = null;
@@ -29,7 +27,9 @@ public class RSSLoader extends DataLoader<RSSChannel> {
             return null;
         }
         try {
-            RSSChannel rss = new RSSReader().parse(new URL(mUrl));
+            String url = new String(mUrl);
+            mUrl = null;
+            RSSChannel rss = new RSSParser().parse(new URL(url));
             return rss;
         } catch (Exception e) {
             return null;

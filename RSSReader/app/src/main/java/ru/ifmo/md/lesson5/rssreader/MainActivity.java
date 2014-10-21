@@ -25,6 +25,7 @@ import android.widget.Toast;
 
 import ru.ifmo.md.lesson5.rssreader.utils.ChannelsLoader;
 import ru.ifmo.md.lesson5.rssreader.utils.RSSChannel;
+import ru.ifmo.md.lesson5.rssreader.utils.RSSItem;
 import ru.ifmo.md.lesson5.rssreader.utils.RSSLoader;
 
 
@@ -37,6 +38,7 @@ public class MainActivity extends ListActivity {
 
     private EditText mEditTextAdd;
     private SimpleCursorAdapter mAdapter;
+    private String mLastAddUrl = null;
 
     private RSSManager mManager;
 
@@ -116,6 +118,10 @@ public class MainActivity extends ListActivity {
                 if (actionId == getResources().getInteger(R.integer.actionAdd)) {
                     String potentialUrl = mEditTextAdd.getText().toString();
                     if (Patterns.WEB_URL.matcher(potentialUrl).matches()) {
+                        if (mLastAddUrl != null && potentialUrl.equals(mLastAddUrl)) {
+                            return true;
+                        }
+                        mLastAddUrl = new String(potentialUrl);
                         Bundle args = new Bundle();
                         args.putString(ARGS_URL, potentialUrl);
                         getLoaderManager().initLoader(LOADER_CHANNELS, args, mRSSLoaderCallbacks).forceLoad();
@@ -185,7 +191,12 @@ public class MainActivity extends ListActivity {
     private void addRss(RSSChannel channel) {
         if (channel != null) {
             long id = mManager.addChannel(channel);
+            // TODO: move to RSSManager
+            for (RSSItem item : channel.getRssItems()) {
+                item.setChannelId(channel.getId());
+            }
             getLoaderManager().getLoader(LOADER_RSS).forceLoad();
+            mManager.addItems(channel.getRssItems());
         }
     }
 

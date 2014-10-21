@@ -5,6 +5,7 @@ package ru.ifmo.md.lesson5.rssreader.utils;
  */
 public class RSSItem {
     private long mId;
+    private long mChannelId;
     private String mTitle;
     private String mUrl;
     //TODO: use Date instead of String
@@ -14,6 +15,7 @@ public class RSSItem {
 
     public RSSItem() {
         mId = -1;
+        mChannelId = -1;
     }
 
     public long getId() {
@@ -62,5 +64,13 @@ public class RSSItem {
 
     public void setFavourite(int favourite) {
         mFavourite = favourite;
+    }
+
+    public long getChannelId() {
+        return mChannelId;
+    }
+
+    public void setChannelId(long channelId) {
+        mChannelId = channelId;
     }
 }

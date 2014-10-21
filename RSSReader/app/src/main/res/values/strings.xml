@@ -12,5 +12,6 @@
     <string name="add_to_favourite_item">Add to favourite</string>
     <string name="title_activity_rss">RssActivity</string>
     <string name="bad_rss">Unsupported RSS format</string>
+    <string name="title_activity_web_view">WebViewActivity</string>
 
 </resources>

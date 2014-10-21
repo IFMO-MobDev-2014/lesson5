@@ -22,6 +22,10 @@
             android:name=".RssActivity"
             android:label="@string/title_activity_rss" >
         </activity>
+        <activity
+            android:name=".WebViewActivity"
+            android:label="@string/title_activity_web_view" >
+        </activity>
     </application>
 
 </manifest>
