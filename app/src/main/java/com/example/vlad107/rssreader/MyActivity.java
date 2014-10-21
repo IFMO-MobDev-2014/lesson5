@@ -50,7 +50,7 @@ public class MyActivity extends ActionBarActivity {
 
     public void viewContent(View view) {
         String link = "http://stackoverflow.com/feeds/tag/android";
-        GetFeed getFeed = new GetFeed((ListView) findViewById(R.id.listView));
+        GetFeed getFeed = new GetFeed((ListView) findViewById(R.id.listView), getBaseContext());
         getFeed.execute(link);
     }
 }

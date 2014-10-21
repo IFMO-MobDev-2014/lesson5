@@ -1,7 +1,9 @@
 package com.example.vlad107.rssreader;
 
+import android.content.Context;
 import android.os.AsyncTask;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import org.xml.sax.SAXException;
 
@@ -20,9 +22,12 @@ import javax.xml.parsers.SAXParserFactory;
 public class GetFeed extends AsyncTask<String, Void, MyHandler> {
 
     ListView listView = null;
+    Context context;
+    boolean error;
 
-    public GetFeed(ListView listView) {
+    public GetFeed(ListView listView, Context context) {
         this.listView = listView;
+        this.context = context;
     }
 
     @Override
@@ -35,6 +40,7 @@ public class GetFeed extends AsyncTask<String, Void, MyHandler> {
             SAXParser saxParser = parserFactory.newSAXParser();
             MyHandler handler = new MyHandler();
             saxParser.parse(con.getInputStream(), handler);
+            error = false;
             return handler;
         } catch (MalformedURLException e) {
             e.printStackTrace();
@@ -45,11 +51,16 @@ public class GetFeed extends AsyncTask<String, Void, MyHandler> {
         } catch (SAXException e) {
             e.printStackTrace();
         }
+        error = true;
         return null;
     }
 
     @Override
     protected void onPostExecute(MyHandler myHandler) {
+        if (error) {
+            Toast.makeText(context, "Page is not available", Toast.LENGTH_LONG).show();
+            return;
+        }
         listView.setAdapter(new FeedAdapter(myHandler.getFeed()));
     }
 }
