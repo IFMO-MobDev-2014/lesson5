@@ -2,6 +2,7 @@ package ru.ifmo.ctd.fotjev.rss_reader;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.text.Spanned;
 import android.view.View;
@@ -19,8 +20,10 @@ import java.util.HashMap;
 public class Feed extends Activity {
 
     private ListView feedView;
+    private ArrayList<HashMap<String, Spanned>> feed;
 
-    private ArrayList<HashMap<String, Spanned>> items;
+    private final String defaultFeed = "http://stackoverflow.com/feeds/tag/android";
+    //private final String defaultFeed = "http://bash.im/rss/";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,19 +33,19 @@ public class Feed extends Activity {
         new FeedDLParseTask(new Callback<ArrayList<HashMap<String, Spanned>>>() {
             @Override
             public void onSuccess(ArrayList<HashMap<String, Spanned>> result) {
-                items = result;
-                addToListView();
+                feed = result;
+                addToListView(result);
             }
 
             @Override
             public void onError(Exception e) {
-                Toast.makeText(Feed.this, e.getLocalizedMessage(), Toast.LENGTH_LONG).show();
+                Toast.makeText(Feed.this, "ERROR: " + e.getLocalizedMessage(), Toast.LENGTH_LONG).show();
             }
-        }).execute("http://stackoverflow.com/feeds/tag/android");
+        }).execute(defaultFeed);
     }
 
 
-    public void addToListView() {
+    public void addToListView(ArrayList<HashMap<String, Spanned>> items) {
         feedView = (ListView) findViewById(R.id.listView);
         ListAdapter adapter = new SimpleAdapter(this, items, R.layout.feed_item,
                 new String[]{RSSAtomParser.TITLE, RSSAtomParser.LINK, RSSAtomParser.DESC},
@@ -56,13 +59,15 @@ public class Feed extends Activity {
                                     int position, long id) {
 
                 String link = ((TextView) view.findViewById(R.id.link)).getText().toString();
-                // open link
 
+                // open link in webview
                 Intent intent = new Intent(Feed.this, ContentView.class);
                 intent.putExtra("link", link);
-
-                //Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(link));
                 startActivity(intent);
+
+                // open link in browser:
+                //Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(link));
+
             }
         });
         feedView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
@@ -77,6 +82,12 @@ public class Feed extends Activity {
             }
 
         });
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        addToListView(feed);
     }
 
 }

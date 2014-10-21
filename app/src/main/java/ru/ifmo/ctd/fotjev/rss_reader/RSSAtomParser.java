@@ -48,7 +48,7 @@ public class RSSAtomParser {
                 feed.get(feed.size() - 1).put(TITLE, htmlFromString(text));
                 break;
             case "link":
-                if (type != FeedType.RSS) {
+                if (type != FeedType.RSS) { // collision with Atom's link
                     break;
                 }
             case "id":
@@ -80,7 +80,7 @@ public class RSSAtomParser {
                             type = FeedType.ATOM;
                         }
                     } else if (tag.equals("item") || tag.equals("entry")) {
-                        feed.add(new HashMap<String, Spanned>());
+                        feed.add(new HashMap<String, Spanned>()); // new entry
                     }
                     break;
                 case XmlPullParser.TEXT:
