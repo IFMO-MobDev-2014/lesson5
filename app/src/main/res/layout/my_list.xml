@@ -8,7 +8,6 @@
     <TextView
         android:id="@android:id/text1"
         android:layout_width="match_parent"
-        android:layout_weight="1"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceListItemSmall"
         android:gravity="center_vertical"
@@ -18,15 +17,15 @@
     <TextView
         android:id="@android:id/text2"
         android:layout_width="match_parent"
-        android:layout_weight="1"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceListItemSmall"
         android:gravity="center_vertical"
-        android:fontFamily="sans-serif-thin"
+
         android:textStyle="italic"
         android:minHeight="?android:attr/listPreferredItemHeightSmall"
 
-        />
+        android:textSize="10dp"
+        android:layout_marginTop="-12dp" />
 </LinearLayout>
 
 

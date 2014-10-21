@@ -2,6 +2,7 @@ package com.example.vi34.rss;
 
 import android.os.AsyncTask;
 import android.util.Xml;
+import android.widget.Toast;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
@@ -47,7 +48,13 @@ public class RssDownloader extends AsyncTask<String,Void,List<Entry>> {
     }
 
     protected void onPostExecute(List<Entry> list) {
-        MyActivity.list = list;
+        if(list != null) {
+            MyActivity.list.addAll(list);
+        } else {
+            MyActivity.list.add(new Entry("Please check your Internet connection!","ERROR","",""));
+        }
+        MyActivity.adapter.notifyDataSetChanged();
+
     }
 
     private List<Entry> readFeed(XmlPullParser parser) throws IOException, XmlPullParserException{

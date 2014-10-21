@@ -27,9 +27,14 @@
             android:text="@string/add"
             android:id="@+id/button" />
     </LinearLayout>
+    <WebView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/webView"></WebView>
     <ListView
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:id="@+id/listView"></ListView>
+
 
 </LinearLayout>

@@ -3,7 +3,9 @@ package com.example.vi34.rss;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.WebView;
 import android.widget.BaseAdapter;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import java.util.List;
@@ -39,9 +41,10 @@ public class MyAdapter extends BaseAdapter {
         View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.my_list, parent, false);
 
 
-        TextView txt = (TextView)convertView.findViewById(android.R.id.text1);
-        txt.setText(String.valueOf(data.get(position).title));
-        //((TextView)((LinearLayout)v).getChildAt(0)).setText(String.valueOf(data.get(position)));
+       // TextView txt = (TextView)convertView.findViewById(android.R.id.text1);
+        //txt.setText(String.valueOf(data.get(position).title));
+        ((TextView)((LinearLayout)v).getChildAt(0)).setText(String.valueOf(data.get(position).title));
+        ((TextView)((LinearLayout)v).getChildAt(1)).setText(String.valueOf(data.get(position).name));
         getItem(position);
         return v;
     }
