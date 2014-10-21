@@ -26,13 +26,7 @@ public class MyCustomAdapter extends BaseAdapter {
 
     public void remove(int index) {
         data.remove(index);
-//        notifyDataSetChanged();
     }
-
-//    @Override
-//    public void notifyDataSetChanged() {
-//        super.notifyDataSetChanged();
-//    }
 
     public MyCustomAdapter(Context context, List<FeedItem> data) {
         this.context = context;
@@ -66,9 +60,6 @@ public class MyCustomAdapter extends BaseAdapter {
         ((TextView) res.findViewById(R.id.title)).setText(tmp.getTitle());
         ((TextView) res.findViewById(R.id.description)).setText(tmp.getDescription());
         ((TextView) res.findViewById(R.id.date)).setText(tmp.getDate());
-
-//        res.setMinimumWidth(ActionBar.LayoutParams.WRAP_CONTENT);
-//        res.setMinimumHeight(ActionBar.LayoutParams.WRAP_CONTENT);
         return res;
     }
 }

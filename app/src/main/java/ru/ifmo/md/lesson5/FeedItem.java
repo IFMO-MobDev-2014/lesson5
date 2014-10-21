@@ -13,7 +13,12 @@ public class FeedItem {
     }
 
     public void setDate(String date) {
-        this.date = date;
+        int ind = date.lastIndexOf(' ');
+        if (ind == -1) {
+            this.date = date;
+        } else {
+            this.date = date.substring(0, ind + 1);
+        }
     }
 
 
@@ -50,9 +55,4 @@ public class FeedItem {
         date = "";
     }
 
-    public FeedItem(String title, String description, String url) {
-        this.title = title;
-        this.description = description;
-        this.url = url;
-    }
 }

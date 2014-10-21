@@ -14,6 +14,7 @@
         android:textStyle="bold"
         android:layout_marginTop="10dp"
         android:textColor="#ff3841ff"
+
         android:padding="3dp"
         />
 
@@ -32,6 +33,7 @@
         android:id="@+id/date"
         android:layout_gravity="end"
         android:textColor="#ff8dc541"
+        android:textStyle="bold"
 
         />
 

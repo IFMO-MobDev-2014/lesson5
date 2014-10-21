@@ -16,6 +16,7 @@ import java.util.ArrayList;
 
 public class Feeds extends ListActivity {
     TextView channel;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -56,6 +57,7 @@ public class Feeds extends ListActivity {
         });
         channel.setOnClickListener(new View.OnClickListener() {
             private boolean downloaded = false;
+
             @Override
             public void onClick(View view) {
                 if (downloaded) {
@@ -65,11 +67,11 @@ public class Feeds extends ListActivity {
                         getSystemService(Context.CONNECTIVITY_SERVICE);
                 NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
                 if (networkInfo != null && networkInfo.isConnected()) {
-                    new DataDownloader(Feeds.this).execute();
                     downloaded = true;
+                    new DataDownloader(Feeds.this).execute();
                 } else {
                     Feeds.this.channel.setText("No Internet connection.\n" +
-                            "Connect to the Internet and click here.");
+                            "Connect to the Internet and tap here.");
                 }
             }
         });

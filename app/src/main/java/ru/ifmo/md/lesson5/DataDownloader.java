@@ -22,6 +22,7 @@ import javax.xml.parsers.ParserConfigurationException;
 public class DataDownloader extends AsyncTask<String, Void, ArrayList<FeedItem>> {
     Feeds context;
     private String channel;
+
     public DataDownloader(Feeds context) {
         this.context = context;
     }

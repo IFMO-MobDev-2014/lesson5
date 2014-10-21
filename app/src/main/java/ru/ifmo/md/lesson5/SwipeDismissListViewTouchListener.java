@@ -22,7 +22,6 @@ package ru.ifmo.md.lesson5;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ValueAnimator;
-import android.app.ActionBar;
 import android.graphics.Rect;
 import android.os.SystemClock;
 import android.view.MotionEvent;
