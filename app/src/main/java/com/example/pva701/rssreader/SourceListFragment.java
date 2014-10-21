@@ -110,6 +110,11 @@ public class SourceListFragment extends Fragment {
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 Intent intent = new Intent(getActivity(), NewsListPagerActivity.class);
                 intent.putExtra(NewsListPagerActivity.NAME_ID, i);
+
+                getActivity().startService(new Intent(getActivity(), PollService.class).
+                        putExtra(PollService.TARGET_SOURCE_ID, sources.get(i).getId()).
+                        putExtra(PollService.TARGET_URL, sources.get(i).getUrl()));
+
                 startActivity(intent);
             }
         });
@@ -180,6 +185,7 @@ public class SourceListFragment extends Fragment {
                 sources.add(cur);
                 adapter.notifyDataSetChanged();
                 SourcesManager.getInstance(getActivity()).resume();
+                //getActivity().startService(new Intent(getActivity(), SaveDataService.class));
                 //getActivity().startService(new Intent(getActivity(), PollService.class).putExtra(PollService.TARGET_SOURCE_ID, cur.getId()).
                         //putExtra(PollService.TARGET_URL, cur.getUrl()));
             }
