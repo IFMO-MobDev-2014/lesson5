@@ -52,7 +52,9 @@ public class MyActivity extends Activity {
     }
 
     public void update(View v) {
+        ProgressDialog progressDialog = ProgressDialog.show(this, "Please wait", "Loading info", true);
         ds.updateInformation();
+
         listAdapter.notifyDataSetChanged();
         lv.setAdapter(listAdapter);
     }

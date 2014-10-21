@@ -19,8 +19,7 @@ import java.io.IOException;
  * Created by Svet on 19.10.2014.
  */
 public class LoadInfoTask extends AsyncTask<String, Void, String> {
-    ProgressDialog progress;
-
+    
     @Override
     protected String doInBackground(String... strings) {
         HttpClient httpCliend = new DefaultHttpClient();
