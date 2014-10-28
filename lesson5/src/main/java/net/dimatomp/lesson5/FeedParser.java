@@ -9,6 +9,7 @@ import org.xml.sax.helpers.DefaultHandler;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Locale;
 
 import static net.dimatomp.lesson5.FeedColumns.ENTRY_DATE;
@@ -23,7 +24,14 @@ import static net.dimatomp.lesson5.FeedColumns.FEED_WEBSITE;
  * Created by dimatomp on 20.10.14.
  */
 public class FeedParser extends DefaultHandler {
-    private static final SimpleDateFormat format = new SimpleDateFormat("EEE, d MMM yyyy HH:mm:ss z", Locale.US);
+    private static final SimpleDateFormat formatRSS20 = new SimpleDateFormat("EEE, d MMM yyyy HH:mm:ss z", Locale.ENGLISH);
+    private static final SimpleDateFormat formatAtom = new SimpleDateFormat("yyyy-mm-d'T'HH:mm:ssZZZZZ", Locale.ENGLISH) {
+        @Override
+        public Date parse(String string) throws ParseException {
+            return super.parse(string.replace("Z", "+00:00"));
+        }
+    };
+    SimpleDateFormat dateFormatUsedHere;
     StringBuilder builder = new StringBuilder();
     String curInfoField;
     ContentValues feedInfo = new ContentValues();
@@ -41,6 +49,7 @@ public class FeedParser extends DefaultHandler {
                 // TODO support RSS 1.0 and others
                 break;
             case "item":
+            case "entry":
                 itemInfo = new ContentValues();
                 break;
             case "title":
@@ -48,12 +57,21 @@ public class FeedParser extends DefaultHandler {
                 break;
             case "link":
                 curInfoField = (itemInfo == null) ? FEED_WEBSITE : ENTRY_URL;
+                String insideTag = attributes.getValue("href");
+                if (insideTag != null)
+                    builder.append(insideTag);
                 break;
             case "description":
+            case "summary":
                 curInfoField = (itemInfo == null) ? FEED_DESCRIPTION : ENTRY_DESCRIPTION;
                 break;
             case "pubDate":
-                curInfoField = ENTRY_DATE;
+            case "published":
+            case "updated":
+                if (itemInfo != null) {
+                    curInfoField = ENTRY_DATE;
+                    dateFormatUsedHere = qName.equals("pubDate") ? formatRSS20 : formatAtom;
+                }
                 break;
         }
     }
@@ -61,13 +79,13 @@ public class FeedParser extends DefaultHandler {
     @Override
     public void endElement(String uri, String localName, String qName) throws SAXException {
         if (curInfoField != null) {
-            String repr = Html.fromHtml(builder.toString()).toString();
+            String repr = Html.fromHtml(builder.toString()).toString().trim();
             if (itemInfo == null)
-                feedInfo.put(curInfoField, builder.toString());
+                feedInfo.put(curInfoField, repr);
             else {
                 if (curInfoField.equals(ENTRY_DATE))
                     try {
-                        repr = Long.toString(format.parse(repr).getTime());
+                        repr = Long.toString(dateFormatUsedHere.parse(repr).getTime());
                     } catch (ParseException e) {
                         throw new SAXException(e);
                     }
@@ -76,8 +94,8 @@ public class FeedParser extends DefaultHandler {
         }
         builder = new StringBuilder();
         curInfoField = null;
-        if (qName.equals("item")) {
-            callbacks.insertEntryIfNew(itemInfo);
+        if (qName.equals("item") || qName.equals("entry")) {
+            callbacks.insertEntry(itemInfo);
             itemInfo = null;
         }
     }
@@ -98,6 +116,6 @@ public class FeedParser extends DefaultHandler {
     public interface ParserCallbacks {
         void updateFeedInfo(ContentValues values);
 
-        boolean insertEntryIfNew(ContentValues values);
+        void insertEntry(ContentValues values);
     }
 }

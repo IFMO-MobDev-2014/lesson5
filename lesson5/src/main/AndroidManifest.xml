@@ -33,6 +33,31 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="net.dimatomp.lesson5.FeedList" />
         </activity>
+        <activity
+            android:name="net.dimatomp.lesson5.NewFeedForm"
+            android:label="@string/title_activity_new_feed_form"
+            android:parentActivityName="net.dimatomp.lesson5.FeedList"
+            android:theme="@android:style/Theme.Holo.Light.Dialog">
+            <intent-filter>
+                <action android:name="net.dimatomp.rss.ADD_NEW_FEED" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="net.dimatomp.lesson5.FeedList" />
+        </activity>
+        <activity
+            android:name="net.dimatomp.lesson5.SimpleWebView"
+            android:configChanges="orientation|screenSize"
+            android:label="@string/title_activity_simple_web_view">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <data android:scheme="http" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>

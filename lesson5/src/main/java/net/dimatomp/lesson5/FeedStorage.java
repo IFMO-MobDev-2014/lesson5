@@ -9,7 +9,6 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.net.Uri;
 
 import mf.javax.xml.parsers.SAXParser;
-import mf.javax.xml.parsers.SAXParserFactory;
 import mf.org.apache.xerces.jaxp.SAXParserFactoryImpl;
 
 import static net.dimatomp.lesson5.FeedColumns.ENTRIES;
@@ -35,51 +34,31 @@ public class FeedStorage extends ContentProvider {
                 .query(FEEDS, new String[]{FEED_XML}, whereID, null, null, null, null);
         query.moveToFirst();
         String xml = query.getString(query.getColumnIndex(FEED_XML));
+        final SQLiteDatabase db = database.getWritableDatabase();
+        db.beginTransaction();
+        db.delete(ENTRIES, ENTRY_FEED + " = '" + id + "'", null);
+        boolean result = true;
         try {
-            SAXParserFactory factory = new SAXParserFactoryImpl();
-            //factory.setFeature("http://xml.org/sax/features/use-locator2", true);
-            /*URL url = new URL(xml);
-            HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
-            urlConnection.setRequestMethod("GET");
-            urlConnection.connect();
-            InputSource source = new InputSource(urlConnection.getInputStream()); */
-            SAXParser parser = factory.newSAXParser();
+            SAXParser parser = new SAXParserFactoryImpl().newSAXParser();
             parser.parse(xml, new FeedParser(new FeedParser.ParserCallbacks() {
-                SQLiteDatabase db;
-
-                private void holdDB() {
-                    if (db == null)
-                        db = database.getWritableDatabase();
-                }
-
                 @Override
                 public void updateFeedInfo(ContentValues values) {
-                    holdDB();
                     db.update(FEEDS, values, whereID, null);
                 }
 
                 @Override
-                public boolean insertEntryIfNew(ContentValues values) {
-                    holdDB();
-                    Cursor cursor = db.query(ENTRIES, new String[]{_ID},
-                            ENTRY_FEED + " = '" + id + "' AND " +
-                                    ENTRY_TITLE + " = '" + values.getAsString(ENTRY_TITLE) + "' AND " +
-                                    ENTRY_DATE + " = '" + values.getAsString(ENTRY_DATE) + "'", null, null, null, null);
-                    if (cursor.getCount() == 0) {
-                        values.put(ENTRY_FEED, id);
-                        db.insert(ENTRIES, null, values);
-                        return true;
-                    }
-                    cursor.moveToFirst();
-                    db.update(ENTRIES, values,
-                            _ID + " = '" + cursor.getInt(cursor.getColumnIndex(_ID)) + "'", null);
-                    return false;
+                public void insertEntry(ContentValues values) {
+                    values.put(ENTRY_FEED, id);
+                    db.insert(ENTRIES, null, values);
                 }
             }));
+            db.setTransactionSuccessful();
         } catch (Exception e) {
-            return false;
+            result = false;
+        } finally {
+            db.endTransaction();
         }
-        return true;
+        return result;
     }
 
     @Override
@@ -96,6 +75,17 @@ public class FeedStorage extends ContentProvider {
 
     @Override
     public Uri insert(Uri uri, ContentValues values) {
+        if (uri.getPathSegments().size() == 1)
+            switch (uri.getLastPathSegment()) {
+                case "feed":
+                    if (uri.getQueryParameterNames().contains("feedXML")) {
+                        if (values == null)
+                            values = new ContentValues(1);
+                        values.put(FEED_XML, uri.getQueryParameter("feedXML"));
+                        long rowID = database.getWritableDatabase().insert(FEEDS, null, values);
+                        return Uri.parse("content://net.dimatomp.feeds.provider/entries?feedId=" + rowID);
+                    }
+            }
         throw new IllegalArgumentException("Bad insert URI");
     }
 
