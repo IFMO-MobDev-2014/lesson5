@@ -63,7 +63,6 @@ public class StackOverflowFeedParser extends AsyncTask<String, Void, Feed> {
     public Feed readFeed(XmlPullParser parser) throws XmlPullParserException, IOException {
         Feed feed = new Feed();
         ArrayList<Article> articles = new ArrayList<Article>();
-        android.os.Debug.waitForDebugger();
         parser.require(XmlPullParser.START_TAG, ns, "feed");
         while (parser.next() != XmlPullParser.END_TAG) {
             if (parser.getEventType() != XmlPullParser.START_TAG) {
