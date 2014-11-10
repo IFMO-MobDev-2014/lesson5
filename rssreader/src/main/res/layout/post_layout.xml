@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:layout_margin="5dp"
+              android:padding="5dp"
+              android:background="#DDDDDD" android:baselineAligned="false" android:clickable="false"
+              android:focusable="false" android:focusableInTouchMode="false">
+    <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:hint="@string/test_title"
+            android:id="@+id/post_header"
+            android:layout_gravity="center_horizontal"/>
+    <ImageView
+            android:layout_width="fill_parent"
+            android:layout_height="120dp"
+            android:scaleType="centerCrop"
+            android:id="@+id/post_image"
+            android:layout_gravity="center_horizontal" android:layout_marginTop="5dp"
+            android:layout_marginBottom="5dp"/>
+    <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/test_description"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:id="@+id/post_description"
+            android:layout_gravity="center_horizontal"/>
+    <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:hint="@string/test_date"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:id="@+id/post_date"
+            android:textColor="#AAAAAA"
+            android:layout_gravity="end"/>
+</LinearLayout>
