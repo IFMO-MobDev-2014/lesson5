@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.example.alexey.lesson5" >
+
+    <uses-permission android:name="android.permission.INTERNET" />
+
+    <application
+        android:allowBackup="true"
+        android:icon="@drawable/ic_launcher"
+        android:label="@string/app_name"
+        android:theme="@style/AppTheme" >
+        <service android:name="com.example.alexey.lesson5.IServise" />
+        <provider
+            android:name=".Provider"
+            android:authorities="com.example.alexey.lesson5.Provider" />
+
+        <activity
+            android:name=".MyActivity"
+            android:label="@string/app_name" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".MyActivity2"
+            android:label="@string/title_activity_my_activity2" >
+        </activity>
+        <activity
+            android:name=".MyActivity3"
+            android:label="@string/title_activity_my_activity3" >
+        </activity>
+        <activity
+            android:name=".MyActivity15"
+            android:label="@string/title_activity_my_activity15" >
+        </activity>
+        <activity
+            android:name=".MyActivity4"
+            android:label="@string/title_activity_my_activity4" >
+        </activity>
+        <activity
+            android:name=".IServise"
+            android:label="@string/title_activity_iservise" >
+        </activity>
+    </application>
+
+</manifest>
