@@ -1,10 +1,13 @@
 package volhovm.com.rssreader;
 
-import android.os.AsyncTask;
+import android.content.AsyncTaskLoader;
+import android.content.Context;
 import android.text.Html;
+import android.util.Log;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 import org.xmlpull.v1.XmlPullParserFactory;
+import volhovm.com.rssreader.Feed.Item;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -12,7 +15,6 @@ import java.net.URL;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
 
@@ -21,34 +23,24 @@ import java.util.Locale;
  *         Created on 10/21/14
  */
 
-public class LoadRSSTask extends AsyncTask<URL, Void, ArrayList<LoadRSSTask.Item>>{
-    public class Item {
-        String title;
-        Date date;
-        URL link;
-        String description;
-        URL enclosure;
+public class RSSLoader extends AsyncTaskLoader<Feed> {
 
-        public Item(String title, URL link, String summary, URL enclosure, Date pubdate) {
-            this.title = title;
-            this.link = link;
-            this.description = summary;
-            this.enclosure = enclosure;
-            this.date = pubdate;
-        }
-    }
-    private String ns = null;
-    private MainActivity activity;
+    private final Feed feed;
+    private final String ns = null;
+    private FeedDAO feedDAO;
 
-    public LoadRSSTask(MainActivity activity) {
-        this.activity = activity;
+    public RSSLoader(Context context, Feed feed, FeedDAO feedDAO) {
+        super(context);
+        this.feed = feed;
+        this.feedDAO = feedDAO;
     }
 
     @Override
-    protected ArrayList<Item> doInBackground(URL... urls) {
-        ArrayList<Item> entries = new ArrayList<Item>();
+    public Feed loadInBackground() {
+        Feed newFeed = new Feed(feed.feedName, feed.feedUrl);
+        Log.d("Loading", "RSS Load started");
         try {
-            InputStream stream = urls[0].openStream();
+            InputStream stream = new URL(newFeed.feedUrl).openStream();
             XmlPullParser parser = XmlPullParserFactory.newInstance().newPullParser();
             parser.setFeature(XmlPullParser.FEATURE_PROCESS_NAMESPACES, false);
             parser.setInput(stream, null);
@@ -57,7 +49,7 @@ public class LoadRSSTask extends AsyncTask<URL, Void, ArrayList<LoadRSSTask.Item
             while (parser.next() != XmlPullParser.END_DOCUMENT) {
                 String name = parser.getName();
                 if (name != null && name.equals("item")) {
-                    entries.add(readItem(parser));
+                    newFeed.addItem(readItem(parser));
                 }
             }
         } catch (XmlPullParserException e) {
@@ -65,7 +57,9 @@ public class LoadRSSTask extends AsyncTask<URL, Void, ArrayList<LoadRSSTask.Item
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return entries;
+        feedDAO.deleteFeed(feed); //database can be closed in the other thread!
+        feedDAO.putFeed(newFeed);
+        return newFeed;
     }
 
     private Item readItem(XmlPullParser parser) throws IOException, XmlPullParserException {
@@ -97,7 +91,7 @@ public class LoadRSSTask extends AsyncTask<URL, Void, ArrayList<LoadRSSTask.Item
                 skip(parser);
             }
         }
-        return new Item(title, link, description, enclosure, pubdate);
+        return new Item(title, description, link, enclosure, pubdate);
     }
 
     private Date readPubDate(XmlPullParser parser) throws ParseException, IOException, XmlPullParserException {
@@ -172,11 +166,5 @@ public class LoadRSSTask extends AsyncTask<URL, Void, ArrayList<LoadRSSTask.Item
                     break;
             }
         }
-    }
-
-    @Override
-    protected void onPostExecute(ArrayList<Item> items) {
-        activity.onRSSUpdate(items);
-//        super.onPostExecute(items);
     }
 }

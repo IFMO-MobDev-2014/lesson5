@@ -19,11 +19,11 @@ import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
+import volhovm.com.rssreader.Feed.Item;
 
 import java.io.InputStream;
 import java.net.URL;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.HashMap;
 
 /**
@@ -31,29 +31,55 @@ import java.util.HashMap;
  *         Created on 10/21/14
  */
 
-public class PostAdapter extends ArrayAdapter<String> {
+public class PostAdapter extends ArrayAdapter<Item> {
     private final Activity context;
-    private final ArrayList<LoadRSSTask.Item> items;
+    private Feed feed;
     private HashMap<URL, Bitmap> imageCache;
 
-    public PostAdapter(Activity context, ArrayList<LoadRSSTask.Item> items, String[] list) {
-        super(context, R.layout.post_layout, list);
+    public void replaceFeed(Feed feed) {
+        this.feed = new Feed(feed);
+        final PostAdapter postAdapter = this;
+        context.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                postAdapter.notifyDataSetChanged();
+            }
+        });
+    }
+
+    public PostAdapter(Activity context, Feed feed) {
+        super(context, R.layout.fragment_rssmain, feed.getItems());
+
+
         this.context = context;
-        this.items = items;
+        this.feed = new Feed(feed);
         imageCache = new HashMap<URL, Bitmap>();
+        final PostAdapter postAdapter = this;
+        context.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                postAdapter.notifyDataSetInvalidated();
+                postAdapter.notifyDataSetChanged();
+            }
+        });
+    }
+
+    @Override
+    public int getCount() {
+        return feed == null ? 0 : feed.size();
     }
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        final LoadRSSTask.Item item = items.get(position);
+        final Item item = feed.get(position);
         final View postView;
         final TextView title, description, date;
         ImageView imageView;
-        if (item.enclosure != null) {
+        if (item.pictureLink != null) {
             postView = inflater.inflate(R.layout.post_layout, parent, false);
             imageView = (ImageView) postView.findViewById(R.id.post_image);
-            new ImageLoadTask(imageView, imageCache).execute(item.enclosure);
+            new ImageLoadTask(imageView, imageCache).execute(item.pictureLink);
             title = (TextView) postView.findViewById(R.id.post_header);
             description = (TextView) postView.findViewById(R.id.post_description);
             date = (TextView) postView.findViewById(R.id.post_date);
@@ -100,33 +126,22 @@ public class PostAdapter extends ArrayAdapter<String> {
         protected Bitmap doInBackground(URL... urls) {
             URL url = urls[0];
             if (cache.containsKey(url)) return cache.get(url);
-            // initilize the default HTTP client object
             final DefaultHttpClient client = new DefaultHttpClient();
 
-            //forming a HttoGet request
             final HttpGet getRequest = new HttpGet(url.toString());
             try {
-
                 HttpResponse response = client.execute(getRequest);
-
-                //check 200 OK for success
                 final int statusCode = response.getStatusLine().getStatusCode();
-
                 if (statusCode != HttpStatus.SC_OK) {
                     Log.w("ImageDownloader", "Error " + statusCode +
                             " while retrieving bitmap from " + url);
                     return null;
-
                 }
-
                 final HttpEntity entity = response.getEntity();
                 if (entity != null) {
                     InputStream inputStream = null;
                     try {
-                        // getting contents from the stream
                         inputStream = entity.getContent();
-
-                        // decoding stream data back into image Bitmap that android understands
                         final Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
                         cache.put(url, bitmap);
                         return bitmap;
@@ -138,12 +153,10 @@ public class PostAdapter extends ArrayAdapter<String> {
                     }
                 }
             } catch (Exception e) {
-                // You Could provide a more explicit error message for IOException
                 getRequest.abort();
                 Log.e("ImageDownloader", "Something went wrong while" +
                         " retrieving bitmap from " + url + e.toString());
             }
-
             return null;
         }
     }
