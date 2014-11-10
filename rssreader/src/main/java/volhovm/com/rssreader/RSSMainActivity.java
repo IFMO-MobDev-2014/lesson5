@@ -151,6 +151,7 @@ public class RSSMainActivity extends Activity
                         if (feeds.size() > 1) {
                             Feed feed = feeds.get(currentFeed);
                             feeds.remove(currentFeed);
+                            if (navigationDrawerFragment != null) navigationDrawerFragment.initNavigationBarList();
                             new AsyncTask<Feed, Void, Void>() {
                                 @Override
                                 protected Void doInBackground(Feed... feeds) {
@@ -158,7 +159,6 @@ public class RSSMainActivity extends Activity
                                     return null;
                                 }
                             }.execute(feed);
-                            updateNavBarList();
                             if (feeds.size() > 1) {
                                 currentFeed = 0;
                                 onNavigationDrawerItemSelected(0);
