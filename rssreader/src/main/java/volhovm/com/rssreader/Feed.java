@@ -12,16 +12,14 @@ import java.util.Date;
 public class Feed {
     String feedName;
     String feedUrl;
-    private ArrayList<Item> items;
-    public ArrayList<Item> getItems() {
-        return items;
-    }
-
+    private ArrayList<Item> items = new ArrayList<Item>();
 
     public Feed(Feed feed) {
         this.feedName = feed.feedName;
         this.feedUrl = feed.feedUrl;
-        this.items = feed.items;
+        for (int i = 0; i < feed.size(); i++) {
+            this.items.add(new Item(feed.get(i)));
+        }
     }
 
     public Feed(String feedName, String feedUrl) {
@@ -87,6 +85,14 @@ public class Feed {
             this.description = description;
             this.pictureLink = pictureLink;
             this.date = pubDate;
+        }
+
+        public Item(Item item) {
+            this.title = item.title;
+            this.description = item.description;
+            this.link = item.link;
+            this.pictureLink = item.pictureLink;
+            this.date = item.date;
         }
     }
 }

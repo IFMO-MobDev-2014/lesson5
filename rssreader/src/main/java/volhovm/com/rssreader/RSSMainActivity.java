@@ -1,10 +1,9 @@
 package volhovm.com.rssreader;
 
-import android.app.ActionBar;
-import android.app.Activity;
-import android.app.FragmentManager;
-import android.app.LoaderManager;
+import android.app.*;
+import android.content.DialogInterface;
 import android.content.Loader;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.widget.DrawerLayout;
 import android.view.Menu;
@@ -44,7 +43,7 @@ public class RSSMainActivity extends Activity
             addFeed(new Feed("Liga", "http://news.liga.net/news/rss.xml"));
         }
 
-        adapter = new PostAdapter(this, feeds.get(0));
+        adapter = new PostAdapter(this, new Feed(feeds.get(0)));
         title = getTitle();
         setContentView(R.layout.activity_rssmain);
         navigationDrawerFragment = (NavigationDrawerFragment)
@@ -66,18 +65,20 @@ public class RSSMainActivity extends Activity
         );
         if (navigationDrawerFragment != null) navigationDrawerFragment.initNavigationBarList();
     }
+
     @Override
     public void onNavigationDrawerItemSelected(int position) {
         // update the main content by replacing fragments
-        while (feeds.isEmpty()) {}
-            Bundle bundle = new Bundle();
-            bundle.putInt(FEED_INDEX, position);
+        while (feeds.isEmpty()) {
+        }
+        Bundle bundle = new Bundle();
+        bundle.putInt(FEED_INDEX, position);
         if (feeds.get(position).size() == 0) {
             getLoaderManager().restartLoader(FEED_DB_LOADER, bundle, this).forceLoad();
         }
-        if (feeds.get(position).size() == 0) {
-            getLoaderManager().restartLoader(FEED_UPDATE_LOADER, bundle, this).forceLoad();
-        }
+//        if (feeds.get(position).size() == 0) {
+//            getLoaderManager().restartLoader(FEED_UPDATE_LOADER, bundle, this).forceLoad();
+//        }
         FragmentManager fragmentManager = getFragmentManager();
         fragmentManager.beginTransaction()
                 .replace(R.id.container, PlaceholderFragment.newInstance(position))
@@ -121,6 +122,30 @@ public class RSSMainActivity extends Activity
                 getLoaderManager().restartLoader(FEED_UPDATE_LOADER, bundle, this).forceLoad();
                 return true;
             }
+            case R.id.remove_content: {
+                final AlertDialog.Builder alert = new AlertDialog.Builder(this);
+                alert.setTitle("Deleting feed");
+                alert.setMessage("Are you sure you want to delete this feed?");
+                alert.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        new AsyncTask<Feed, Void, Void>() {
+                            @Override
+                            protected Void doInBackground(Feed... feeds) {
+                                dataSource.deleteFeed(feeds[0]);
+
+                                return null;
+                            }
+                        }.execute(feeds.get(currentFeed));
+                        if (feeds.size() > 1) {
+                            currentFeed = 0;
+                            onNavigationDrawerItemSelected(0);
+                        }
+                    }
+                });
+                alert.setNegativeButton("No", null);
+                alert.show();
+            }
         }
 
         return super.onOptionsItemSelected(item);
@@ -154,7 +179,7 @@ public class RSSMainActivity extends Activity
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    adapter.replaceFeed(feed2);
+                    adapter.replaceFeed(new Feed(feed2));
                     adapter.notifyDataSetChanged();
                     ((PlaceholderFragment) getFragmentManager().findFragmentById(R.id.container)).listView.requestLayout();
                 }

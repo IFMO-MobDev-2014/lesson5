@@ -135,7 +135,7 @@ public class FeedDAO {
                     cursor.getString(3),
                     cursor.getString(4),
                     new URL(cursor.getString(5)),
-                    cursor.getString(6).equals("") ? null : new URL(cursor.getString(5)),
+                    cursor.getString(6).equals("") ? null : new URL(cursor.getString(6)),
                     cursor.getString(7).equals("") ? null : new SimpleDateFormat("HH:mm dd.MM.yyyy").parse(cursor.getString(7)));
             feed.addItem(item);
             cursor.moveToNext();
