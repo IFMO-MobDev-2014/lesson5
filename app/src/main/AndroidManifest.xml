@@ -9,6 +9,11 @@
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
+        <service android:name="com.example.alexey.lesson5.IServise" />
+        <provider
+            android:name=".Provider"
+            android:authorities="com.example.alexey.lesson5.Provider" />
+
         <activity
             android:name=".MyActivity"
             android:label="@string/app_name" >
@@ -23,22 +28,20 @@
             android:label="@string/title_activity_my_activity2" >
         </activity>
         <activity
-            android:name=".FullscreenActivity"
-            android:configChanges="orientation|keyboardHidden|screenSize"
-            android:label="@string/title_activity_fullscreen"
-            android:theme="@style/FullscreenTheme" >
-        </activity>
-        <activity
-            android:name=".util.MyActivity_3"
-            android:label="@string/title_activity_my_activity_3" >
-        </activity>
-        <activity
             android:name=".MyActivity3"
             android:label="@string/title_activity_my_activity3" >
         </activity>
         <activity
             android:name=".MyActivity15"
             android:label="@string/title_activity_my_activity15" >
+        </activity>
+        <activity
+            android:name=".MyActivity4"
+            android:label="@string/title_activity_my_activity4" >
+        </activity>
+        <activity
+            android:name=".IServise"
+            android:label="@string/title_activity_iservise" >
         </activity>
     </application>
 

@@ -31,7 +31,7 @@ class MyAsyncTask extends AsyncTask<String, Integer, Integer> {
         int result = 1;
         URL url = null;
         try {
-            url = new URL("http://feeds.bbci.co.uk/news/rss.xml");
+            url = new URL("http://news.yandex.ru/hardware.rss");
 
             URLConnection urlConnection = url.openConnection();
             InputStream in = new BufferedInputStream(urlConnection.getInputStream());

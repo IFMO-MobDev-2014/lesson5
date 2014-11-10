@@ -16,7 +16,7 @@ public class MyActivity2 extends Activity {
         setContentView(R.layout.activity_my_activity2);
         g=getIntent().getExtras().getInt("count");
         TextView textView=(TextView) findViewById(R.id.textViewd);
-        textView.setText(MyActivity.b.elementAt(g-1));
+        //textView.setText(MyActivity.b.elementAt(g-1));
 
 
     }
