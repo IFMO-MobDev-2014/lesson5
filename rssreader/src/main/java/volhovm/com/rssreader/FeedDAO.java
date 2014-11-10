@@ -110,7 +110,7 @@ public class FeedDAO {
     public Feed fillFeed(Feed feed) {
         Cursor current = database.query(DATABASE_TABLE, dataColumns, POST_FEED_NAME + "='" + feed.feedName + "'", null, null, null, _ID + " asc");
         try {
-            return(cursorReplaceFeed(current, feed));
+            return (cursorReplaceFeed(current, feed));
         } catch (MalformedURLException e) {
             e.printStackTrace();
             return null;

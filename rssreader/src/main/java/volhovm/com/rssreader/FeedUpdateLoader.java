@@ -21,9 +21,6 @@ public class FeedUpdateLoader extends AsyncTaskLoader<Feed> {
     @Override
     public Feed loadInBackground() {
         Feed feed = feedDAO.fillFeed(this.feed);
-        if (feed.isEmpty()) {
-            new RSSLoader(getContext(), feed, feedDAO).forceLoad();
-        }
-        return feed;
+        return feed.isEmpty() ? null : feed;
     }
 }

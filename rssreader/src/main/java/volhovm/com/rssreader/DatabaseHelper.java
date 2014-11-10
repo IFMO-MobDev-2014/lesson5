@@ -22,7 +22,6 @@ public class DatabaseHelper extends SQLiteOpenHelper implements BaseColumns {
     public static final String POST_FEED_URL = "post_feed_url";
 
 
-
     public static final String POST_TITLE = "post_title";
     public static final String POST_DESCRIPTION = "post_description";
     public static final String POST_LINK = "post_link";

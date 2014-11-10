@@ -96,7 +96,7 @@ public class NavigationDrawerFragment extends Fragment {
         return mDrawerListView;
     }
 
-    public void initNavigationBarList(){
+    public void initNavigationBarList() {
         String[] feedNames = new String[((RSSMainActivity) getActivity()).feeds.size()];
         for (int i = 0; i < feedNames.length; i++) {
             feedNames[i] = String.valueOf(((RSSMainActivity) getActivity()).feeds.get(i));
@@ -289,7 +289,7 @@ public class NavigationDrawerFragment extends Fragment {
                 }
             });
             alert.show();
-         return true;
+            return true;
         }
 
         return super.onOptionsItemSelected(item);

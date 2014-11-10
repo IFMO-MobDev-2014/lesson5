@@ -53,6 +53,7 @@ public class RSSLoader extends AsyncTaskLoader<Feed> {
                 }
             }
         } catch (XmlPullParserException e) {
+            Log.e("ERROR", e.getMessage());
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
@@ -108,7 +109,7 @@ public class RSSLoader extends AsyncTaskLoader<Feed> {
         String tag = parser.getName();
         String type = parser.getAttributeValue(null, "type");
         if (tag.equals("enclosure")) {
-            if (type.equals("image/jpeg")){
+            if (type.equals("image/jpeg")) {
                 enclosure = new URL(parser.getAttributeValue(null, "url"));
                 parser.nextTag();
             }
@@ -120,7 +121,7 @@ public class RSSLoader extends AsyncTaskLoader<Feed> {
     // Processes title tags in the feed.
     private String readTitle(XmlPullParser parser) throws IOException, XmlPullParserException {
         parser.require(XmlPullParser.START_TAG, ns, "title");
-        String title = readText(parser);
+        String title = Html.fromHtml(readText(parser)).toString();
         parser.require(XmlPullParser.END_TAG, ns, "title");
         return title;
     }

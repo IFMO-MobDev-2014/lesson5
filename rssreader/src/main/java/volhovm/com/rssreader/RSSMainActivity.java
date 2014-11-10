@@ -14,35 +14,35 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 
-
 public class RSSMainActivity extends Activity
         implements NavigationDrawerFragment.NavigationDrawerCallbacks, LoaderManager.LoaderCallbacks<Feed> {
-
     public static final int FEED_UPDATE_LOADER = 0;
     public static final int FEED_DB_LOADER = 1;
     private static final String FEED_INDEX = "feed_index";
-
     private MenuItem refreshItem;
     private NavigationDrawerFragment navigationDrawerFragment;
     private CharSequence title;
     private FeedDAO dataSource;
     private int currentFeed = 0;
-
     ArrayList<Feed> feeds = new ArrayList<Feed>();
     PostAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         dataSource = new FeedDAO(this);
         dataSource.open();
-        updateNavBarList();
+        feeds = dataSource.getEmptyFeeds();
         if (feeds.isEmpty()) {
-            addFeed(new Feed("Bash", "http://bash.im/rss/"));
-            addFeed(new Feed("Liga", "http://news.liga.net/news/rss.xml"));
+            feeds.add(new Feed("Bash", "http://bash.im/rss/"));
+            feeds.add(new Feed("MyAnimeList", "http://myanimelist.net/rss.php?type=news"));
+            feeds.add(new Feed("Diletant", "http://diletant.ru/rss/news/"));
+            feeds.add(new Feed("Rain", "http://tvrain.ru/export/rss/news.xml"));
+            feeds.add(new Feed("Esquire", "http://feeds.feedburner.com/esquire-ru?format=xml"));
+            feeds.add(new Feed("Linux", "http://feeds.feedburner.com/LinuxJournal-BreakingNews?format=xml"));
+            feeds.add(new Feed("Shortiki", "http://shortiki.com/rss.php"));
+            updateNavBarList();
         }
-
         adapter = new PostAdapter(this, new Feed(feeds.get(0)));
         title = getTitle();
         setContentView(R.layout.activity_rssmain);
@@ -54,7 +54,6 @@ public class RSSMainActivity extends Activity
     }
 
     private void updateNavBarList() {
-        feeds.clear();
         feeds.addAll(dataSource.getEmptyFeeds());
         Collections.sort(feeds, new Comparator<Feed>() {
                     @Override
@@ -63,22 +62,42 @@ public class RSSMainActivity extends Activity
                     }
                 }
         );
+        int i = 1;
+        while (i < feeds.size()) {
+            if (feeds.get(i).feedUrl.equals(feeds.get(i - 1).feedUrl)) {
+                feeds.remove(i);
+            } else i++;
+        }
         if (navigationDrawerFragment != null) navigationDrawerFragment.initNavigationBarList();
+    }
+
+    public void showFeed(Feed feed) {
+        final Feed feed2 = feed;
+        if (adapter != null) {
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    adapter.replaceFeed(new Feed(feed2));
+                    adapter.notifyDataSetChanged();
+//                    ((PlaceholderFragment) getFragmentManager().findFragmentById(R.id.container)).listView.requestLayout();
+                }
+            });
+        }
+        if (refreshItem != null) refreshItem.setActionView(null);
     }
 
     @Override
     public void onNavigationDrawerItemSelected(int position) {
-        // update the main content by replacing fragments
         while (feeds.isEmpty()) {
         }
         Bundle bundle = new Bundle();
         bundle.putInt(FEED_INDEX, position);
         if (feeds.get(position).size() == 0) {
             getLoaderManager().restartLoader(FEED_DB_LOADER, bundle, this).forceLoad();
+            showFeed(feeds.get(position));
+        } else {
+            showFeed(feeds.get(position));
         }
-//        if (feeds.get(position).size() == 0) {
-//            getLoaderManager().restartLoader(FEED_UPDATE_LOADER, bundle, this).forceLoad();
-//        }
         FragmentManager fragmentManager = getFragmentManager();
         fragmentManager.beginTransaction()
                 .replace(R.id.container, PlaceholderFragment.newInstance(position))
@@ -98,12 +117,13 @@ public class RSSMainActivity extends Activity
         actionBar.setTitle(title);
     }
 
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         if (!navigationDrawerFragment.isDrawerOpen()) {
             getMenuInflater().inflate(R.menu.rssmain, menu);
             refreshItem = menu.findItem(R.id.refresh_content);
+            if (refreshItem != null && feeds.get(currentFeed).isEmpty())
+                refreshItem.setActionView(R.layout.actionbar_spinner);
             restoreActionBar();
             return true;
         }
@@ -127,19 +147,24 @@ public class RSSMainActivity extends Activity
                 alert.setTitle("Deleting feed");
                 alert.setMessage("Are you sure you want to delete this feed?");
                 alert.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                    @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        new AsyncTask<Feed, Void, Void>() {
-                            @Override
-                            protected Void doInBackground(Feed... feeds) {
-                                dataSource.deleteFeed(feeds[0]);
-
-                                return null;
-                            }
-                        }.execute(feeds.get(currentFeed));
                         if (feeds.size() > 1) {
-                            currentFeed = 0;
-                            onNavigationDrawerItemSelected(0);
+                            Feed feed = feeds.get(currentFeed);
+                            feeds.remove(currentFeed);
+                            new AsyncTask<Feed, Void, Void>() {
+                                @Override
+                                protected Void doInBackground(Feed... feeds) {
+                                    dataSource.deleteFeed(feeds[0]);
+                                    return null;
+                                }
+                            }.execute(feed);
+                            updateNavBarList();
+                            if (feeds.size() > 1) {
+                                currentFeed = 0;
+                                onNavigationDrawerItemSelected(0);
+                            }
+                        } else {
+                            Toast.makeText(getBaseContext(), "Can't delete feeds, please add some.", Toast.LENGTH_LONG).show();
                         }
                     }
                 });
@@ -147,7 +172,6 @@ public class RSSMainActivity extends Activity
                 alert.show();
             }
         }
-
         return super.onOptionsItemSelected(item);
     }
 
@@ -173,29 +197,26 @@ public class RSSMainActivity extends Activity
 
     @Override
     public void onLoadFinished(Loader<Feed> feedLoader, Feed feed) {
-        if (refreshItem != null) refreshItem.setActionView(null);
-        final Feed feed2 = feed;
-        if (adapter != null) {
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    adapter.replaceFeed(new Feed(feed2));
-                    adapter.notifyDataSetChanged();
-                    ((PlaceholderFragment) getFragmentManager().findFragmentById(R.id.container)).listView.requestLayout();
+        if (feedLoader.getId() == FEED_DB_LOADER && feed == null) {
+            Bundle bundle = new Bundle();
+            bundle.putInt(FEED_INDEX, currentFeed);
+            getLoaderManager().restartLoader(FEED_UPDATE_LOADER, bundle, this).forceLoad();
+        } else {
+            for (int i = 0; i < feeds.size(); i++) {
+                if (feeds.get(i).feedUrl.equals(feed.feedUrl)) {
+                    feeds.set(i, feed);
+                    break;
                 }
-            });
+                if (i == feeds.size() - 1 && !feeds.get(i).feedUrl.equals(feed.feedUrl)) {
+                    feeds.add(feed);
+                }
+            }
+            showFeed(feed);
+            updateNavBarList();
         }
-        updateNavBarList();
     }
 
     @Override
     public void onLoaderReset(Loader<Feed> feedLoader) {
-//        runOnUiThread(new Runnable() {
-//            @Override
-//            public void run() {
-//                adapter.replaceFeed(null);
-//                adapter.notifyDataSetChanged();
-//            }
-//        });
     }
 }

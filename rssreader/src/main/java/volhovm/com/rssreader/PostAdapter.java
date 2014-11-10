@@ -47,11 +47,11 @@ public class PostAdapter extends BaseAdapter {
     public void replaceFeed(Feed feed) {
         checkOnMainThread();
         final PostAdapter postAdapter = this;
-        final Feed feed2 = new Feed(feed);
+        final Feed feed2 = feed == null ? null : new Feed(feed);
         context.runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                postAdapter.feed = new Feed(feed2);
+                postAdapter.feed = feed2 == null ? null : new Feed(feed2);
                 postAdapter.notifyDataSetChanged();
             }
         });
@@ -61,7 +61,7 @@ public class PostAdapter extends BaseAdapter {
     public PostAdapter(Activity context, Feed feed) {
         checkOnMainThread();
         this.context = context;
-        this.feed = new Feed(feed);
+        this.feed = feed == null ? null : new Feed(feed);
         imageCache = new HashMap<URL, Bitmap>();
         final PostAdapter postAdapter = this;
         context.runOnUiThread(new Runnable() {
@@ -117,7 +117,8 @@ public class PostAdapter extends BaseAdapter {
         });
         title.setText(item.title);
         description.setText(item.description);
-        date.setText(new SimpleDateFormat("HH:mm dd.MM.yyyy").format(item.date));
+        if (item.date != null) date.setText(new SimpleDateFormat("HH:mm dd.MM.yyyy").format(item.date));
+        else date.setVisibility(View.GONE);
         return postView;
 //        return null;
     }
