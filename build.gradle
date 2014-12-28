@@ -11,7 +11,7 @@ buildscript {
 }
 
 task wrapper(type: Wrapper) {
-    gradleVersion = '2.21'
+    gradleVersion = '2.2.1'
 }
 
 allprojects {
