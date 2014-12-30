@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">RSS Reader</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="no_connection">No network connection available.</string>
+    <string name="title_activity_result">ResultActivity</string>
+    <string name="loading">Loading...</string>
+    <string name="error_loading_webpage">Check your internet connection...</string>
+
+</resources>
