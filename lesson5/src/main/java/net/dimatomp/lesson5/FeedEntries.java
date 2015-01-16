@@ -46,9 +46,16 @@ public class FeedEntries extends ListActivity implements LoaderManager.LoaderCal
             return true;
         }
     };
-    RefreshButtonToggler refreshButtonToggler = new RefreshButtonToggler();
-    boolean expandingCollapsing = false;
+    boolean refreshButtonShown = true, expandingCollapsing = false;
+    Menu menu;
     Set<Long> collapsedEntries = new HashSet<>();
+
+    void setRefreshButtonShown(boolean shown) {
+        refreshButtonShown = shown;
+        if (menu != null)
+            menu.findItem(R.id.action_refresh).setVisible(shown);
+        setProgressBarIndeterminateVisibility(!shown);
+    }
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
@@ -57,8 +64,7 @@ public class FeedEntries extends ListActivity implements LoaderManager.LoaderCal
                 Uri uri = Uri.parse("content://net.dimatomp.feeds.provider/entries?feedId=" + args.getInt(EXTRA_FEED_ID));
                 return new CursorLoader(this, uri, null, null, null, ENTRY_DATE + " DESC");
             case 1:
-                setProgressBarIndeterminateVisibility(true);
-                refreshButtonToggler.setVisible(false);
+                setRefreshButtonShown(false);
                 return new FeedLoaderWithUpdate(this, args.getInt(EXTRA_FEED_ID), null, null, null, ENTRY_DATE + " DESC");
         }
         return null;
@@ -72,7 +78,7 @@ public class FeedEntries extends ListActivity implements LoaderManager.LoaderCal
         else {
             collapsedEntries.clear();
             setProgressBarIndeterminateVisibility(false);
-            refreshButtonToggler.setVisible(true);
+            setRefreshButtonShown(true);
         }
     }
 
@@ -133,7 +139,8 @@ public class FeedEntries extends ListActivity implements LoaderManager.LoaderCal
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_feed_entries, menu);
-        refreshButtonToggler.setRefreshButton(menu.findItem(R.id.action_refresh));
+        this.menu = menu;
+        setRefreshButtonShown(refreshButtonShown);
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -155,39 +162,6 @@ public class FeedEntries extends ListActivity implements LoaderManager.LoaderCal
                 return true;
         }
         return super.onOptionsItemSelected(item);
-    }
-
-    private static class RefreshButtonToggler implements Runnable {
-        final Thread runner;
-        MenuItem refreshButton;
-        boolean visible = true;
-
-        {
-            runner = new Thread(this);
-            runner.start();
-        }
-
-        public void setVisible(boolean visible) {
-            if (refreshButton == null)
-                this.visible = visible;
-            else
-                refreshButton.setVisible(visible);
-        }
-
-        public synchronized void setRefreshButton(MenuItem refreshButton) {
-            this.refreshButton = refreshButton;
-            notify();
-        }
-
-        @Override
-        public synchronized void run() {
-            while (refreshButton == null)
-                try {
-                    wait();
-                } catch (InterruptedException ignore) {
-                }
-            refreshButton.setVisible(visible);
-        }
     }
 
     private class ExpandableItemCursorAdapter extends SimpleCursorAdapter {
