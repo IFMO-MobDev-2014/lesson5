@@ -1,16 +1,24 @@
 package com.example.dima_2.lesson5;
 
+import android.app.IntentService;
+import android.content.ContentValues;
+import android.content.Intent;
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.util.Log;
 
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.Document;
+import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.parsers.SAXParser;
+import javax.xml.parsers.SAXParserFactory;
 
 import java.io.*;
 
@@ -18,84 +26,82 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.ProtocolException;
 import java.net.URL;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 
 /**
  * Created by Dima_2 on 08.01.2015.
  */
-public class RSSLoader {
-    public String url;
-    public RSSList list;
+public class RSSLoader extends IntentService {
+    public String link;
+    public RSSList list = new RSSList();
 
-    public RSSLoader(String url, RSSList list) {
-        this.url = url;
-        this.list = list;
+    public RSSLoader() {
+        super("RSSLoader");
     }
 
-    class Loader extends AsyncTask<String, Void, Element> {
-        @Override
-        protected Element doInBackground(String[] s) {
-            try {
-                URL url = new URL(s[0]);
-                HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-                connection.setRequestMethod("GET");
-
-                InputStream inputStream = connection.getInputStream();
-                DocumentBuilderFactory builderFactory = DocumentBuilderFactory.newInstance();
-                DocumentBuilder builder = builderFactory.newDocumentBuilder();
-
-                Document document = builder.parse(inputStream);
-                return document.getDocumentElement();
-            } catch (MalformedURLException e) {
-                System.out.println("Class Loader throws MalformedURLException");
-                Log.i("Exception", "Class Loader throws MalformedURLException");
-                e.printStackTrace();
-            } catch (ProtocolException e) {
-                System.out.println("Class Loader throws ProtocolException");
-                Log.i("Exception", "Class Loader throws ProtocolException");
-                e.printStackTrace();
-            } catch (ParserConfigurationException e) {
-                System.out.println("Class Loader throws ParserConfigurationException");
-                Log.i("Exception", "Class Loader throws ParserConfigurationException");
-                e.printStackTrace();
-            } catch (SAXException e) {
-                System.out.println("Class Loader throws SAXException");
-                Log.i("Exception", "Class Loader throws SAXException");
-                e.printStackTrace();
-            } catch (IOException e) {
-                System.out.println("Class Loader throws IOException");
-                Log.i("Exception", "Class Loader throws IOException");
-                e.printStackTrace();
-            } catch (Throwable e) {
-                System.out.println("Class Loader throws unknown exception");
-                Log.i("Exception", "Class Loader throws unknown exception");
-                e.printStackTrace();
-            }
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(Element documentElement) {
-            super.onPostExecute(documentElement);
-            list.clearAll();
-            NodeList nodeList = documentElement.getElementsByTagName("item");
-            if (nodeList == null || nodeList.getLength() == 0)
-                return;
-            for (int i = 0; i < nodeList.getLength(); i++) {
-                Element entry = (Element)nodeList.item(i);
-                Element title = (Element)entry.getElementsByTagName("title").item(0);
-                Element link = (Element)entry.getElementsByTagName("link").item(0);
-                String name = title.getFirstChild().getNodeValue();
-                String url = link.getFirstChild().getNodeValue();
-
-                RSSElement element = new RSSElement(name, url);
-                list.addElement(element);
-            }
-        }
+    public RSSLoader(String name) {
+        super(name);
     }
 
-    public void load() {
-        Loader loader = new Loader();
-        loader.execute(url);
+    @Override
+    protected void onHandleIntent(Intent intent) {
+        String intentUrl = intent.getStringExtra("url");
+        try {
+            URL url = new URL(intentUrl);
+            HttpURLConnection connection = (HttpURLConnection)url.openConnection();
+            connection.connect();
+            InputStream inputStream = connection.getInputStream();
+            String contentType = connection.getHeaderField("Content-Type");
+            String encoding = "utf-8";
+            if (contentType != null && contentType.contains("charset=")) {
+                Matcher matcher = Pattern.compile("charset=([^\\s]+)").matcher(contentType);
+                matcher.find();
+                encoding = matcher.group(1);
+            }
+            InputStreamReader inputStreamReader = new InputStreamReader(inputStream, encoding);
+            InputSource inputSource = new InputSource(inputStreamReader);
+            SAXParser parser = SAXParserFactory.newInstance().newSAXParser();
+            SAXHandler handler = new SAXHandler();
+            if (list == null || handler == null) {
+                throw new IOException();
+            }
+            parser.parse(inputSource, handler);
+            if (list == null || handler == null) {
+                throw new IOException();
+            }
+            list.list = handler.rssItems;
+            link = handler.channelName;
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        } catch (SAXException e) {
+            e.printStackTrace();
+        } catch (ParserConfigurationException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(Table.COLUMN_NAME, link);
+        contentValues.put(Table.COLUMN_LINK, intentUrl);
+
+        Uri nChannel = getContentResolver().insert(DatabaseContentProvider.CONTENT_URI_CHANNELS, contentValues);
+        Cursor cursor = getContentResolver().query(nChannel, null, null, null, null);
+        if (cursor != null) {
+            cursor.moveToFirst();
+            int newChannelID = cursor.getInt(cursor.getColumnIndexOrThrow(Table.COLUMN_ID));
+            if (list != null) {
+                    for (RSSElement element : list.list) {
+                            contentValues = element.getContentValues();
+                            contentValues.put(ItemsTable.COLUMN_CHANNEL_ID, newChannelID);
+                            getContentResolver().insert(DatabaseContentProvider.CONTENT_URI_ITEMS, contentValues);
+                        }
+                }
+            cursor.close();
+        }
     }
 }

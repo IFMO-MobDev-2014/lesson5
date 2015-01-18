@@ -1,5 +1,6 @@
 package com.example.dima_2.lesson5;
 
+import android.util.Log;
 import android.widget.ArrayAdapter;
 
 import java.lang.reflect.Array;
@@ -39,6 +40,6 @@ public class RSSList {
     }
 
     public String getUrl(int idx) {
-        return list.get(idx).url;
+        return list.get(idx).link;
     }
 }
