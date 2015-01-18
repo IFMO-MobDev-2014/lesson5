@@ -2,7 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="ru.ifmo.rss.PreviewActivity">
+    tools:context="ru.itmo.rss.PreviewActivity">
 
     <WebView
         android:layout_width="match_parent"
