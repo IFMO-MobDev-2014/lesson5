@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">BOR RSS</string>
+    <string name="title_activity_web">bash.org.ru</string>
+    <string name="URL_NEWS">http://bash.im/rss/</string>
+    <string name="URL">URL</string>
+    <string name="DOWNLOADING_NEWS">Downloading news. Please wait.</string>
+    <string name="ERROR">Error! Can\'t download news</string>
+
+</resources>
