@@ -16,7 +16,9 @@ import java.util.ArrayList;
  */
 public class MyLoader extends AsyncTask<String, Void, ArrayList<Item> > {
 
-    MyLoader() {
+    MyListAdapter adapter;
+    MyLoader(MyListAdapter adapter) {
+        this.adapter = adapter;
     }
     @Override
     protected ArrayList<Item> doInBackground(String... params) {
@@ -32,6 +34,6 @@ public class MyLoader extends AsyncTask<String, Void, ArrayList<Item> > {
 
     @Override
     protected void onPostExecute(ArrayList<Item> items){
-        MainActivity.items = items;
+        adapter.setItems(items);
     }
 }

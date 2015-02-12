@@ -23,9 +23,13 @@ public class MyListAdapter extends BaseAdapter {
         this.context = context;
     }
 
+    public void setItems(ArrayList<Item> items) {
+        this.items = items;
+    }
+
     @Override
     public int getCount() {
-        return 0;//items.size();
+        return items.size();
     }
 
     @Override

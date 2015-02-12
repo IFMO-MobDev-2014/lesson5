@@ -15,22 +15,21 @@ import java.util.ArrayList;
 
 public class MainActivity extends Activity {
 
-    static ArrayList<Item> items;
+    static ArrayList<Item> items = new ArrayList<Item>();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
 
+        items.add(new Item());
+
         ListView listView = (ListView)findViewById(R.id.listView1);
-        MyLoader loader = new MyLoader();
+        MyListAdapter adapter = new MyListAdapter(this,
+                items);
+        listView.setAdapter(adapter);
+
+        MyLoader loader = new MyLoader(adapter);
         loader.execute("http://echo.msk.ru/interview/rss-fulltext.xml");
-        if (items != null) {
-            MyListAdapter adapter = new MyListAdapter(this,
-                    items);
-            listView.setAdapter(adapter);
-        } else {
-            Log.i("MainActivity", "lalala");
-        }
     }
 /*
 
