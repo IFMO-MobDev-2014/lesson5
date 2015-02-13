@@ -6,14 +6,20 @@ package com.example.rssreader;
 public class Item {
     String title;
     String link;
+    String description;
+    String pubDate;
 
-    public Item(String title, String link) {
+    public Item(String title, String link, String description, String pubDate) {
         this.title = title;
         this.link = link;
+        this.description = description;
+        this.pubDate = pubDate;
     }
 
     public Item() {
         this.title = "";
         this.link = "";
+        this.description = "";
+        this.pubDate = "";
     }
 }
